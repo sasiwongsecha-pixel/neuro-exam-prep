@@ -1,147 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neurology Exam Prep — Siriraj IM Residency</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
 <style>
-:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--surface3:#2d333b;
---border:#30363d;--border2:#444c56;--text:#c9d1d9;--muted:#8b949e;
---blue:#58a6ff;--green:#3fb950;--orange:#e3b341;--red:#f85149;
---purple:#d2a8ff;--teal:#79c0ff;--pink:#f78166;
---primary:#58a6ff;--accent:#f85149;--gold:#e3b341;
---shadow:0 2px 12px rgba(0,0,0,0.45);}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-header{background:linear-gradient(135deg,#1f2937,#111827);color:white;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.5);border-bottom:1px solid var(--border);}
-.hamburger{display:none;background:none;border:none;color:white;font-size:24px;cursor:pointer;padding:8px;line-height:1;z-index:1001;}
-.header-title{font-size:1.15rem;font-weight:700;}
-.header-badge{background:var(--accent);color:white;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;}
-.layout{display:flex;min-height:calc(100vh - 60px);}
-.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
-.sidebar-section{margin-bottom:4px;}
-.sidebar-section-header{padding:10px 20px 6px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:0.85rem;color:var(--text);border-left:3px solid transparent;transition:all 0.15s;}
-.sidebar-item:hover{background:var(--surface2);border-left-color:var(--border2);}
-.sidebar-item.active{background:rgba(88,166,255,0.1);border-left-color:var(--blue);color:var(--blue);font-weight:600;}
-.main{flex:1;padding:24px;overflow:auto;}
-.section{display:none;}
-.section.active{display:block;}
-.card{background:var(--surface);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:768px){
-  .hamburger{display:block;}
-  .sidebar{position:fixed;left:-260px;z-index:999;transition:0.3s;}
-  .sidebar.open{left:0;}
-  .grid-2{grid-template-columns:1fr;}
+/* --- RESPONSIVE CORE --- */
+:root {
+  --sidebar-width: 260px;
 }
-/* Table styles */
-table{width:100%;border-collapse:collapse;margin:10px 0;}
-th{background:var(--surface2);color:var(--teal);padding:8px;text-align:left;}
-td{padding:8px;border-bottom:1px solid var(--border);}
-.badge{padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;}
-.badge-red{background:rgba(248,81,73,0.15);color:var(--red);}
-</style>
-</head>
-<body>
-<header>
-  <button class="hamburger" onclick="toggleSidebar()">☰</button>
-  <div>
-    <div class="header-title">🧠 Neuro Exam Prep</div>
-    <div style="font-size:0.7rem;opacity:0.6">Siriraj IM Residency 2025</div>
-  </div>
-  <div class="header-badge">R3 Internal Medicine</div>
-</header>
-<div class="layout">
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-section">
-    <div class="sidebar-section-header">Core Modules</div>
-    <div class="sidebar-item active" onclick="switchModule('exam')" id="nav-exam">🔬 Neuro Exam</div>
-    <div class="sidebar-item" onclick="switchModule('longcase')" id="nav-longcase">📋 Long Case</div>
-    <div class="sidebar-item" onclick="switchModule('movement')" id="nav-movement">🏃 Movement</div>
-    <div class="sidebar-item" onclick="switchModule('patho')" id="nav-patho">🧬 Pathophysiology</div>
-  </div>
-</nav>
-<main class="main">
-  <div class="section active" id="section-exam">
-    <h2>🔬 Essential Neurological Examinations</h2>
-    <div class="card">
-      <h3>Brief Neuro Exam Findings</h3>
-      <table>
-        <tr><th>Domain</th><th>Normal</th></tr>
-        <tr><td>LOC</td><td>Alert, oriented</td></tr>
-        <tr><td>Motor</td><td>Gr V Power, no drift</td></tr>
-      </table>
-    </div>
-  </div>
 
-  <div class="section" id="section-longcase">
-    <h2>📋 Long Case Approach</h2>
-    <div class="card">
-      <h3>Stroke Syndromes</h3>
-      <p>MCA: Contralateral hemiplegia, aphasia (if dominant).</p>
-    </div>
-  </div>
+.layout {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
 
-  <div class="section" id="section-movement">
-    <h2>🏃 Movement Disorders</h2>
-    <div class="card">
-      <h3>Parkinsonism Red Flags</h3>
-      <ul>
-        <li>Early falls (< 1 year)</li>
-        <li>Poor levodopa response</li>
-      </ul>
-    </div>
-  </div>
+.sidebar {
+  width: var(--sidebar-width);
+  /* Use fixed positioning on mobile to "slide in" */
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
 
-  <div class="section" id="section-patho">
-    <h2>🧬 Pathophysiology</h2>
-    <div class="card">
-      <p>Select a sub-category below to view clinical mechanisms.</p>
-    </div>
-  </div>
-</main>
-</div>
+.main {
+  flex: 1;
+  padding: 20px;
+  width: 100%; /* Ensures main content takes full width */
+}
 
-<script>
-/** * Core Logic for Subtab/Module Switching
- * Ensures clean state transitions
- */
-function switchModule(modId) {
-  // 1. Hide all sections
-  document.querySelectorAll('.section').forEach(section => {
-    section.style.display = 'none';
-    section.classList.remove('active');
-  });
-
-  // 2. Show the target section
-  const target = document.getElementById('section-' + modId);
-  if (target) {
-    target.style.display = 'block';
-    target.classList.add('active');
+/* --- TABLETS (iPad) & PHONES --- */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: calc(-1 * var(--sidebar-width)); /* Hide off-screen */
+    background: var(--surface);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+  }
+  
+  .sidebar.open {
+    transform: translateX(var(--sidebar-width)); /* Slide in */
   }
 
-  // 3. Update sidebar UI
-  document.querySelectorAll('.sidebar-item').forEach(item => {
-    item.classList.remove('active');
-  });
-  const activeNav = document.getElementById('nav-' + modId);
-  if (activeNav) activeNav.classList.add('active');
+  .grid-2 {
+    grid-template-columns: 1fr; /* Stack cards vertically */
+  }
 
-  // 4. Close sidebar on mobile after selection
-  if (window.innerWidth <= 768) {
+  /* Make tables scrollable on small screens so text stays readable */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 15px;
+  }
+}
+
+/* Ensure images/SVGs don't overflow */
+svg, img {
+  max-width: 100%;
+  height: auto;
+}
+</style>
+
+<script>
+// Toggle for Mobile/iPad Menu
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.classList.toggle('open');
+}
+
+// Auto-close menu when a topic is selected on mobile
+function switchModule(modId) {
+  // ... (your existing tab logic) ...
+  
+  if (window.innerWidth <= 1024) {
     document.getElementById('sidebar').classList.remove('open');
   }
 }
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-
-// Ensure the first module is correctly loaded
-document.addEventListener('DOMContentLoaded', () => {
-  switchModule('exam');
-});
 </script>
-</body>
-</html>
