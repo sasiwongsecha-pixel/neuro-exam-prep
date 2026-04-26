@@ -1299,10 +1299,10 @@ strong{color:var(--teal);}
   <div class="section-sub">Interactive animations and CT/MRI pattern recognition</div>
 
   <div class="patho-tabs">
-    <button class="ptab active" onclick="showPTab('stroke-anim')">⚡ Stroke Cascade</button>
-    <button class="ptab" onclick="showPTab('nmj-anim')">🔌 NMJ (MG/LEMS)</button>
-    <button class="ptab" onclick="showPTab('demyelin-anim')">🧲 Demyelination</button>
-    <button class="ptab" onclick="showPTab('imaging-atlas')">🖼️ Imaging Atlas</button>
+    <button class="ptab active" onclick="showPTab('stroke-anim',this)">⚡ Stroke Cascade</button>
+    <button class="ptab" onclick="showPTab('nmj-anim',this)">🔌 NMJ (MG/LEMS)</button>
+    <button class="ptab" onclick="showPTab('demyelin-anim',this)">🧲 Demyelination</button>
+    <button class="ptab" onclick="showPTab('imaging-atlas',this)">🖼️ Imaging Atlas</button>
   </div>
 
   <!-- ===== STROKE CASCADE ANIMATION ===== -->
@@ -1312,11 +1312,11 @@ strong{color:var(--teal);}
       <div class="anim-wrap">
         <div class="anim-ctrl">
           <span class="anim-label">State:</span>
-          <button class="anim-btn active" onclick="setStroke('normal')">Normal Flow</button>
-          <button class="anim-btn" onclick="setStroke('occlusion')">Occlusion</button>
-          <button class="anim-btn" onclick="setStroke('penumbra')">Penumbra / Core</button>
-          <button class="anim-btn" onclick="setStroke('reperfusion')">Reperfusion (tPA)</button>
-          <button class="anim-btn" onclick="setStroke('hit')">Hemorrhagic Transformation</button>
+          <button class="anim-btn active" onclick="setStroke('normal',this)">Normal Flow</button>
+          <button class="anim-btn" onclick="setStroke('occlusion',this)">Occlusion</button>
+          <button class="anim-btn" onclick="setStroke('penumbra',this)">Penumbra / Core</button>
+          <button class="anim-btn" onclick="setStroke('reperfusion',this)">Reperfusion (tPA)</button>
+          <button class="anim-btn" onclick="setStroke('hit',this)">Hemorrhagic Transformation</button>
         </div>
         <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
           <svg id="stroke-svg" viewBox="0 0 420 320" width="420" style="max-width:100%;flex-shrink:0">
@@ -1396,10 +1396,10 @@ strong{color:var(--teal);}
       <div class="anim-wrap">
         <div class="anim-ctrl">
           <span class="anim-label">State:</span>
-          <button class="anim-btn active" onclick="setNMJ('normal')">Normal</button>
-          <button class="anim-btn" onclick="setNMJ('mg')">Myasthenia Gravis</button>
-          <button class="anim-btn" onclick="setNMJ('lems')">LEMS</button>
-          <button class="anim-btn" onclick="setNMJ('mg-drug')">MG + Pyridostigmine</button>
+          <button class="anim-btn active" onclick="setNMJ('normal',this)">Normal</button>
+          <button class="anim-btn" onclick="setNMJ('mg',this)">Myasthenia Gravis</button>
+          <button class="anim-btn" onclick="setNMJ('lems',this)">LEMS</button>
+          <button class="anim-btn" onclick="setNMJ('mg-drug',this)">MG + Pyridostigmine</button>
         </div>
         <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
           <svg id="nmj-svg" viewBox="0 0 420 300" width="420" style="max-width:100%;flex-shrink:0">
@@ -1522,10 +1522,10 @@ strong{color:var(--teal);}
       <div class="anim-wrap">
         <div class="anim-ctrl">
           <span class="anim-label">State:</span>
-          <button class="anim-btn active" onclick="setMyelin('normal')">Normal (Saltatory)</button>
-          <button class="anim-btn" onclick="setMyelin('partial')">Partial Demyelination</button>
-          <button class="anim-btn" onclick="setMyelin('complete')">Complete Demyelination</button>
-          <button class="anim-btn" onclick="setMyelin('remyelin')">Remyelination (thin)</button>
+          <button class="anim-btn active" onclick="setMyelin('normal',this)">Normal (Saltatory)</button>
+          <button class="anim-btn" onclick="setMyelin('partial',this)">Partial Demyelination</button>
+          <button class="anim-btn" onclick="setMyelin('complete',this)">Complete Demyelination</button>
+          <button class="anim-btn" onclick="setMyelin('remyelin',this)">Remyelination (thin)</button>
         </div>
         <svg id="myelin-svg" viewBox="0 0 500 220" width="100%" style="max-width:500px;display:block;margin:0 auto">
           <defs>
@@ -1982,11 +1982,11 @@ function switchModule(mod){
   const nav=document.getElementById('nav-'+mod);if(nav)nav.classList.add('active');
 }
 
-function showPTab(id){
+function showPTab(id,btn){
   document.querySelectorAll('.ptab-content').forEach(c=>c.classList.remove('active'));
   document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
   document.getElementById('ptab-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
+  if(btn)btn.classList.add('active');
 }
 
 // ============================================================
@@ -2025,9 +2025,9 @@ const strokeInfos={
   reperfusion:{box:'patho-box',title:'Reperfusion (tPA / Thrombectomy)',pts:['tPA activates plasminogen → plasmin → lyses fibrin clot','Window: IV tPA ≤4.5h; mechanical thrombectomy ≤24h (selected patients)','Reperfusion restores CBF to penumbra → prevents further infarction','Post-reperfusion: blood-brain barrier injury → edema, HT risk']},
   hit:{box:'alert-box',title:'Hemorrhagic Transformation (HT)',pts:['BBB breakdown after ischemia + reperfusion → blood extravasation','HI1/HI2: petechial (better outcome). PH1/PH2: confluent hemorrhage (worse)','Risk factors: large infarct, late reperfusion, anticoagulation, malignant MCA','GRE/SWI: blooming hypointensity = hemorrhage. T1: hyperintense subacute blood']}
 };
-function setStroke(state){
+function setStroke(state,btn){
   document.querySelectorAll('#ptab-stroke-anim .anim-btn').forEach(b=>b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if(btn)btn.classList.add('active');
   const svg=document.getElementById('stroke-svg');
   const block=svg.getElementById('s-block'),blockTxt=svg.getElementById('s-block-txt');
   const core=svg.getElementById('s-core'),coreTxt=svg.getElementById('s-core-txt');
@@ -2060,9 +2060,9 @@ const nmjInfos={
   lems:{title:'LEMS (Lambert-Eaton Myasthenic Syndrome)',sub:'VGCC-Ab blocks presynaptic Ca²⁺ channels → ↓ ACh vesicle release',pts:['VGCC-Ab (P/Q-type) blocks presynaptic voltage-gated Ca²⁺ channels','↓ Ca²⁺ influx → ↓ ACh vesicle exocytosis → small CMAP','Post-tetanic potentiation: repetitive stimulation → Ca²⁺ accumulates → briefly more ACh released → reflexes improve post-exercise','3,4-DAP: prolongs presynaptic AP → ↑ Ca²⁺ channel opening → ↑ ACh release']},
   'mg-drug':{title:'MG + Pyridostigmine (AChE Inhibitor)',sub:'AChE inhibition → ↑ ACh in cleft → compensates for reduced AChR',pts:['Pyridostigmine inhibits acetylcholinesterase → ACh not degraded → stays in cleft longer','↑ ACh concentration → more binding events per vesicle → compensates for ↓ AChR','Symptomatic only — does not address antibody-mediated receptor destruction','Muscarinic side effects: salivation, lacrimation, urination, diarrhoea, bradycardia']}
 };
-function setNMJ(state){
+function setNMJ(state,btn){
   document.querySelectorAll('#ptab-nmj-anim .anim-btn').forEach(b=>b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if(btn)btn.classList.add('active');
   const svg=document.getElementById('nmj-svg');
   const vgcc=[svg.getElementById('nmj-vgcc1'),svg.getElementById('nmj-vgcc2'),svg.getElementById('nmj-vgcc3')];
   const ca=[svg.getElementById('nmj-ca1'),svg.getElementById('nmj-ca2'),svg.getElementById('nmj-ca3')];
@@ -2094,9 +2094,9 @@ const myelinInfos={
   complete:{title:'Complete Demyelination',pts:['Complete failure of saltatory conduction → conduction block → clinical deficit','Na⁺ channels redistribute along denuded axon → slow continuous conduction attempted','NCS: very prolonged F-waves, absent responses, scattered conduction block','GBS acute: AIDP = demyelinating (NCS), AMAN = axonal (reduced CMAP amplitude)']},
   remyelin:{title:'Remyelination (Thin Myelin)',pts:['Oligodendrocyte precursor cells recruited → new thin myelin sheaths form','Internodal distance shorter, myelin thinner → slower but functional conduction','"Shadow plaques" on MRI = remyelinated areas (partially recovered signal)','Incomplete remyelination in chronic/progressive MS → accumulating deficit']}
 };
-function setMyelin(state){
+function setMyelin(state,btn){
   document.querySelectorAll('#ptab-demyelin-anim .anim-btn').forEach(b=>b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  if(btn)btn.classList.add('active');
   if(myelinAnimId){clearInterval(myelinAnimId);myelinAnimId=null;}
   const svg=document.getElementById('myelin-svg');
   const mySheets=[1,2,3,4,5].map(i=>svg.getElementById('my'+i));
@@ -2321,4 +2321,67 @@ function showMDImg(tab){
 // ── ZOOM MODAL ──────────────────────────────────────────────────
 const SVG_META = {
   'svg-psp':{title:'PSP — Hummingbird Sign (Sagittal T1 MRI)',finding:'<b>Key signs:</b> Midbrain AP &lt;12mm · Area &lt;70mm² · MB:Pons ratio &lt;0.12<br>Tiny midbrain (beak) + preserved large pons (body) = hummingbird profile on sagittal T1.<br><b>Also:</b> Mickey Mouse sign (axial) — concave lateral midbrain borders. Morning glory: STN T2 signal.<br><span class="zoom-key-tag">Sensitivity 100%</span><span class="zoom-key-tag">Specificity 96%</span>'},
-  'svg-hcb':{title:'MSA — Hot Cross Bun Sign (Axial T2 Pons)',finding:'<b>Key signs:</b> Cruciform T2 hyperintensity in pons.<br>Vertical band = pontine raphe degeneration. Horizontal band = transverse pontocerebellar fiber degeneration.<br>CST (dark areas) are preserved. Background pons is dark (T2).<br>Seen in MSA-C predominantly; also in SCA2, SCA3.<br><span class="zoom-key-tag">MSA-C
+  'svg-hcb':{title:'MSA — Hot Cross Bun Sign (Axial T2 Pons)',finding:'<b>Key signs:</b> Cruciform T2 hyperintensity in pons.<br>Vertical band = pontine raphe degeneration. Horizontal band = transverse pontocerebellar fiber degeneration.<br>CST (dark areas) are preserved. Background pons is dark (T2).<br>Seen in MSA-C predominantly; also in SCA2, SCA3.<br><span class="zoom-key-tag">MSA-C hallmark</span><span class="zoom-key-tag">Also MCP hyperintensity</span>'},
+  'svg-slit':{title:'MSA-P — Putaminal Slit Sign (T2/GRE Axial)',finding:'<b>Key signs:</b> Lateral putaminal T2 hypointensity (iron accumulation from neurodegeneration) with a bright dorsolateral rim (reactive gliosis).<br>Bilateral and symmetric in MSA-P. Compare with PD where putamen usually appears normal on MRI.<br><span class="zoom-key-tag">MSA-P hallmark</span><span class="zoom-key-tag">GRE sequence most sensitive</span>'},
+  'svg-wilson':{title:"Wilson's — Giant Panda Face (T2 Axial Midbrain)",finding:"<b>Key signs:</b> Bilateral red nucleus T2 hyperintensity (panda eyes) · Relatively preserved SN (panda nose) · Tegmental T2 hyperintensity (forehead).<br>Look also for T2↑ in putamen, caudate, thalamus, dentate nuclei.<br>T1↓ in putamen (paramagnetic copper). KF rings on slit lamp (97% neurological Wilson's).<br><span class='zoom-key-tag'>ATP7B mutation (AR)</span><span class='zoom-key-tag'>Ceruloplasmin ↓</span><span class='zoom-key-tag'>24h urine Cu ↑</span>"},
+  'svg-datspect':{title:"DaT-SPECT — Striatal DAT Imaging (¹²³I-ioflupane)",finding:'<b>Key patterns:</b> Normal = bilateral symmetric comma/D-shape (full caudate + putamen). PD = asymmetric putamen ↓↓ (contralateral to symptomatic side) → comma becomes dot/period. Advanced PD = bilateral putamen loss → only caudate remnants.<br><b>ET:</b> Normal DaT (key differentiator!). Drug-induced parkinsonism: Normal DaT.<br>DLB: Bilateral ↓ (vs AD where DaT normal).<br><span class="zoom-key-tag">ET: Normal DaT</span><span class="zoom-key-tag">Drug-induced: Normal DaT</span>'},
+  'svg-dlb':{title:'FDG-PET — Cortical Metabolism: DLB vs AD vs Normal',finding:"<b>DLB:</b> Occipital hypometabolism (visual association cortex Lewy body deposits) → recurrent visual hallucinations. Frontal/parietal relatively spared.<br><b>AD:</b> Temporoparietal hypometabolism (hippocampus + angular gyrus). Occipital spared early.<br><b>Critical:</b> DLB occipital ↓ is a key reason to check DaT-SPECT and avoid antipsychotics (neuroleptic sensitivity).<br><span class='zoom-key-tag'>DLB: occipital ↓</span><span class='zoom-key-tag'>AD: parietotemporal ↓</span>"},
+  'bg-svg':{title:'Basal Ganglia Circuit — PD Pathophysiology',finding:'<b>Direct (D1):</b> Striatum→GPi↓→Thalamus disinhibited→movement enabled.<br><b>Indirect (D2):</b> Striatum→GPe↓→STN→GPi↑→Thalamus suppressed→movement inhibited.<br><b>PD:</b> ↓DA → both pathways impaired → net ↑GPi output → bradykinesia + rigidity.<br>DBS-STN suppresses overactive STN → ↓GPi → releases Thalamus.'}
+};
+function openZoom(svgId){
+  const el=document.getElementById(svgId);
+  if(!el)return;
+  const meta=SVG_META[svgId]||{title:'MRI/CT Finding',finding:''};
+  document.getElementById('zoom-title').innerHTML='🔍 '+meta.title;
+  document.getElementById('zoom-finding').innerHTML=meta.finding;
+  const clone=el.cloneNode(true);
+  clone.removeAttribute('width');
+  clone.style.cssText='width:100%;height:auto;max-width:860px;display:block;';
+  // Show annotation layer in clone too
+  const annotLayer=clone.querySelector('[id^="annot-"]');
+  const srcAnnot=document.getElementById('annot-'+svgId);
+  if(annotLayer&&srcAnnot) annotLayer.style.display=srcAnnot.style.display;
+  document.getElementById('zoom-svg-wrap').innerHTML='';
+  document.getElementById('zoom-svg-wrap').appendChild(clone);
+  document.getElementById('zoom-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeZoom(){
+  document.getElementById('zoom-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeZoom();});
+
+// ── ANNOTATION TOGGLE ──────────────────────────────────────────
+function toggleAnnot(svgId){
+  const layer=document.getElementById('annot-'+svgId);
+  const btn=document.getElementById('abtn-'+svgId);
+  if(!layer)return;
+  const isOn=layer.style.display!=='none';
+  layer.style.display=isOn?'none':'block';
+  btn.textContent=isOn?'🏷 Show Annotations':'✕ Hide Annotations';
+  btn.classList.toggle('on',!isOn);
+}
+
+// ============================================================
+// HIGH YIELD
+// ============================================================
+function buildHighYield(filter=''){
+  const items=filter?highYieldConditions.filter(h=>h.name.toLowerCase().includes(filter)||h.cat.toLowerCase().includes(filter)||h.features.toLowerCase().includes(filter)):highYieldConditions;
+  document.getElementById('hy-grid').innerHTML=items.length===0
+    ?'<div class="card" style="text-align:center;color:var(--muted)">No conditions found.</div>'
+    :items.map(h=>`<div class="card"><div class="card-title"><span class="badge ${h.badge}">${h.cat}</span><span style="margin-left:8px">${h.name}</span></div><div class="grid-3"><div><h4>🔍 Key Features</h4><p>${h.features}</p></div><div><h4>🧪 Investigations</h4><p>${h.workup}</p></div><div><h4>💊 Management</h4><p>${h.rx}</p></div></div></div>`).join('');
+}
+function filterHighYield(){buildHighYield(document.getElementById('hy-search').value.toLowerCase());}
+</script>
+
+<div id="zoom-modal" onclick="if(event.target===this)closeZoom()">
+  <div id="zoom-inner">
+    <button id="zoom-close" onclick="closeZoom()" title="Close (Esc)">✕</button>
+    <div id="zoom-title"></div>
+    <div id="zoom-svg-wrap"></div>
+    <div id="zoom-finding"></div>
+  </div>
+</div>
+</body>
+</html>
