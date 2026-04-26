@@ -1,77 +1,298 @@
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Neurology Exam Prep — Siriraj IM Residency</title>
 <style>
-/* --- RESPONSIVE CORE --- */
+/* --- THEME & VARIABLES --- */
 :root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #21262d;
+  --surface3: #2d333b;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --muted: #8b949e;
+  --blue: #58a6ff;
+  --green: #3fb950;
+  --orange: #e3b341;
+  --red: #f85149;
+  --purple: #d2a8ff;
+  --teal: #79c0ff;
+  --shadow: 0 2px 12px rgba(0,0,0,0.45);
   --sidebar-width: 260px;
 }
 
-.layout {
-  display: flex;
-  min-height: calc(100vh - 60px);
+/* --- RESET & BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+  background: var(--bg); 
+  color: var(--text); 
+  line-height: 1.5;
+  overflow-x: hidden;
 }
 
+/* --- LAYOUT --- */
+header {
+  background: linear-gradient(135deg, #1f2937, #111827);
+  color: white;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border);
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.header-title { font-size: 1.1rem; font-weight: 700; }
+.header-badge { background: var(--red); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+
+.layout { display: flex; min-height: calc(100vh - 60px); }
+
+/* --- SIDEBAR (Mobile & iPad Responsive) --- */
 .sidebar {
   width: var(--sidebar-width);
-  /* Use fixed positioning on mobile to "slide in" */
+  background: var(--surface);
+  border-right: 1px solid var(--border);
   position: sticky;
   top: 60px;
   height: calc(100vh - 60px);
+  overflow-y: auto;
   transition: transform 0.3s ease;
-  z-index: 999;
+  flex-shrink: 0;
 }
 
-.main {
-  flex: 1;
-  padding: 20px;
-  width: 100%; /* Ensures main content takes full width */
+.sidebar-section-header { padding: 15px 20px 5px; font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-left: 4px solid transparent;
 }
+.sidebar-item:hover { background: var(--surface2); }
+.sidebar-item.active { background: rgba(88,166,255,0.1); border-left-color: var(--blue); color: var(--blue); font-weight: 600; }
 
-/* --- TABLETS (iPad) & PHONES --- */
+/* --- MAIN CONTENT --- */
+.main { flex: 1; padding: 24px; max-width: 100%; }
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- COMPONENTS --- */
+.card { background: var(--surface); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 15px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 500px; }
+th { background: var(--surface2); color: var(--teal); padding: 10px; text-align: left; }
+td { padding: 10px; border-bottom: 1px solid var(--border); }
+
+/* Boxes */
+.pearl { border-left: 4px solid var(--orange); background: rgba(227,179,65,0.1); padding: 15px; border-radius: 4px; margin: 10px 0; }
+.exam-box { border-left: 4px solid var(--blue); background: rgba(88,166,255,0.1); padding: 15px; margin: 10px 0; }
+
+/* --- MEDIA QUERIES --- */
 @media (max-width: 1024px) {
-  .sidebar {
-    position: fixed;
-    left: calc(-1 * var(--sidebar-width)); /* Hide off-screen */
-    background: var(--surface);
-    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+  .hamburger { display: block; }
+  .sidebar { 
+    position: fixed; 
+    left: calc(-1 * var(--sidebar-width)); 
+    z-index: 2000; 
   }
-  
-  .sidebar.open {
-    transform: translateX(var(--sidebar-width)); /* Slide in */
-  }
-
-  .grid-2 {
-    grid-template-columns: 1fr; /* Stack cards vertically */
-  }
-
-  /* Make tables scrollable on small screens so text stays readable */
-  .table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: 15px;
-  }
-}
-
-/* Ensure images/SVGs don't overflow */
-svg, img {
-  max-width: 100%;
-  height: auto;
+  .sidebar.open { transform: translateX(var(--sidebar-width)); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .main { padding: 16px; }
 }
 </style>
+</head>
+<body>
+
+<header>
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+  <div class="header-title">🧠 Neurology Long Case Prep</div>
+  <div class="header-badge">IM RESIDENT</div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-section-header">Clinical Modules</div>
+    <div class="sidebar-item active" onclick="switchModule('exam')" id="nav-exam">🔬 Neuro Examination</div>
+    <div class="sidebar-item" onclick="switchModule('longcase')" id="nav-longcase">📋 Long Case Strategy</div>
+    <div class="sidebar-item" onclick="switchModule('movement')" id="nav-movement">🏃 Movement Disorders</div>
+    <div class="sidebar-item" onclick="switchModule('patho')" id="nav-patho">🧬 Pathophysiology</div>
+    
+    <div class="sidebar-section-header">Reference</div>
+    <div class="sidebar-item" onclick="switchModule('highyield')" id="nav-highyield">⭐ High-Yield Conditions</div>
+    <div class="sidebar-item" onclick="switchModule('drugs')" id="nav-drugs">💊 Drug Reference</div>
+  </nav>
+
+  <main class="main">
+    
+    <div class="section active" id="section-exam">
+      <h2>🔬 Essential Neurological Examinations</h2>
+      <p style="color:var(--muted); margin-bottom: 20px;">Siriraj Hospital R3 Medicine Tutorial</p>
+      
+      <div class="card">
+        <h3>Brief Examination — Normal Findings</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Domain</th><th>Documentation Reference</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>LOC</strong></td><td>Alert, oriented to T/P/P</td></tr>
+              <tr><td><strong>Motor</strong></td><td>Normotonia, Power Gr V, No drift</td></tr>
+              <tr><td><strong>Reflex</strong></td><td>2+ symmetric, Babinski absent</td></tr>
+              <tr><td><strong>Cerebellar</strong></td><td>Intact F-N-F, normal gait</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="pearl">
+          <strong>💡 Exam Pearl:</strong> History + PE must be completed within 25 minutes. Fundoscopy is mandatory for all headache cases.
+        </div>
+        <div class="exam-box">
+          <strong>⭐ UMN vs LMN Tip:</strong> Wasting + Fasciculations + Areflexia = LMN. Spasticity + Hyperreflexia + Babinski = UMN.
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="section-longcase">
+      <h2>📋 Long Case Approach</h2>
+      <div class="card">
+        <h3>Localization First</h3>
+        <p>Always identify the level before the differential:</p>
+        <ul style="margin: 15px 25px;">
+          <li>Cortex/Subcortex</li>
+          <li>Brainstem/Cerebellum</li>
+          <li>Spinal Cord</li>
+          <li>Peripheral Nerve / NMJ / Muscle</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" id="section-movement">
+      <h2>🏃 Movement Disorders</h2>
+      <div class="card">
+        <h3>Parkinsonism Diagnosis (MDS 2015)</h3>
+        <p><strong>Bradykinesia</strong> is MANDATORY + either Tremor or Rigidity.</p>
+        <div class="pearl" style="margin-top:15px; border-left-color: var(--red);">
+          <strong>Red Flags:</strong> Early falls (<1yr), rapid progression, poor levodopa response.
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="section-patho">
+      <h2>🧬 Pathophysiology & Imaging</h2>
+      <div class="card">
+        <h3>Stroke Cascade</h3>
+        <p>Penumbra: CBF 10-20 mL/100g/min. Reversible tissue target for tPA/Thrombectomy.</p>
+        <p>Core: CBF <10. Irreversible damage (Cytotoxic edema).</p>
+      </div>
+    </div>
+
+    <div class="section" id="section-highyield">
+      <h2>⭐ High-Yield Conditions</h2>
+      <div id="hy-container">
+        </div>
+    </div>
+
+    <div class="section" id="section-drugs">
+      <h2>💊 Drug Reference</h2>
+      <div class="card">
+        <h3>Levodopa / Carbidopa</h3>
+        <p>Standard for PD. Avoid high protein meals (competes with LNAA transport).</p>
+      </div>
+    </div>
+
+  </main>
+</div>
 
 <script>
-// Toggle for Mobile/iPad Menu
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('open');
-}
-
-// Auto-close menu when a topic is selected on mobile
+// --- NAVIGATION LOGIC ---
 function switchModule(modId) {
-  // ... (your existing tab logic) ...
-  
+  // 1. Update Section Visibility
+  document.querySelectorAll('.section').forEach(sec => {
+    sec.classList.remove('active');
+  });
+  const target = document.getElementById('section-' + modId);
+  if (target) target.classList.add('active');
+
+  // 2. Update Sidebar Active State
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  const navItem = document.getElementById('nav-' + modId);
+  if (navItem) navItem.classList.add('active');
+
+  // 3. Scroll to top of content
+  window.scrollTo(0, 0);
+
+  // 4. Auto-close sidebar on mobile
   if (window.innerWidth <= 1024) {
     document.getElementById('sidebar').classList.remove('open');
   }
 }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// --- DATA POPULATION ---
+const hyConditions = [
+  { name: "Wallenberg Syndrome", note: "PICA infarct. Crossed deficits. No motor weakness." },
+  { name: "CVST", note: "Young woman, OCP, headache + seizures. Treat with Anticoagulation." },
+  { name: "Myasthenia Gravis", note: "Fatigable ptosis/diplopia. AChR-Ab+. CT chest for Thymoma." }
+];
+
+function loadHighYield() {
+  const container = document.getElementById('hy-container');
+  if (container) {
+    container.innerHTML = hyConditions.map(c => `
+      <div class="card">
+        <strong style="color:var(--blue)">${c.name}</strong>
+        <p style="margin-top:5px; font-size:0.9rem">${c.note}</p>
+      </div>
+    `).join('');
+  }
+}
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+  loadHighYield();
+  
+  // Close sidebar if clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    const sidebar = document.getElementById('sidebar');
+    const burger = document.querySelector('.hamburger');
+    if (window.innerWidth <= 1024 && 
+        !sidebar.contains(e.target) && 
+        !burger.contains(e.target) && 
+        sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    }
+  });
+});
 </script>
+
+</body>
+</html>
