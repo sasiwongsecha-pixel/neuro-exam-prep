@@ -33,7 +33,8 @@ header{background:linear-gradient(135deg,#1f2937,#111827);color:white;padding:0 
 .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
 .sidebar-section{margin-bottom:4px;}
 .sidebar-section-header{padding:10px 20px 6px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:0.85rem;color:var(--text);border-left:3px solid transparent;transition:all 0.15s;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;font-size:0.85rem;color:var(--text);border-left:3px solid transparent;transition:all 0.15s;min-height:44px;-webkit-tap-highlight-color:rgba(88,166,255,0.3);}
+.sidebar-item:active{background:var(--surface3);}
 .sidebar-item:hover{background:var(--surface2);border-left-color:var(--border2);}
 .sidebar-item.active{background:rgba(88,166,255,0.1);border-left-color:var(--blue);color:var(--blue);font-weight:600;}
 .sidebar-icon{font-size:1rem;width:20px;text-align:center;}
@@ -170,8 +171,10 @@ strong{color:var(--teal);}
 .search-bar:focus{border-color:var(--blue);}
 .source-note{font-size:0.75rem;color:var(--muted);text-align:center;margin-top:24px;padding:12px;background:var(--surface);border-radius:8px;border:1px solid var(--border);}
 /* PATHO SECTION TABS */
-.patho-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;border-bottom:2px solid var(--border);padding-bottom:0;}
-.ptab{padding:10px 18px;border:none;background:none;color:var(--muted);cursor:pointer;font-size:0.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
+.patho-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;border-bottom:2px solid var(--border);padding-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;}
+.patho-tabs::-webkit-scrollbar{height:4px;}
+.patho-tabs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.ptab{padding:10px 18px;border:none;background:none;color:var(--muted);cursor:pointer;font-size:0.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;white-space:nowrap;flex-shrink:0;min-height:44px;}
 .ptab:hover{color:var(--text);}
 .ptab.active{color:var(--blue);border-bottom-color:var(--blue);}
 .ptab-content{display:none;}.ptab-content.active{display:block;}
@@ -2390,6 +2393,52 @@ function buildHighYield(filter=''){
     :items.map(h=>`<div class="card"><div class="card-title"><span class="badge ${h.badge}">${h.cat}</span><span style="margin-left:8px">${h.name}</span></div><div class="grid-3"><div><h4>🔍 Key Features</h4><p>${h.features}</p></div><div><h4>🧪 Investigations</h4><p>${h.workup}</p></div><div><h4>💊 Management</h4><p>${h.rx}</p></div></div></div>`).join('');
 }
 function filterHighYield(){buildHighYield(document.getElementById('hy-search').value.toLowerCase());}
+
+// ============================================================
+// CROSS-PLATFORM TAP RELIABILITY (iOS / iPadOS / Android)
+// Some iOS Safari builds drop inline onclick events when
+// triggered through certain stacking contexts. This adds a
+// touchend fallback that re-runs the onclick handler if the
+// native click never fires within ~350ms.
+// ============================================================
+(function(){
+  if(!('ontouchstart' in window))return; // touch devices only
+  let tapInfo=null;
+  document.addEventListener('touchstart',function(e){
+    const t=e.target.closest('[onclick]');
+    if(!t)return;
+    const touch=e.touches[0];
+    tapInfo={el:t,x:touch.clientX,y:touch.clientY,time:Date.now(),fired:false};
+  },{passive:true});
+  document.addEventListener('click',function(){
+    if(tapInfo)tapInfo.fired=true;
+  },true);
+  document.addEventListener('touchend',function(e){
+    if(!tapInfo)return;
+    const t=e.changedTouches[0];
+    const dx=Math.abs(t.clientX-tapInfo.x),dy=Math.abs(t.clientY-tapInfo.y);
+    const dt=Date.now()-tapInfo.time;
+    const info=tapInfo;tapInfo=null;
+    // Only treat as tap if finger barely moved & lifted within 500ms
+    if(dx>10||dy>10||dt>500)return;
+    setTimeout(function(){
+      if(info.fired)return; // native click did the work
+      try{
+        // Run the inline handler manually as a last resort
+        const code=info.el.getAttribute('onclick');
+        if(code){(new Function('event',code)).call(info.el,e);}
+      }catch(err){console.warn('Tap fallback failed:',err);}
+    },350);
+  },{passive:true});
+})();
+
+// Re-flow on viewport resize (iOS rotation / URL bar show-hide)
+window.addEventListener('resize',function(){
+  if(window.innerWidth>768){
+    const sb=document.getElementById('sidebar');
+    if(sb)sb.classList.remove('open');
+  }
+});
 </script>
 
 <div id="zoom-modal" onclick="if(event.target===this)closeZoom()">
