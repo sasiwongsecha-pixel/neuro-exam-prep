@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movement Disorders — Deep Dive | Dark Mode</title>
+<style>
+:root {
+  --bg:#0d1117; --surface:#161b22; --surface2:#21262d; --surface3:#2d333b;
+  --border:#30363d; --border2:#444c56;
+  --text:#c9d1d9; --muted:#8b949e; --dim:#6e7681;
+  --blue:#58a6ff; --green:#3fb950; --orange:#e3b341; --red:#f85149;
+  --purple:#d2a8ff; --teal:#79c0ff; --pink:#f778ba;
+  --excit:#f85149; --inhib:#58a6ff; --dopa:#d2a8ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+::selection{background:rgba(88,166,255,.3);}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#0d1117,#161b22);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:999;}
+.h-title{font-size:1.05rem;font-weight:700;color:var(--text);}
+.h-sub{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.h-badge{background:linear-gradient(135deg,#21262d,#2d333b);color:var(--orange);padding:5px 14px;border-radius:20px;font-size:.72rem;font-weight:700;border:1px solid var(--orange);}
+
+/* TABS */
+.tabbar{display:flex;gap:2px;background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;overflow-x:auto;}
+.tab{padding:10px 16px;color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:600;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+.page{display:none;padding:20px;max-width:1280px;margin:0 auto;}
+.page.active{display:block;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;}
+.card-title{font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:800px){.grid2,.grid3{grid-template-columns:1fr;}}
+h3{font-size:.88rem;font-weight:700;color:var(--teal);margin:12px 0 6px;}
+h4{font-size:.82rem;font-weight:700;color:var(--purple);margin:8px 0 4px;}
+p,li{font-size:.84rem;line-height:1.6;color:var(--text);}
+ul{padding-left:16px;}
+li{margin:3px 0;}
+strong{color:var(--orange);}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700;}
+.b-red{background:rgba(248,81,73,.2);color:var(--red);border:1px solid rgba(248,81,73,.3);}
+.b-blue{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3);}
+.b-green{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3);}
+.b-gold{background:rgba(227,179,65,.15);color:var(--orange);border:1px solid rgba(227,179,65,.3);}
+.b-purple{background:rgba(210,168,255,.15);color:var(--purple);border:1px solid rgba(210,168,255,.3);}
+
+/* INFO BOXES */
+.pearl{background:rgba(227,179,65,.08);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-size:.83rem;}
+.alert{background:rgba(248,81,73,.08);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-size:.83rem;}
+.info{background:rgba(88,166,255,.08);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-size:.83rem;}
+.success{background:rgba(63,185,80,.08);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-size:.83rem;}
+
+/* ⭐ EXAM POINT BOX */
+.exam-box{background:linear-gradient(135deg,rgba(227,179,65,.06),rgba(227,179,65,.12));border:1px solid rgba(227,179,65,.35);border-left:4px solid var(--orange);border-radius:0 10px 10px 0;padding:14px 16px;margin:14px 0;}
+.exam-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--orange);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.exam-box ul{padding-left:14px;}
+.exam-box li{font-size:.82rem;margin:5px 0;color:var(--text);}
+.exam-box li::marker{color:var(--orange);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{background:var(--surface2);color:var(--blue);padding:8px 11px;text-align:left;font-weight:700;border-bottom:1px solid var(--border2);}
+td{padding:7px 11px;border-bottom:1px solid var(--border);color:var(--text);}
+tr:hover td{background:rgba(88,166,255,.05);}
+
+/* ANIMATION STAGE */
+.anim-stage{background:#070d14;border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;}
+.anim-label{color:var(--muted);font-size:.75rem;margin-top:10px;text-align:center;min-height:36px;line-height:1.5;}
+.anim-controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.anim-btn{padding:7px 16px;border:none;border-radius:7px;cursor:pointer;font-size:.78rem;font-weight:700;transition:all .15s;}
+.anim-btn-primary{background:var(--orange);color:#0d1117;}
+.anim-btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);}
+.anim-btn:hover{opacity:.85;transform:translateY(-1px);}
+
+/* ATAXIA CARDS */
+.ataxia-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0;}
+.ax-card{border-radius:10px;padding:14px;border:1px solid var(--border);background:var(--surface2);}
+.ax-card.cerebellar{border-top:3px solid #58a6ff;} .ax-card.sensory{border-top:3px solid #e3b341;}
+.ax-card.vestibular{border-top:3px solid #3fb950;} .ax-card.frontal{border-top:3px solid #d2a8ff;}
+.ax-title{font-weight:700;font-size:.88rem;margin-bottom:8px;}
+.ax-feat{font-size:.78rem;line-height:1.55;color:var(--text);}
+@media(max-width:700px){.ataxia-cards{grid-template-columns:1fr 1fr;}}
+
+/* ATYPICAL PARKINSONISM */
+.atyp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+.atyp-card{border-radius:12px;padding:14px;border:1px solid var(--border);background:var(--surface2);}
+.atyp-card.psp{border-top:4px solid var(--red);}
+.atyp-card.msa{border-top:4px solid var(--blue);}
+.atyp-card.cbd{border-top:4px solid var(--orange);}
+.atyp-card.dlb{border-top:4px solid var(--purple);}
+.atyp-title{font-weight:800;font-size:.92rem;margin-bottom:2px;}
+.atyp-sub{font-size:.72rem;color:var(--muted);margin-bottom:8px;}
+.atyp-feat{font-size:.77rem;line-height:1.55;color:var(--text);}
+@media(max-width:700px){.atyp-grid{grid-template-columns:1fr 1fr;}}
+
+/* TREMOR GRID */
+.tremor-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.tremor-card{background:var(--surface2);border-radius:10px;padding:14px;border-left:3px solid;}
+@media(max-width:700px){.tremor-grid{grid-template-columns:1fr;}}
+
+/* BRAAK STAGES */
+.braak-bar{display:flex;border-radius:10px;overflow:hidden;margin:8px 0;}
+.braak-seg{flex:1;padding:14px 10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);}
+
+/* COPPER PATH */
+.copper-flow{stroke-dasharray:8 4;animation:flow-copper 2s linear infinite;}
+@keyframes flow-copper{from{stroke-dashoffset:200}to{stroke-dashoffset:0}}
+
+/* NODE TEXT helpers */
+.node-label{font-size:10px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:middle;}
+.node-sub{font-size:8.5px;fill:rgba(255,255,255,.65);text-anchor:middle;dominant-baseline:middle;}
+
+/* PULSE animations */
+@keyframes pulse-e{0%,100%{stroke-opacity:.35}50%{stroke-opacity:1}}
+@keyframes pulse-i{0%,100%{stroke-opacity:.35}50%{stroke-opacity:1}}
+@keyframes pulse-d{0%,100%{stroke-opacity:.25;stroke-dashoffset:0}50%{stroke-opacity:.9}}
+.pe{animation:pulse-e 1.5s ease-in-out infinite;}
+.pi{animation:pulse-i 1.5s ease-in-out infinite;}
+.pd{animation:pulse-d 1.5s ease-in-out infinite;}
+
+.page-title{font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:4px;}
+.page-sub{font-size:.83rem;color:var(--muted);margin-bottom:16px;}
+
+/* SVG arrowhead markers - referenced in SVG defs */
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="h-title">🏃 Movement Disorders — Deep Dive</div>
+    <div class="h-sub">Pathophysiology · Circuits · Animations · Exam Points · Siriraj IM R3</div>
+  </div>
+  <div class="h-badge">⭐ Dark Mode</div>
+</header>
+
+<div class="tabbar">
+  <div class="tab active" onclick="showPage('pathophys',this)">⚡ Pathophysiology</div>
+  <div class="tab" onclick="showPage('pd',this)">🧍 Parkinson's</div>
+  <div class="tab" onclick="showPage('atypical',this)">🔴 Atypical PD</div>
+  <div class="tab" onclick="showPage('ataxia',this)">🎯 Ataxia</div>
+  <div class="tab" onclick="showPage('hyperkinetic',this)">💫 Hyperkinetic</div>
+  <div class="tab" onclick="showPage('wilsons',this)">🟤 Wilson's</div>
+  <div class="tab" onclick="showPage('treatment',this)">💊 Treatment</div>
+</div>
+
+<!-- ======================================================
+     PAGE 1: PATHOPHYSIOLOGY
+====================================================== -->
+<div class="page active" id="page-pathophys">
+<div class="page-title">⚡ Circuit-Level Pathophysiology</div>
+<div class="page-sub">How basal ganglia and cerebellar circuits break down in movement disorders</div>
+
+<div class="card">
+  <div class="card-title">🧠 Basal Ganglia Motor Circuit — Direct vs Indirect Pathway</div>
+  <div class="grid2">
+    <div>
+      <div class="anim-stage">
+        <div style="color:var(--muted);font-size:.78rem;font-weight:700;margin-bottom:8px;">Basal Ganglia Circuit Simulator</div>
+        <svg viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <marker id="ae" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#f85149"/></marker>
+            <marker id="ai" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#58a6ff"/></marker>
+            <marker id="ad" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#d2a8ff"/></marker>
+            <radialGradient id="gCx"><stop offset="0%" stop-color="#3b5ea6"/><stop offset="100%" stop-color="#1a2d5a"/></radialGradient>
+            <radialGradient id="gStr"><stop offset="0%" stop-color="#2d6a3f"/><stop offset="100%" stop-color="#143322"/></radialGradient>
+            <radialGradient id="gSnc"><stop offset="0%" stop-color="#5e3a9e"/><stop offset="100%" stop-color="#2c1860"/></radialGradient>
+            <radialGradient id="gGpi"><stop offset="0%" stop-color="#8b2a22"/><stop offset="100%" stop-color="#4a1510"/></radialGradient>
+            <radialGradient id="gGpe"><stop offset="0%" stop-color="#7a4a1a"/><stop offset="100%" stop-color="#3d240d"/></radialGradient>
+            <radialGradient id="gStn"><stop offset="0%" stop-color="#8a7a0a"/><stop offset="100%" stop-color="#444005"/></radialGradient>
+            <radialGradient id="gTh"><stop offset="0%" stop-color="#1a6655"/><stop offset="100%" stop-color="#0a3328"/></radialGradient>
+          </defs>
+          <!-- State label -->
+          <rect x="8" y="8" width="130" height="26" rx="6" fill="rgba(255,255,255,.06)"/>
+          <text id="bg-state-label" x="73" y="25" font-size="11" font-weight="700" fill="#e3b341" text-anchor="middle">NORMAL STATE</text>
+
+          <!-- Cortex -->
+          <ellipse cx="240" cy="50" rx="65" ry="25" fill="url(#gCx)"/>
+          <text x="240" y="47" class="node-label">Motor CORTEX</text>
+          <text x="240" y="59" class="node-sub">Plans movement</text>
+
+          <!-- Striatum -->
+          <ellipse cx="240" cy="150" rx="72" ry="28" fill="url(#gStr)"/>
+          <text x="240" y="146" class="node-label">STRIATUM</text>
+          <text x="240" y="158" class="node-sub">D1 (direct) | D2 (indirect)</text>
+
+          <!-- SNc -->
+          <ellipse cx="78" cy="200" rx="58" ry="24" fill="url(#gSnc)" id="n-snc"/>
+          <text x="78" y="196" class="node-label">SNc</text>
+          <text x="78" y="208" class="node-sub" id="snc-sub">Dopamine ↑ (Normal)</text>
+
+          <!-- GPe -->
+          <ellipse cx="375" cy="200" rx="52" ry="22" fill="url(#gGpe)"/>
+          <text x="375" y="197" class="node-label">GPe</text>
+          <text x="375" y="209" class="node-sub">Indirect pathway</text>
+
+          <!-- GPi -->
+          <ellipse cx="145" cy="302" rx="52" ry="22" fill="url(#gGpi)" id="n-gpi"/>
+          <text x="145" y="298" class="node-label">GPi / SNr</text>
+          <text x="145" y="310" class="node-sub" id="gpi-sub">Output (normal)</text>
+
+          <!-- STN -->
+          <ellipse cx="375" cy="302" rx="52" ry="22" fill="url(#gStn)" id="n-stn"/>
+          <text x="375" y="298" class="node-label">STN</text>
+          <text x="375" y="310" class="node-sub" id="stn-sub">Normal</text>
+
+          <!-- Thalamus -->
+          <ellipse cx="240" cy="385" rx="62" ry="24" fill="url(#gTh)"/>
+          <text x="240" y="381" class="node-label">THALAMUS</text>
+          <text x="240" y="393" class="node-sub">→ Motor output</text>
+
+          <!-- Cortex → Striatum -->
+          <path d="M240,75 L240,122" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="252" y="100" font-size="8" fill="#f85149">Glu+</text>
+
+          <!-- SNc → Striatum (dopamine) -->
+          <path id="a-dopa" d="M123,192 Q182,158 172,162" stroke="#d2a8ff" stroke-width="2" fill="none" stroke-dasharray="5 3" marker-end="url(#ad)" class="pd"/>
+          <text x="128" y="170" font-size="8" fill="#d2a8ff">DA</text>
+
+          <!-- DIRECT: Striatum → GPi -->
+          <path id="a-direct" d="M182,170 Q156,224 168,280" stroke="#58a6ff" stroke-width="2.5" fill="none" marker-end="url(#ai)" class="pi"/>
+          <text x="136" y="222" font-size="8" fill="#58a6ff" font-weight="700">DIRECT</text>
+          <text x="136" y="233" font-size="8" fill="#58a6ff">GABA−</text>
+
+          <!-- INDIRECT: Striatum → GPe -->
+          <path id="a-str-gpe" d="M308,160 Q345,172 330,182" stroke="#58a6ff" stroke-width="2" fill="none" marker-end="url(#ai)" class="pi"/>
+          <text x="328" y="168" font-size="8" fill="#58a6ff">GABA−</text>
+
+          <!-- GPe → STN -->
+          <path d="M375,222 L375,280" stroke="#58a6ff" stroke-width="2" fill="none" marker-end="url(#ai)" class="pi"/>
+          <text x="382" y="253" font-size="8" fill="#58a6ff">GABA−</text>
+
+          <!-- STN → GPi -->
+          <path id="a-stn-gpi" d="M326,304 L200,304" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="256" y="296" font-size="8" fill="#f85149">Glu+ (INDIRECT)</text>
+
+          <!-- GPi → Thalamus -->
+          <path d="M168,322 Q196,352 200,362" stroke="#58a6ff" stroke-width="2.5" fill="none" marker-end="url(#ai)" class="pi"/>
+          <text x="162" y="346" font-size="8" fill="#58a6ff">GABA−</text>
+
+          <!-- Thalamus → Cortex -->
+          <path d="M208,362 Q130,300 170,74" stroke="#f85149" stroke-width="1.8" fill="none" marker-end="url(#ae)" opacity=".7" id="a-return"/>
+          <text x="122" y="280" font-size="8" fill="#3fb950" font-weight="700">↑ MOVEMENT</text>
+
+          <!-- Legend -->
+          <rect x="330" y="358" width="140" height="56" rx="6" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.1)"/>
+          <line x1="338" y1="372" x2="356" y2="372" stroke="#f85149" stroke-width="2"/><polygon points="356,369 362,372 356,375" fill="#f85149"/>
+          <text x="366" y="376" font-size="8" fill="#f85149">Excitatory (Glu+)</text>
+          <line x1="338" y1="388" x2="356" y2="388" stroke="#58a6ff" stroke-width="2"/><polygon points="356,385 362,388 356,391" fill="#58a6ff"/>
+          <text x="366" y="392" font-size="8" fill="#58a6ff">Inhibitory (GABA−)</text>
+          <line x1="338" y1="404" x2="356" y2="404" stroke="#d2a8ff" stroke-width="2" stroke-dasharray="4 2"/><polygon points="356,401 362,404 356,407" fill="#d2a8ff"/>
+          <text x="366" y="408" font-size="8" fill="#d2a8ff">Dopamine</text>
+        </svg>
+        <div class="anim-controls">
+          <button class="anim-btn anim-btn-primary" onclick="setBGState('normal')">✅ Normal</button>
+          <button class="anim-btn anim-btn-secondary" onclick="setBGState('pd')">🔴 Parkinson's</button>
+          <button class="anim-btn anim-btn-secondary" onclick="setBGState('dbs')">⚡ DBS Effect</button>
+        </div>
+        <div class="anim-label" id="bg-desc">D1 direct → promotes movement | D2 indirect → suppresses movement | Dopamine balances both</div>
+      </div>
+    </div>
+    <div>
+      <h3>Normal Balance</h3>
+      <div class="info"><strong>Direct (D1-MSN):</strong> Striatum → GPi↓ → Thalamus released → Cortex activated ✅ movement</div>
+      <div class="info"><strong>Indirect (D2-MSN):</strong> Striatum → GPe↓ → STN↑ → GPi↑ → Thalamus suppressed ❌ movement</div>
+      <div class="pearl"><strong>Dopamine:</strong> Excites D1 (direct ↑) AND Inhibits D2 (indirect ↓) → net facilitates movement</div>
+
+      <h3>Parkinson's Disease — DA Loss</h3>
+      <div class="alert"><strong>50–60% SNc neurons lost at motor onset!</strong><br>
+        • D1 underactive → Direct pathway ↓ (less thalamic release)<br>
+        • D2 overactive → Indirect pathway ↑ (more thalamic suppression)<br>
+        → GPi hyperactive → Thalamus suppressed → <strong>Bradykinesia + Rigidity</strong>
+      </div>
+      <div class="pearl"><strong>DBS of STN:</strong> High-frequency stimulation "silences" STN → reduces GPi overactivity → restores thalamo-cortical drive → motor improvement</div>
+
+      <h3>Lewy Body Progression (Braak Stages)</h3>
+      <svg viewBox="0 0 400 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin-top:4px;">
+        <defs>
+          <radialGradient id="gN"><stop offset="0%" stop-color="#e3b341" stop-opacity=".8"/><stop offset="100%" stop-color="#7a5c00" stop-opacity=".4"/></radialGradient>
+          <radialGradient id="gS"><stop offset="0%" stop-color="#7a3030"/><stop offset="100%" stop-color="#3a1515"/></radialGradient>
+          <radialGradient id="gD"><stop offset="0%" stop-color="#2d333b"/><stop offset="100%" stop-color="#161b22"/></radialGradient>
+        </defs>
+        <!-- Healthy -->
+        <circle cx="74" cy="76" r="44" fill="url(#gN)"/>
+        <text x="74" y="70" text-anchor="middle" font-size="9" fill="#0d1117" font-weight="700">HEALTHY</text>
+        <text x="74" y="82" text-anchor="middle" font-size="8" fill="#0d1117">α-syn soluble</text>
+        <circle cx="58" cy="72" r="3" fill="rgba(255,255,255,.5)"/><circle cx="86" cy="66" r="3" fill="rgba(255,255,255,.5)"/><circle cx="72" cy="88" r="3" fill="rgba(255,255,255,.5)"/>
+        <text x="74" y="134" text-anchor="middle" font-size="9" fill="#e3b341">Braak 1–2</text>
+        <text x="74" y="145" text-anchor="middle" font-size="8" fill="var(--muted)">Anosmia, RBD</text>
+
+        <path d="M126,76 L160,76" stroke="#444" stroke-width="2" marker-end="url(#ae)"/>
+        <text x="143" y="68" text-anchor="middle" font-size="8" fill="var(--muted)">misfold</text>
+
+        <!-- Stressed -->
+        <circle cx="220" cy="76" r="44" fill="url(#gS)"/>
+        <text x="220" y="67" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">STRESSED</text>
+        <text x="220" y="79" text-anchor="middle" font-size="9" fill="#fff">NEURON</text>
+        <circle cx="220" cy="91" r="14" fill="none" stroke="#f85149" stroke-width="2.5"/>
+        <circle cx="220" cy="91" r="7" fill="#f85149" opacity=".7"/>
+        <text x="220" y="94" text-anchor="middle" font-size="7" fill="#fff">Lewy</text>
+        <text x="220" y="134" text-anchor="middle" font-size="9" fill="#e3b341">Braak 3–4</text>
+        <text x="220" y="145" text-anchor="middle" font-size="8" fill="var(--muted)">Motor symptoms</text>
+
+        <path d="M272,76 L306,76" stroke="#444" stroke-width="2" marker-end="url(#ae)"/>
+        <text x="289" y="68" text-anchor="middle" font-size="8" fill="var(--muted)">death</text>
+
+        <!-- Dead -->
+        <circle cx="348" cy="76" r="36" fill="url(#gD)" stroke="#444" stroke-width="1"/>
+        <text x="348" y="72" text-anchor="middle" font-size="9" fill="#f85149" font-weight="700">DEAD</text>
+        <text x="348" y="84" text-anchor="middle" font-size="8" fill="var(--muted)">DA ↓↓↓</text>
+        <line x1="334" y1="62" x2="362" y2="90" stroke="#f85149" stroke-width="2"/>
+        <line x1="362" y1="62" x2="334" y2="90" stroke="#f85149" stroke-width="2"/>
+        <text x="348" y="134" text-anchor="middle" font-size="9" fill="#e3b341">Braak 5–6</text>
+        <text x="348" y="145" text-anchor="middle" font-size="8" fill="var(--muted)">Dementia</text>
+      </svg>
+
+      <div class="exam-box" style="margin-top:12px">
+        <div class="exam-title">⭐ High-Yield Exam Points — Basal Ganglia</div>
+        <ul>
+          <li>How many % of SNc neurons lost at motor onset? → <strong>50–60%</strong></li>
+          <li>D1 receptor → <strong>direct</strong> pathway (excites, promotes movement)</li>
+          <li>D2 receptor → <strong>indirect</strong> pathway (inhibits when activated, suppresses indirect)</li>
+          <li>GPi/SNr = output nucleus; tonically <strong>inhibits</strong> thalamus (GABA)</li>
+          <li>DBS target for PD motor fluctuations = <strong>STN or GPi</strong></li>
+          <li>Braak staging: Prodromal (1–2) → Motor (3–4) → Cognitive (5–6)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CEREBELLAR CIRCUIT -->
+<div class="card">
+  <div class="card-title">🎯 Cerebellar Circuit — How Ataxia Develops</div>
+  <div class="grid2">
+    <div>
+      <div class="anim-stage">
+        <div style="color:var(--muted);font-size:.78rem;font-weight:700;margin-bottom:8px;">Cerebellar Cortex → DCN → Thalamo-Cortical Loop</div>
+        <svg viewBox="0 0 460 330" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <radialGradient id="gCx2"><stop offset="0%" stop-color="#3b5ea6"/><stop offset="100%" stop-color="#1a2d5a"/></radialGradient>
+            <radialGradient id="gPC"><stop offset="0%" stop-color="#5e3a9e"/><stop offset="100%" stop-color="#2c1860"/></radialGradient>
+            <radialGradient id="gDCN"><stop offset="0%" stop-color="#8b2a5a"/><stop offset="100%" stop-color="#4a1530"/></radialGradient>
+            <radialGradient id="gIO"><stop offset="0%" stop-color="#7a5a1a"/><stop offset="100%" stop-color="#3d2d0d"/></radialGradient>
+            <radialGradient id="gTh2"><stop offset="0%" stop-color="#1a6655"/><stop offset="100%" stop-color="#0a3328"/></radialGradient>
+            <radialGradient id="gGC"><stop offset="0%" stop-color="#1a5a2a"/><stop offset="100%" stop-color="#0a2d15"/></radialGradient>
+          </defs>
+          <!-- Motor Cortex -->
+          <ellipse cx="230" cy="30" rx="65" ry="22" fill="url(#gCx2)"/>
+          <text x="230" y="27" class="node-label">Motor Cortex</text>
+          <text x="230" y="38" class="node-sub">→ plans movement</text>
+          <!-- Granule cells -->
+          <ellipse cx="95" cy="120" rx="52" ry="20" fill="url(#gGC)"/>
+          <text x="95" y="117" class="node-label">Granule Cells</text>
+          <text x="95" y="128" class="node-sub">Mossy fibers</text>
+          <!-- Purkinje cells -->
+          <ellipse cx="230" cy="158" rx="65" ry="26" fill="url(#gPC)" id="n-purkinje"/>
+          <text x="230" y="154" class="node-label" style="font-size:11px">Purkinje Cells</text>
+          <text x="230" y="166" class="node-sub">Sole cortex output (GABA−)</text>
+          <!-- Inferior Olive -->
+          <ellipse cx="95" cy="230" rx="52" ry="20" fill="url(#gIO)"/>
+          <text x="95" y="227" class="node-label">Inferior Olive</text>
+          <text x="95" y="238" class="node-sub">Error signal</text>
+          <!-- DCN / Dentate -->
+          <ellipse cx="230" cy="255" rx="65" ry="23" fill="url(#gDCN)"/>
+          <text x="230" y="251" class="node-label">Deep Cerebellar Nuclei</text>
+          <text x="230" y="263" class="node-sub">(Dentate nucleus)</text>
+          <!-- Thalamus -->
+          <ellipse cx="370" cy="158" rx="58" ry="23" fill="url(#gTh2)"/>
+          <text x="370" y="154" class="node-label">Thalamus VL</text>
+          <text x="370" y="165" class="node-sub">→ Motor cortex</text>
+
+          <!-- Arrows -->
+          <!-- Cortex→Granule -->
+          <path d="M176,44 Q125,74 136,102" stroke="#f85149" stroke-width="1.5" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="126" y="74" font-size="8" fill="#f85149">Mossy</text>
+          <!-- Granule→Purkinje (parallel fibers) -->
+          <path d="M142,122 Q182,138 172,142" stroke="#f85149" stroke-width="1.5" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="152" y="128" font-size="8" fill="#f85149">Parallel+</text>
+          <!-- IO→Purkinje (climbing fibers) -->
+          <path d="M126,220 Q170,195 172,180" stroke="#e3b341" stroke-width="2" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="122" y="200" font-size="8" fill="#e3b341">Climbing</text>
+          <text x="122" y="210" font-size="8" fill="#e3b341">(error Δ)</text>
+          <!-- Purkinje→DCN -->
+          <path d="M230,184 L230,232" stroke="#58a6ff" stroke-width="2.5" fill="none" marker-end="url(#ai)" class="pi"/>
+          <text x="238" y="210" font-size="8" fill="#58a6ff">GABA−</text>
+          <!-- DCN→Thalamus -->
+          <path d="M290,252 Q350,252 352,180" stroke="#f85149" stroke-width="2" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="356" y="222" font-size="8" fill="#f85149">Glu+</text>
+          <!-- Thalamus→Cortex -->
+          <path d="M370,135 Q360,72 292,40" stroke="#3fb950" stroke-width="1.8" fill="none" marker-end="url(#ae)" class="pe"/>
+          <text x="375" y="96" font-size="8" fill="#3fb950">→ Cortex+</text>
+          <!-- Spinal cord→IO -->
+          <path d="M430,230 Q400,230 148,230" stroke="rgba(255,255,255,.2)" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#ae)"/>
+          <text x="380" y="222" font-size="8" fill="var(--muted)">Proprioception</text>
+
+          <!-- ATAXIA indicator (hidden by default) -->
+          <ellipse id="ataxia-overlay" cx="230" cy="158" rx="65" ry="26" fill="rgba(248,81,73,.3)" opacity="0"/>
+          <text id="ataxia-text" x="230" y="158" text-anchor="middle" font-size="11" fill="#f85149" font-weight="700" opacity="0">Purkinje LOST ⚠️</text>
+        </svg>
+        <div class="anim-controls">
+          <button class="anim-btn anim-btn-primary" onclick="animCerebNormal()">✅ Normal</button>
+          <button class="anim-btn anim-btn-secondary" onclick="animCerebAtaxia()">⚠️ Ataxia State</button>
+        </div>
+        <div class="anim-label" id="cereb-desc">Purkinje cells integrate parallel + climbing fiber input → rhythmically inhibit DCN → Thalamus pulsed → Smooth movement</div>
+      </div>
+    </div>
+    <div>
+      <h3>The Olivocerebellar Module</h3>
+      <p>The key reciprocal circuit: <strong>Cerebellar cortex ↔ Deep Cerebellar Nuclei (DCN) ↔ Inferior Olive</strong></p>
+      <div class="info" style="margin-top:8px">
+        <strong>Purkinje cells</strong> = sole output of cerebellar cortex (GABA−). They integrate:<br>
+        • <strong>Parallel fibers</strong> (granule cells) — sensorimotor context (thousands of synapses)<br>
+        • <strong>Climbing fibers</strong> (inferior olive) — error signal / motor learning (1 powerful synapse)
+      </div>
+      <div class="pearl"><strong>Ataxia mechanism:</strong> Purkinje cell loss → DCN disinhibited → uncontrolled/oscillating output → Dysmetria, oscillatory tremor, ataxic gait</div>
+
+      <h3>Spinocerebellar Tracts</h3>
+      <table>
+        <tr><th>Tract</th><th>Carries</th><th>Key Feature</th></tr>
+        <tr><td>Dorsal SC (Flechsig)</td><td>Unconscious proprioception (lower limb + trunk)</td><td>Ipsilateral; via Clarke's column</td></tr>
+        <tr><td>Ventral SC (Gowers)</td><td>Reflex + cutaneous lower limb</td><td>Bilateral crossing</td></tr>
+        <tr><td>Cuneocerebellar</td><td>Upper limb proprioception</td><td>Lateral cuneate nucleus</td></tr>
+      </table>
+
+      <h3>3 Cerebellar Syndromes</h3>
+      <div class="info"><strong>CMS</strong> — Cerebellar Motor Syndrome: Dysmetria, kinetic tremor, asynergia, adiadochokinesis, dyschronometria</div>
+      <div class="info"><strong>VCS</strong> — Vestibulocerebellar: Gait/truncal ataxia, nystagmus, vertigo (flocculonodular lesion)</div>
+      <div class="info"><strong>CCAS</strong> — Cognitive-Affective Syndrome: Executive dysfunction, spatial impairment, affective change (posterior fossa)</div>
+
+      <div class="exam-box">
+        <div class="exam-title">⭐ High-Yield Exam Points — Cerebellar</div>
+        <ul>
+          <li><strong>Purkinje cells are GABA-ergic (inhibitory)</strong> — their loss → DCN disinhibited → ataxia</li>
+          <li>Climbing fibers from <strong>inferior olive</strong> = error signal for motor learning (1 per Purkinje)</li>
+          <li>Dorsal spinocerebellar = <strong>ipsilateral</strong> unconscious proprioception</li>
+          <li>Cerebellar ataxia: <strong>Normal JPS</strong>, <strong>negative Romberg</strong> (distinguish from sensory ataxia)</li>
+          <li>Nystagmus in cerebellar: <strong>Gaze-evoked nystagmus</strong> — fast phase toward gaze direction</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ======================================================
+     PAGE 2: PARKINSON'S DISEASE
+====================================================== -->
+<div class="page" id="page-pd">
+<div class="page-title">🧍 Parkinson's Disease — In Depth</div>
+<div class="page-sub">Pathophysiology · MDS Criteria · Natural Course · Motor Complications</div>
+
+<div class="card">
+  <div class="card-title">📊 Levodopa Therapeutic Window — Motor Complications Simulator</div>
+  <div class="anim-stage">
+    <svg id="ldopa-svg" viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+      <!-- Axes -->
+      <line x1="55" y1="15" x2="55" y2="165" stroke="var(--border2)" stroke-width="1.5"/>
+      <line x1="55" y1="165" x2="685" y2="165" stroke="var(--border2)" stroke-width="1.5"/>
+      <text x="25" y="90" font-size="9" fill="var(--muted)" transform="rotate(-90,25,90)">LD Level</text>
+      <text x="370" y="183" font-size="9" fill="var(--muted)" text-anchor="middle">Time →</text>
+
+      <!-- Zones -->
+      <rect x="55" y="15" width="630" height="30" fill="rgba(248,81,73,.18)"/>
+      <text x="370" y="35" font-size="8" fill="#f85149" text-anchor="middle" font-weight="700">DYSKINESIA ZONE (peak-dose)</text>
+      <rect x="55" y="45" width="630" height="78" fill="rgba(63,185,80,.10)"/>
+      <text x="85" y="88" font-size="8" fill="#3fb950" font-weight="700">✅ THERAPEUTIC WINDOW</text>
+      <rect x="55" y="123" width="630" height="42" fill="rgba(88,166,255,.12)"/>
+      <text x="370" y="142" font-size="8" fill="#58a6ff" text-anchor="middle" font-weight="700">OFF STATE (sub-therapeutic)</text>
+
+      <!-- Threshold lines -->
+      <line x1="55" y1="45" x2="685" y2="45" stroke="#f85149" stroke-width="1" stroke-dasharray="4 3"/>
+      <line x1="55" y1="123" x2="685" y2="123" stroke="#58a6ff" stroke-width="1" stroke-dasharray="4 3"/>
+      <text x="58" y="43" font-size="7" fill="#f85149">Dyskinesia threshold</text>
+      <text x="58" y="121" font-size="7" fill="#58a6ff">ON threshold</text>
+
+      <!-- Early PD curves (3 doses, stay in window) -->
+      <g id="g-early">
+        <path d="M75,148 C92,148 105,20 118,60 C130,80 140,80 158,80 C176,80 186,122 200,148" stroke="#3fb950" stroke-width="2.5" fill="none"/>
+        <path d="M220,148 C237,148 250,20 263,60 C275,80 285,80 303,80 C321,80 331,122 345,148" stroke="#3fb950" stroke-width="2.5" fill="none"/>
+        <path d="M365,148 C382,148 395,20 408,60 C420,80 430,80 448,80 C466,80 476,122 490,148" stroke="#3fb950" stroke-width="2.5" fill="none"/>
+        <text x="370" y="13" text-anchor="middle" font-size="9" fill="#3fb950">Early PD — Wide Therapeutic Window</text>
+      </g>
+
+      <!-- Advanced PD (narrow, spikes into dyskinesia + troughs in OFF) -->
+      <g id="g-adv" opacity="0">
+        <path d="M75,148 C90,148 100,8 114,22 C124,30 135,30 150,30 C165,30 175,122 190,148" stroke="#f85149" stroke-width="2.5" fill="none"/>
+        <path d="M210,148 C225,148 235,8 249,22 C259,30 270,30 285,30 C300,30 310,122 325,148" stroke="#f85149" stroke-width="2.5" fill="none"/>
+        <path d="M345,148 C360,148 370,8 384,22 C394,30 405,30 420,30 C435,30 445,122 460,148" stroke="#f85149" stroke-width="2.5" fill="none"/>
+        <text x="370" y="13" text-anchor="middle" font-size="9" fill="#f85149">Advanced PD — Narrow Window (Wearing-off + Dyskinesia)</text>
+      </g>
+
+      <!-- Dose labels -->
+      <text x="76" y="163" font-size="8" fill="var(--orange)">Dose 1</text>
+      <text x="221" y="163" font-size="8" fill="var(--orange)">Dose 2</text>
+      <text x="366" y="163" font-size="8" fill="var(--orange)">Dose 3</text>
+    </svg>
+    <div class="anim-controls">
+      <button class="anim-btn anim-btn-primary" onclick="showLdopaState('early')">🟢 Early PD</button>
+      <button class="anim-btn anim-btn-secondary" onclick="showLdopaState('advanced')">🔴 Advanced PD (Wearing-off)</button>
+    </div>
+    <div class="anim-label" id="ldopa-desc">Early PD: Wide therapeutic window — doses stay within therapeutic zone. Patient has smooth ON time throughout the day.</div>
+  </div>
+
+  <div class="exam-box" style="margin-top:12px">
+    <div class="exam-title">⭐ Exam Points — Levodopa & Motor Complications</div>
+    <ul>
+      <li><strong>90%</strong> have motor fluctuations at 10 years | <strong>60%</strong> have dyskinesia at 10 years</li>
+      <li>Peak-dose dyskinesia → <strong>reduce</strong> each LD dose (may need to increase frequency)</li>
+      <li>Wearing-off → <strong>increase</strong> LD frequency, or add DA/MAO-Bi/COMT-i</li>
+      <li>Delayed-on → pre-meal LD, add prokinetics, crushed tablet</li>
+      <li>Abrupt LD withdrawal → <strong>Parkinsonism Hyperpyrexia Syndrome</strong> (like NMS)</li>
+      <li>LD absorbed via LNAA transporter at jejunum → <strong>high protein meals delay absorption</strong></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">🔬 MDS 2015 Diagnostic Criteria — PD</div>
+  <div class="grid2">
+    <div>
+      <h3>Diagnosis Flow</h3>
+      <div class="info"><strong>Step 1:</strong> Confirm parkinsonism → <strong>Bradykinesia is mandatory</strong> + rest tremor OR rigidity</div>
+      <div class="alert" style="margin-top:8px"><strong>Absolute Exclusions (any ONE = not PD):</strong><br>
+        Cerebellar abnormalities · Vertical gaze palsy (downgaze) · FTD dementia &lt;3yr · Lower-limb parkinsonism only &gt;3yr · Antidopaminergic drug exposure · No levodopa response · Cortical sensory loss/apraxia
+      </div>
+      <h3>Supportive Criteria (need ≥2)</h3>
+      <ul>
+        <li>Dramatic, durable levodopa response</li>
+        <li>Levodopa-induced dyskinesia present</li>
+        <li>Resting tremor on clinical examination</li>
+        <li>Olfactory loss (hyposmia)</li>
+        <li>MIBG cardiac sympathetic denervation</li>
+      </ul>
+      <div class="pearl" style="margin-top:8px"><strong>Sensitivity 94.5% / Specificity 88.5%</strong> — memorize these numbers!</div>
+    </div>
+    <div>
+      <h3>Red Flags (against PD)</h3>
+      <table>
+        <tr><th>Red Flag</th><th>Think Instead</th></tr>
+        <tr><td>Early falls (&lt;3yr of onset)</td><td>PSP</td></tr>
+        <tr><td>Wheelchair &lt;5yr of onset</td><td>Atypical PD</td></tr>
+        <tr><td>Poor/no levodopa response</td><td>PSP/MSA/CBD</td></tr>
+        <tr><td>Vertical gaze palsy</td><td>PSP</td></tr>
+        <tr><td>Severe early autonomic failure</td><td>MSA</td></tr>
+        <tr><td>Cerebellar signs</td><td>MSA-C</td></tr>
+        <tr><td>Alien limb / asymmetric apraxia</td><td>CBD</td></tr>
+        <tr><td>Rapid progression</td><td>Atypical PD</td></tr>
+      </table>
+      <div class="exam-box" style="margin-top:12px">
+        <div class="exam-title">⭐ Exam Points — PD Diagnosis</div>
+        <ul>
+          <li>MDS Criteria: Sens <strong>94.5%</strong>, Spec <strong>88.5%</strong></li>
+          <li>Bradykinesia = <strong>mandatory</strong> core feature</li>
+          <li>Pupil-sparing CN III palsy in DM → <strong>spares pupillomotor fibers (peripheral)</strong></li>
+          <li>PD vs DLB: Dementia onset &gt;1yr after motor = PDD; &lt;1yr or concurrent = DLB</li>
+          <li><strong>Olfactory loss</strong> is an early prodromal + supportive feature of PD</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">🕐 Braak Staging</div>
+  <div class="braak-bar">
+    <div class="braak-seg" style="background:rgba(63,185,80,.12);border-right:1px solid var(--border)">
+      <div style="color:var(--muted);font-size:.68rem;font-weight:700;text-transform:uppercase">Stage 1–2</div>
+      <div style="color:var(--green);font-size:.82rem;font-weight:700;margin:4px 0">Brainstem</div>
+      <div style="color:var(--text);font-size:.76rem">Dorsal vagal nucleus, olfactory bulb</div>
+      <div style="color:var(--muted);font-size:.72rem;margin-top:4px">Constipation · Anosmia · RBD</div>
+    </div>
+    <div class="braak-seg" style="background:rgba(227,179,65,.10)">
+      <div style="color:var(--muted);font-size:.68rem;font-weight:700;text-transform:uppercase">Stage 3–4</div>
+      <div style="color:var(--orange);font-size:.82rem;font-weight:700;margin:4px 0">Midbrain (SNc)</div>
+      <div style="color:var(--text);font-size:.76rem">Substantia nigra pars compacta</div>
+      <div style="color:var(--muted);font-size:.72rem;margin-top:4px">Motor symptoms — <strong>Diagnosis made here</strong></div>
+    </div>
+    <div class="braak-seg" style="background:rgba(248,81,73,.10)">
+      <div style="color:var(--muted);font-size:.68rem;font-weight:700;text-transform:uppercase">Stage 5–6</div>
+      <div style="color:var(--red);font-size:.82rem;font-weight:700;margin:4px 0">Neocortex</div>
+      <div style="color:var(--text);font-size:.76rem">Prefrontal + limbic cortex</div>
+      <div style="color:var(--muted);font-size:.72rem;margin-top:4px">Dementia · Psychosis · Advanced</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ======================================================
+     PAGE 3: ATYPICAL PARKINSONISM
+====================================================== -->
+<div class="page" id="page-atypical">
+<div class="page-title">🔴 Atypical Parkinsonism</div>
+<div class="page-sub">PSP · MSA · CBD · DLB — Pathology, Clinical Features & Differentiation</div>
+
+<div class="card">
+  <div class="card-title">🔬 Molecular Pathology</div>
+  <div class="grid2">
+    <div style="background:rgba(210,168,255,.08);border:1px solid rgba(210,168,255,.2);border-radius:10px;padding:14px;">
+      <h3 style="color:var(--purple)">🧬 Tauopathies (4R-tau)</h3>
+      <p><strong>PSP</strong> — tufted astrocytes, globose tangles in basal ganglia + brainstem. Tau accumulates around blood vessels.</p>
+      <p style="margin-top:6px"><strong>CBD</strong> — astrocytic plaques, ballooned neurons, asymmetric cortex + basal ganglia</p>
+      <div class="info" style="margin-top:8px">4R-tau isoforms aggregate selectively in neurons + glia. Misfolded tau cannot stabilize microtubules → neurodegeneration</div>
+    </div>
+    <div style="background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.2);border-radius:10px;padding:14px;">
+      <h3 style="color:var(--blue)">🧬 Synucleinopathies (α-syn)</h3>
+      <p><strong>MSA</strong> — <strong>Glial Cytoplasmic Inclusions (GCIs)</strong> in oligodendrocytes → white matter degeneration. Striatonigral + olivopontocerebellar systems.</p>
+      <p style="margin-top:6px"><strong>DLB</strong> — Lewy bodies in cortical neurons (same protein as PD but cortex-first)</p>
+      <div class="info" style="margin-top:8px">α-synuclein spreads prion-like through neurons. In MSA, oligodendrocyte involvement is unique (not seen in PD/DLB)</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">📋 Clinical Differentiation Cards</div>
+  <div class="atyp-grid">
+    <div class="atyp-card psp">
+      <div class="atyp-title" style="color:var(--red)">PSP</div>
+      <div class="atyp-sub">Progressive Supranuclear Palsy · 4R-Tau</div>
+      <div class="atyp-feat">
+        <strong>Core:</strong><br>
+        • <strong>Vertical gaze palsy</strong> (↓gaze first)<br>
+        • <strong>Early backward falls</strong> (&lt;3yr)<br>
+        • Symmetric rigid parkinsonism<br>
+        • Axial rigidity &gt; limb<br><br>
+        <strong>Face:</strong><br>
+        • <strong>Procerus sign</strong> (surprised/worried stare)<br>
+        • Reduced blink rate, "reptilian stare"<br>
+        • Hypometric vertical saccades<br><br>
+        <strong>Cognitive:</strong><br>
+        • Frontal-subcortical syndrome<br>
+        • Pseudobulbar affect<br><br>
+        <strong>MRI:</strong> "Hummingbird sign" (midbrain atrophy on sagittal T1); "Morning Glory sign" (coronal)<br><br>
+        <strong>LD response:</strong> Poor/none<br>
+        <strong>Survival:</strong> ~7 yr
+      </div>
+    </div>
+    <div class="atyp-card msa">
+      <div class="atyp-title" style="color:var(--blue)">MSA</div>
+      <div class="atyp-sub">Multiple System Atrophy · α-Synuclein (GCIs)</div>
+      <div class="atyp-feat">
+        <strong>Two subtypes:</strong><br>
+        • <strong>MSA-P</strong>: Striatonigral (parkinsonism dominant)<br>
+        • <strong>MSA-C</strong>: Olivopontocerebellar (cerebellar dominant)<br><br>
+        <strong>Core:</strong><br>
+        • <strong>Prominent early autonomic failure</strong>:<br>
+          — Orthostatic hypotension<br>
+          — Urinary incontinence/retention<br>
+          — Erectile dysfunction<br>
+        • Parkinsonism + cerebellar signs<br>
+        • Inspiratory stridor (sleep)<br>
+        • Anterocollis (forward neck lean)<br><br>
+        <strong>MRI:</strong><br>
+        • <strong>"Hot cross bun" sign</strong> (T2, pons)<br>
+        • Putaminal hypointensity + lateral rim<br>
+        • Middle cerebellar peduncle T2↑<br><br>
+        <strong>LD response:</strong> Partial, then wanes<br>
+        <strong>Survival:</strong> ~6–9 yr
+      </div>
+    </div>
+    <div class="atyp-card cbd">
+      <div class="atyp-title" style="color:var(--orange)">CBD / CBS</div>
+      <div class="atyp-sub">Corticobasal Degeneration · 4R-Tau</div>
+      <div class="atyp-feat">
+        <strong>Note:</strong> CBD = pathology; CBS = clinical syndrome (CBS can arise from PSP, AD, FTLD)<br><br>
+        <strong>CBS features:</strong><br>
+        • <strong>Asymmetric</strong> limb rigidity/apraxia<br>
+        • <strong>Alien limb phenomenon</strong><br>
+        • Limb dystonia / myoclonus<br>
+        • Cortical sensory loss (astereognosis)<br>
+        • Apraxia of speech<br>
+        • Eye movement apraxia<br><br>
+        <strong>MRI:</strong> Asymmetric parietal cortical atrophy; tau PET asymmetric<br><br>
+        <strong>DaTscan:</strong> Asymmetric DAT deficit<br><br>
+        <strong>LD response:</strong> Poor<br>
+        <strong>Survival:</strong> ~6–8 yr
+      </div>
+    </div>
+    <div class="atyp-card dlb">
+      <div class="atyp-title" style="color:var(--purple)">DLB</div>
+      <div class="atyp-sub">Dementia with Lewy Bodies · α-Synuclein</div>
+      <div class="atyp-feat">
+        <strong>Core features (≥2 = probable DLB):</strong><br>
+        • <strong>Fluctuating cognition</strong><br>
+        • <strong>Recurrent visual hallucinations</strong> (detailed)<br>
+        • <strong>REM sleep behavior disorder</strong><br>
+        • <strong>Parkinsonism</strong> (concurrent or after dementia)<br><br>
+        <strong>Supportive:</strong><br>
+        • <strong>⚠️ Severe neuroleptic sensitivity</strong><br>
+        • Repeated falls/syncope<br>
+        • Depression/anxiety<br>
+        • Autonomic dysfunction<br><br>
+        <strong>Biomarkers:</strong><br>
+        • DaTscan: ↓ striatal uptake<br>
+        • MIBG: ↓ cardiac uptake<br>
+        • EEG: periodic sharp waves<br><br>
+        <strong>Key rule:</strong> Dementia within 1yr of parkinsonism = DLB (vs PDD = dementia &gt;1yr after motor onset)
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-box" style="margin-top:14px">
+    <div class="exam-title">⭐ Exam Points — Atypical Parkinsonism</div>
+    <ul>
+      <li>PSP: <strong>Vertical gaze palsy (downgaze first)</strong> + backward falls + "hummingbird sign" MRI</li>
+      <li>MSA: <strong>"Hot cross bun" sign</strong> on T2 MRI pons + severe early autonomic failure</li>
+      <li>CBD: <strong>Alien limb</strong> + asymmetric apraxia + cortical sensory loss</li>
+      <li>DLB: <strong>⚠️ Avoid typical antipsychotics</strong> (severe neuroleptic sensitivity → can be fatal)</li>
+      <li>Tauopathies = PSP + CBD; Synucleinopathies = PD + MSA + DLB</li>
+      <li>MSA GCIs are in <strong>oligodendrocytes</strong> (unique — not found in other synucleinopathies)</li>
+      <li>All atypical PD: more rapid progression than idiopathic PD</li>
+    </ul>
+  </div>
+
+  <h3 style="margin-top:14px">Quick Comparison Table</h3>
+  <div style="overflow-x:auto">
+  <table>
+    <tr><th>Feature</th><th>PD</th><th style="color:var(--red)">PSP</th><th style="color:var(--blue)">MSA</th><th style="color:var(--orange)">CBD</th><th style="color:var(--purple)">DLB</th></tr>
+    <tr><td><strong>Pathology</strong></td><td>α-syn LB (SNc)</td><td>4R-tau</td><td>α-syn GCI (oligo)</td><td>4R-tau</td><td>α-syn LB (cortex)</td></tr>
+    <tr><td><strong>Symmetry</strong></td><td>Asymmetric onset</td><td>Symmetric</td><td>Variable</td><td>Asymmetric</td><td>Variable</td></tr>
+    <tr><td><strong>Falls</strong></td><td>Late (&gt;3yr)</td><td>Early, backward</td><td>Early</td><td>Early</td><td>Early</td></tr>
+    <tr><td><strong>Eye movement</strong></td><td>Normal early</td><td>Vertical gaze palsy ↓</td><td>Nystagmus (MSA-C)</td><td>Gaze apraxia</td><td>Subtle</td></tr>
+    <tr><td><strong>Autonomic</strong></td><td>Late/mild</td><td>Mild</td><td>Severe, early</td><td>Mild</td><td>Moderate</td></tr>
+    <tr><td><strong>Dementia</strong></td><td>Late (PDD)</td><td>Frontal (early)</td><td>Late/absent</td><td>Variable</td><td>Core feature</td></tr>
+    <tr><td><strong>Hallucinations</strong></td><td>Drug-related</td><td>Rare</td><td>Rare</td><td>Rare</td><td>Core (visual, formed)</td></tr>
+    <tr><td><strong>Levodopa</strong></td><td>Good, sustained</td><td>Poor</td><td>Partial, transient</td><td>Poor</td><td>Modest</td></tr>
+    <tr><td><strong>MRI sign</strong></td><td>Normal early</td><td>Hummingbird</td><td>Hot cross bun</td><td>Asymm. parietal atrophy</td><td>Posterior &gt; hippocampal</td></tr>
+  </table>
+  </div>
+</div>
+</div>
+
+<!-- ======================================================
+     PAGE 4: ATAXIA
+====================================================== -->
+<div class="page" id="page-ataxia">
+<div class="page-title">🎯 Ataxia — Deep Dive</div>
+<div class="page-sub">Types · Etiology by Onset · SCA Genetics · Paraneoplastic Antibodies</div>
+
+<div class="card">
+  <div class="card-title">🔍 Four Types of Ataxia — Comparison</div>
+  <div class="ataxia-cards">
+    <div class="ax-card cerebellar">
+      <div class="ax-title" style="color:var(--blue)">🔵 Cerebellar</div>
+      <div class="ax-feat">
+        <strong>Mechanism:</strong> Purkinje cell loss → DCN disinhibited → oscillating uncontrolled output<br><br>
+        <strong>✓ Dysmetria</strong> (FNF, heel-shin)<br>
+        <strong>✓ Dysdiadochokinesia</strong><br>
+        <strong>✓ Scanning speech</strong><br>
+        <strong>✓ Gaze-evoked nystagmus</strong><br>
+        <strong>✓ Wide-based gait + impaired tandem</strong><br>
+        <strong>✗ Normal JPS</strong><br>
+        <strong>✗ Romberg negative</strong><br><br>
+        <span style="color:var(--muted)">Causes: SCA, MSA-C, paraneoplastic, alcohol, Wernicke's, Wilson's</span>
+      </div>
+    </div>
+    <div class="ax-card sensory">
+      <div class="ax-title" style="color:var(--orange)">🟠 Sensory</div>
+      <div class="ax-feat">
+        <strong>Mechanism:</strong> Large-fiber neuropathy or dorsal column disease → loss of proprioceptive feedback<br><br>
+        <strong>✓ Steppage / stomping gait</strong><br>
+        <strong>✓ Romberg POSITIVE</strong><br>
+        <strong>✓ Impaired JPS + vibration</strong><br>
+        <strong>✓ Worsens in dark</strong><br>
+        <strong>✗ No nystagmus</strong><br>
+        <strong>✗ No scanning speech</strong><br>
+        <strong>✗ Normal cerebellar tests</strong><br><br>
+        <span style="color:var(--muted)">Causes: Vit B12/E deficiency, CIDP, tabes dorsalis, Friedreich's, SCD</span>
+      </div>
+    </div>
+    <div class="ax-card vestibular">
+      <div class="ax-title" style="color:var(--green)">🟢 Vestibular</div>
+      <div class="ax-feat">
+        <strong>Mechanism:</strong> Loss of vestibular spatial orientation input → cannot maintain posture<br><br>
+        <strong>✓ Gait instability</strong><br>
+        <strong>✓ Vertigo / dizziness</strong><br>
+        <strong>✓ Nystagmus (variable)</strong><br>
+        <strong>✓ Veers/falls to one side</strong><br>
+        <strong>✗ No limb dysmetria</strong><br>
+        <strong>✗ No speech involvement</strong><br>
+        <strong>✗ Normal JPS</strong><br><br>
+        <span style="color:var(--muted)">Causes: Vestibular neuritis, BPPV, Menière's, acoustic neuroma, brainstem stroke</span>
+      </div>
+    </div>
+    <div class="ax-card frontal">
+      <div class="ax-title" style="color:var(--purple)">🟣 Frontal</div>
+      <div class="ax-feat">
+        <strong>Mechanism:</strong> Frontal-subcortical circuit disruption → impaired gait initiation/apraxia<br><br>
+        <strong>✓ "Glue feet" / freezing of gait</strong><br>
+        <strong>✓ Short shuffling steps</strong><br>
+        <strong>✓ Postural instability</strong><br>
+        <strong>✓ Executive dysfunction</strong><br>
+        <strong>✗ No scanning speech</strong><br>
+        <strong>✗ No nystagmus</strong><br>
+        <strong>✗ Normal limb coordination</strong><br><br>
+        <span style="color:var(--muted)">Causes: NPH (Normal Pressure Hydrocephalus), lacunar disease, frontal tumor</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-box">
+    <div class="exam-title">⭐ Exam Points — Ataxia Types</div>
+    <ul>
+      <li>Only <strong>sensory ataxia</strong> has positive Romberg | Only <strong>cerebellar ataxia</strong> has nystagmus + scanning speech + dysmetria</li>
+      <li><strong>Wernicke's</strong> complete triad (ataxia + ophthalmoplegia + confusion) = only <strong>~20%</strong> — give thiamine empirically!</li>
+      <li>Metronidazole → T2 hyperintensity at <strong>dentate nuclei</strong> (reversible)</li>
+      <li>Frontal ataxia (NPH triad): <strong>Wet, Wacky, Wobbly</strong> — urinary incontinence + dementia + gait apraxia</li>
+      <li>Cerebellar ataxia without family history, onset &gt;40yr, no clear cause → ~<strong>15% MSA-C</strong></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">🧬 Spinocerebellar Ataxia (SCA) Genetics</div>
+  <div class="grid2">
+    <div>
+      <h3>PolyQ Mechanism</h3>
+      <div class="info"><strong>CAG repeat expansion</strong> in coding region → mutant protein with expanded polyglutamine → toxic gain-of-function → protein aggregation + UPS disruption + transcriptional dysregulation + Ca²⁺ signaling → <strong>Purkinje cell death</strong></div>
+      <div class="pearl" style="margin-top:8px"><strong>Genetic Anticipation:</strong> CAG repeats expand in successive generations (especially paternal) → earlier onset + more severe disease in offspring</div>
+      <table style="margin-top:10px">
+        <tr><th>SCA</th><th>Gene</th><th>Normal / Path. CAG</th><th>Key Feature</th></tr>
+        <tr><td>SCA1</td><td>ATXN1</td><td>&lt;39 / ≥39</td><td>Pyramidal signs</td></tr>
+        <tr><td>SCA2</td><td>ATXN2</td><td>&lt;33 / ≥33</td><td><strong>Slow saccades</strong></td></tr>
+        <tr><td><strong>SCA3</strong></td><td>ATXN3</td><td>&lt;45 / ≥52</td><td>Most common worldwide; bulging eyes</td></tr>
+        <tr><td>SCA6</td><td>CACNA1A</td><td>&lt;19 / ≥20</td><td>Pure cerebellar, late-onset, mild</td></tr>
+        <tr><td>SCA7</td><td>ATXN7</td><td>&lt;36 / ≥37</td><td><strong>Retinal degeneration</strong></td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Friedreich's Ataxia</h3>
+      <div class="info"><strong>Gene:</strong> FXN (frataxin) — GAA trinucleotide repeat expansion (intronic, autosomal recessive)<br>
+        Frataxin ↓ → mitochondrial iron accumulation → oxidative stress → Purkinje + DRG neuron + cardiomyocyte death<br><br>
+        <strong>Features:</strong> Onset &lt;25yr · Sensorimotor ataxia · Areflexia · <strong>Hypertrophic cardiomyopathy</strong> · Diabetes · Scoliosis · Pes cavus<br><br>
+        <strong>MRI:</strong> Spinal cord atrophy (cervical)<br>
+        <strong>Treatment:</strong> Omaveloxolone (Nrf2 activator, 2023) · Cardiac monitoring essential</div>
+
+      <h3>Paraneoplastic Cerebellar Degeneration</h3>
+      <table style="margin-top:6px">
+        <tr><th>Antibody</th><th>Tumor</th><th>Rx Priority</th></tr>
+        <tr><td>Anti-Yo (PCA-1)</td><td>Breast, Ovary</td><td>Tumor Rx first; immunotherapy less effective</td></tr>
+        <tr><td>Anti-Hu (ANNA-1)</td><td>SCLC</td><td>Tumor + steroids/IVIG</td></tr>
+        <tr><td>Anti-Tr (DNER)</td><td>Hodgkin Lymphoma</td><td>Responds better to immunotherapy</td></tr>
+        <tr><td>Anti-VGCC</td><td>SCLC (also LEMS)</td><td>IVIG/PLEX</td></tr>
+        <tr><td>Anti-mGluR1</td><td>Hodgkin Lymphoma</td><td>Good immunotherapy response</td></tr>
+      </table>
+      <div class="exam-box" style="margin-top:10px">
+        <div class="exam-title">⭐ Exam Points — SCA & Paraneoplastic</div>
+        <ul>
+          <li>SCA3 = <strong>most common SCA worldwide</strong> (Machado-Joseph disease)</li>
+          <li>Friedreich's: <strong>GAA repeat</strong> (not CAG); autosomal <strong>recessive</strong>; cardiomyopathy → #1 cause of death</li>
+          <li>Onconeuronal Ab (intracellular, e.g. anti-Yo) → <strong>poor</strong> immunotherapy response</li>
+          <li>Cell surface Ab (e.g. anti-VGCC, anti-mGluR1) → <strong>better</strong> immunotherapy response</li>
+          <li>Anti-Yo = Breast/Ovary | Anti-Hu = SCLC (lung) | Anti-Tr = Hodgkin</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ======================================================
+     PAGE 5: HYPERKINETIC
+====================================================== -->
+<div class="page" id="page-hyperkinetic">
+<div class="page-title">💫 Hyperkinetic Movement Disorders</div>
+<div class="page-sub">Tremor · Chorea · Myoclonus · Dystonia — Phenomenology & Pathophysiology</div>
+
+<div class="card">
+  <div class="card-title">🌀 Phenomenology Classification</div>
+  <div class="tremor-grid">
+    <div class="tremor-card" style="border-color:var(--purple)">
+      <h4 style="color:var(--purple)">🌀 Tremor</h4>
+      <p><strong>Definition:</strong> Rhythmic, sinusoidal oscillation</p>
+      <table style="margin-top:8px;font-size:.76rem">
+        <tr><th>Type</th><th>When</th><th>Hz</th><th>Cause</th></tr>
+        <tr><td>Rest</td><td>At rest</td><td>4–6</td><td>PD (pill-rolling)</td></tr>
+        <tr><td>Postural</td><td>Sustained posture</td><td>6–12</td><td>Essential tremor</td></tr>
+        <tr><td>Kinetic</td><td>During movement</td><td>5–10</td><td>Cerebellar, MS</td></tr>
+        <tr><td>Intention</td><td>Approaching target</td><td>3–5</td><td>Cerebellar (pure)</td></tr>
+        <tr><td>Task-specific</td><td>Specific task</td><td>Var</td><td>Writer's tremor</td></tr>
+      </table>
+      <div class="pearl" style="margin-top:8px"><strong>Essential Tremor:</strong> Bilateral postural/kinetic, arm > head > voice. Alcohol-responsive. Rx: propranolol, primidone, zonisamide.</div>
+    </div>
+    <div class="tremor-card" style="border-color:var(--red)">
+      <h4 style="color:var(--red)">💃 Chorea</h4>
+      <p><strong>Definition:</strong> Random, flowing, dance-like; non-rhythmic; unpredictable</p>
+      <div class="info" style="margin-top:8px"><strong>Pathophysiology:</strong> Indirect pathway ↓↓ (opposite of PD) → GPi underactive → Thalamus disinhibited → excess cortical excitation</div>
+      <p style="margin-top:8px"><strong>Key Causes:</strong></p>
+      <ul>
+        <li><strong>Huntington's disease</strong> — CAG in HTT; choreiform + dementia + psychiatric</li>
+        <li>Sydenham's chorea — post-streptococcal; OCP-related</li>
+        <li>SLE, antiphospholipid syndrome</li>
+        <li>Drug-induced (levodopa, antipsychotics)</li>
+        <li>Thyrotoxicosis, polycythemia vera</li>
+      </ul>
+      <div class="exam-box" style="margin-top:8px">
+        <div class="exam-title">⭐ Exam — Chorea</div>
+        <ul>
+          <li>Huntington's: <strong>CAG in HTT gene, chr 4</strong>; autosomal dominant; anticipation</li>
+          <li>Chorea = indirect pathway ↓ = <strong>opposite of PD</strong></li>
+          <li>Levodopa excess → <strong>peak-dose choreiform dyskinesia</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tremor-card" style="border-color:var(--orange)">
+      <h4 style="color:var(--orange)">⚡ Myoclonus & Dystonia</h4>
+      <p><strong>Myoclonus:</strong> Sudden, brief, shock-like jerk</p>
+      <ul style="margin-top:6px">
+        <li><strong>Cortical</strong> — focal seizure origin; EEG correlate</li>
+        <li><strong>Subcortical/brainstem</strong> — palatal myoclonus</li>
+        <li><strong>Spinal</strong> — propriospinal myoclonus</li>
+        <li><strong>Action (Lance-Adams)</strong> — post-hypoxic</li>
+        <li>Metabolic: uremia, hepatic encephalopathy</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Dystonia:</strong> Sustained/intermittent muscle contractions → abnormal posture</p>
+      <ul style="margin-top:6px">
+        <li><strong>Geste antagoniste</strong> (sensory trick) = pathognomonic clue</li>
+        <li>Cervical dystonia = most common focal dystonia</li>
+        <li>Treatment: <strong>Botulinum toxin</strong> (1st line focal)</li>
+        <li>Generalized: GPi-DBS; trihexyphenidyl</li>
+      </ul>
+      <div class="exam-box" style="margin-top:8px">
+        <div class="exam-title">⭐ Exam — Dystonia</div>
+        <ul>
+          <li><strong>Geste antagoniste</strong> = sensory trick that temporarily relieves dystonia → diagnostic clue</li>
+          <li>Botulinum toxin: cleaves <strong>SNAP-25</strong> (BoNT-A) → blocks ACh release → focal muscle relaxation, lasts 3–4 months</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ======================================================
+     PAGE 6: WILSON'S DISEASE
+====================================================== -->
+<div class="page" id="page-wilsons">
+<div class="page-title">🟤 Wilson's Disease — Copper Metabolism</div>
+<div class="page-sub">ATP7B mutation · Copper overload · Liver + Brain + Eye + Kidney</div>
+
+<div class="card">
+  <div class="card-title">⚗️ Copper Pathway — Normal vs Wilson's</div>
+  <div class="grid2">
+    <div>
+      <div class="anim-stage">
+        <div style="color:var(--muted);font-size:.78rem;font-weight:700;margin-bottom:8px;">Hepatic Copper Metabolism Simulator</div>
+        <svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <radialGradient id="gLiver"><stop offset="0%" stop-color="#c07800"/><stop offset="100%" stop-color="#5a3800"/></radialGradient>
+            <radialGradient id="gBrain2"><stop offset="0%" stop-color="#5e3a9e"/><stop offset="100%" stop-color="#2c1860"/></radialGradient>
+          </defs>
+          <!-- Intestine -->
+          <ellipse cx="58" cy="128" rx="44" ry="26" fill="#1a4a2a"/>
+          <text x="58" y="125" class="node-label">Intestine</text>
+          <text x="58" y="136" class="node-sub">Cu absorption</text>
+
+          <!-- Portal → Liver -->
+          <path d="M102,128 L172,128" stroke="#e3b341" stroke-width="2.5" fill="none" class="copper-flow" marker-end="url(#ae)"/>
+          <text x="137" y="120" font-size="8" fill="#e3b341">Cu²⁺ portal</text>
+
+          <!-- Liver -->
+          <ellipse cx="232" cy="128" rx="56" ry="32" fill="url(#gLiver)" id="liver-node"/>
+          <text x="232" y="122" class="node-label">LIVER</text>
+          <text x="232" y="133" class="node-sub">ATP7B transports Cu</text>
+          <text x="232" y="143" class="node-sub" id="liver-status">→ bile (normal)</text>
+
+          <!-- Cu overlay for Wilson's -->
+          <ellipse id="cu-overlay" cx="232" cy="128" rx="0" ry="0" fill="rgba(248,81,73,.4)" opacity="0"/>
+
+          <!-- Bile duct (normal excretion) -->
+          <path id="bile-path" d="M248,158 Q258,208 232,228" stroke="#3fb950" stroke-width="2.5" fill="none" class="copper-flow" marker-end="url(#ae)"/>
+          <ellipse cx="220" cy="242" rx="34" ry="14" fill="rgba(63,185,80,.2)" stroke="#3fb950" stroke-width="1"/>
+          <text x="220" y="246" text-anchor="middle" font-size="8" fill="#3fb950">Bile/Feces ✅</text>
+
+          <!-- Ceruloplasmin to circulation -->
+          <path d="M282,112 Q350,95 378,86" stroke="#58a6ff" stroke-width="1.8" fill="none" class="copper-flow" marker-end="url(#ae)"/>
+          <text x="326" y="88" font-size="8" fill="#58a6ff">Ceruloplasmin</text>
+
+          <!-- Brain -->
+          <ellipse cx="392" cy="128" rx="40" ry="24" fill="url(#gBrain2)"/>
+          <text x="392" y="124" class="node-label">Brain</text>
+          <text x="392" y="135" class="node-sub">KF rings</text>
+
+          <!-- Wilson's: blocked bile -->
+          <text id="blocked-text" x="200" y="185" font-size="10" fill="#f85149" font-weight="700" opacity="0">⛔ BLOCKED!</text>
+          <text id="wilson-warn" x="232" y="72" text-anchor="middle" font-size="10" fill="#f85149" font-weight="700" opacity="0">⚠️ Cu ACCUMULATES!</text>
+
+          <!-- ATP7B label -->
+          <rect x="164" y="12" width="136" height="24" rx="5" fill="rgba(227,179,65,.1)" stroke="rgba(227,179,65,.3)"/>
+          <text x="232" y="28" text-anchor="middle" font-size="9" fill="#e3b341" font-weight="700">ATP7B: chromosome 13q14</text>
+        </svg>
+        <div class="anim-controls">
+          <button class="anim-btn anim-btn-primary" onclick="animCopper('normal')">✅ Normal</button>
+          <button class="anim-btn anim-btn-secondary" onclick="animCopper('wilson')">⚠️ Wilson's Disease</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Pathophysiology</h3>
+      <div class="info"><strong>ATP7B</strong> encodes Cu-transporting ATPase in hepatocytes. Normally: incorporates Cu into ceruloplasmin + exports excess Cu into bile. In Wilson's: ATP7B ↓ → Cu cannot be exported → accumulates in liver → brain → cornea → kidney</div>
+
+      <h3>Clinical by Organ</h3>
+      <table>
+        <tr><th>Organ</th><th>Manifestation</th></tr>
+        <tr><td>Liver</td><td>Hepatitis → cirrhosis → fulminant failure + Coombs-negative hemolysis</td></tr>
+        <tr><td>Brain (BG)</td><td>Tremor, dysarthria, dystonia, ataxia, psychiatric</td></tr>
+        <tr><td>Eye</td><td><strong>Kayser-Fleischer rings</strong> (Descemet membrane — slit lamp)</td></tr>
+        <tr><td>Kidney</td><td>Fanconi syndrome, RTA</td></tr>
+        <tr><td>Joints</td><td>Arthropathy, osteoporosis</td></tr>
+      </table>
+
+      <h3>Investigations</h3>
+      <table style="margin-top:6px">
+        <tr><th>Test</th><th>Wilson's</th><th>Note</th></tr>
+        <tr><td>Serum ceruloplasmin</td><td><strong>↓ (&lt;0.2 g/L)</strong></td><td>Can be normal in inflammation</td></tr>
+        <tr><td>24h urine Cu</td><td><strong>↑ (&gt;100 μg/day)</strong></td><td>Most sensitive screening test</td></tr>
+        <tr><td>Serum free Cu</td><td>&gt;25 μg/dL</td><td>Non-ceruloplasmin bound Cu</td></tr>
+        <tr><td>Liver biopsy Cu</td><td>&gt;250 μg/g dry wt</td><td>Gold standard</td></tr>
+        <tr><td>Slit lamp</td><td>KF rings</td><td>95% with neurological WD; absent in hepatic-only</td></tr>
+        <tr><td>MRI brain</td><td>"Giant Panda" face</td><td>Tectal T2↑ (75%), putamen + BS lesions</td></tr>
+      </table>
+
+      <div class="exam-box" style="margin-top:10px">
+        <div class="exam-title">⭐ Exam Points — Wilson's Disease</div>
+        <ul>
+          <li>Always suspect in <strong>young patient with movement disorder + liver disease + psychiatric symptoms</strong></li>
+          <li>KF rings present in <strong>95%</strong> with neurological WD; can be absent in hepatic-only</li>
+          <li>Ceruloplasmin ↓ + urine Cu ↑ → classic; but ceruloplasmin can be <strong>normal in fulminant</strong> (acute phase reactant)</li>
+          <li><strong>Paradoxical neurological worsening</strong> after starting chelation → Cu redistribution; prevent by slow titration, prefer trientine</li>
+          <li>Trientine = preferred 1st line (safer than penicillamine); <strong>do NOT combine with iron</strong></li>
+          <li>Zinc = 1st line for asymptomatic / maintenance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">💊 Wilson's Treatment Algorithm</div>
+  <div class="grid3">
+    <div>
+      <h3 style="color:var(--orange)">Symptomatic</h3>
+      <div class="alert"><strong>1st line: Trientine</strong> (900mg–2g/day in 2–3 divided doses)<br>Safer, less paradoxical worsening. Do not combine with iron.</div>
+      <div class="info"><strong>Alternative: D-Penicillamine</strong> (0.5–2g/day)<br>+ Pyridoxine (B6). ⚠️ 10% paradoxical neurological worsening. Safe in pregnancy.</div>
+    </div>
+    <div>
+      <h3 style="color:var(--green)">Asymptomatic / Maintenance</h3>
+      <div class="success"><strong>Zinc salts</strong> 150mg elemental Zn/day (50mg TID)<br>↑ Intestinal metallothionein → traps Cu in enterocytes → excreted with shedding. Take on empty stomach. SE: GI irritation.</div>
+      <div class="pearl" style="margin-top:8px"><strong>Treatment goal:</strong> 24h urine Cu 200–500 μg/day (initial chelation); normalize within 2 days of stopping chelator (maintenance monitoring)</div>
+    </div>
+    <div>
+      <h3 style="color:var(--red)">Special Situations</h3>
+      <div class="pearl"><strong>Fulminant liver failure:</strong> Liver transplantation — corrects metabolic defect; neurological improvement possible</div>
+      <div class="alert"><strong>Paradoxical worsening:</strong> Cu redistribution from chelation → oxidative damage. Risk: severe neurological involvement, BS/thalamic MRI lesions. Rx: titrate chelator down slowly.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ======================================================
+     PAGE 7: TREATMENT
+====================================================== -->
+<div class="page" id="page-treatment">
+<div class="page-title">💊 Treatment Guide — Movement Disorders</div>
+<div class="page-sub">Evidence-based summary optimized for the exam</div>
+
+<div class="card">
+  <div class="card-title">⚡ DBS — Indications & Targets</div>
+  <table>
+    <tr><th>Condition</th><th>Target</th><th>Indication</th><th>Effect / Note</th></tr>
+    <tr><td><strong>PD</strong></td><td>STN or GPi</td><td>Motor fluctuations, dyskinesia, medication-refractory tremor; good LD response; not demented; age &lt;75</td><td>STN: ↓ LD dose ~50%; GPi: better for dyskinesia, preserves cognition better</td></tr>
+    <tr><td><strong>Essential Tremor</strong></td><td>Vim (Thalamus)</td><td>Medication-refractory tremor impacting ADL</td><td>~85% tremor reduction; MRI-guided FUS alternative</td></tr>
+    <tr><td><strong>Dystonia</strong></td><td>GPi</td><td>Generalized/segmental dystonia, DYT-TOR1A</td><td>Delayed improvement over months (unlike PD)</td></tr>
+  </table>
+  <div class="exam-box" style="margin-top:12px">
+    <div class="exam-title">⭐ DBS Exam Points</div>
+    <ul>
+      <li>DBS contraindications: Atypical PD (PSP/MSA/CBD), poor/no LD response, dementia, uncontrolled psychiatric illness</li>
+      <li>STN-DBS vs GPi-DBS for PD: STN reduces LD dose more; GPi preserves cognition better — both effective</li>
+      <li>Dystonia DBS response is <strong>delayed (weeks–months)</strong> unlike PD which is immediate</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">📊 Complete Drug Reference</div>
+  <div style="overflow-x:auto">
+  <table>
+    <tr><th>Drug</th><th>Indication</th><th>Key Dose (Siriraj)</th><th>Critical SE / Interactions</th></tr>
+    <tr><td><strong>Levodopa/Carbidopa</strong></td><td>PD motor symptoms (gold standard)</td><td>Start 50mg LD; titrate 50mg/wk; usual 300–1200mg/day</td><td>Nausea, OH, dyskinesia, hallucination; abrupt withdrawal → <strong>Parkinsonism Hyperpyrexia Syndrome</strong>; protein-meal interference</td></tr>
+    <tr><td><strong>Pramipexole ER</strong></td><td>PD, RLS, depression in PD</td><td>0.375–4.5mg/day</td><td><strong>Impulse Control Disorder (ICD)</strong>, sleep attack, edema; reduce dose if CrCl &lt;50</td></tr>
+    <tr><td><strong>Ropinirole ER</strong></td><td>PD, RLS</td><td>2–24mg/day</td><td>ICD; <strong>avoid CYP1A2 inhibitors</strong> (ciprofloxacin → ↑ ropinirole)</td></tr>
+    <tr><td><strong>Rasagiline</strong></td><td>PD monotherapy / adjunct</td><td>1mg OD</td><td><strong>Serotonin syndrome</strong> with SSRIs/tramadol/meperidine; tyramine effect</td></tr>
+    <tr><td><strong>Selegiline</strong></td><td>PD adjunct</td><td>5mg OD/BD</td><td>Same as rasagiline + <strong>insomnia (avoid PM)</strong>; high-dose → also MAO-A inhibition</td></tr>
+    <tr><td><strong>Entacapone</strong></td><td>Wearing-off</td><td>200mg with each LD dose</td><td>Urine orange discoloration, diarrhea, dyskinesia</td></tr>
+    <tr><td><strong>Amantadine</strong></td><td>PD dyskinesia, early PD</td><td>100–300mg/day</td><td>Livedo reticularis, leg edema, anticholinergic AE, hallucination</td></tr>
+    <tr><td><strong>Trihexyphenidyl</strong></td><td>PD tremor (young patients)</td><td>2–15mg/day</td><td>⚠️ Avoid elderly: falls, cognitive; dry mouth, urinary retention</td></tr>
+    <tr><td><strong>Riluzole</strong></td><td>SCA (Level I evidence)</td><td>50mg BD</td><td>LFT monitoring (hepatotoxicity), nausea, dizziness</td></tr>
+    <tr><td><strong>Trientine</strong></td><td>Wilson's (1st line)</td><td>900mg–2g/day (2–3 doses)</td><td>GI, Cu deficiency; <strong>do NOT combine with iron</strong> (chelates iron)</td></tr>
+    <tr><td><strong>Zinc sulfate</strong></td><td>Wilson's asymptomatic/maintenance</td><td>150mg elemental Zn/day (50mg TID)</td><td>GI irritation; take on empty stomach; interfered by food</td></tr>
+    <tr><td><strong>Tetrabenazine</strong></td><td>Huntington's chorea</td><td>12.5–100mg/day</td><td><strong>Depression/suicidality</strong> (black box warning), parkinsonism, NMS risk</td></tr>
+    <tr><td><strong>Propranolol</strong></td><td>Essential tremor</td><td>40–320mg/day</td><td>Bradycardia, hypotension; <strong>contraindicated in asthma</strong></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">⭐ Master Exam Cheat Sheet — Movement Disorders</div>
+  <div class="grid3">
+    <div>
+      <h3 style="color:var(--orange)">Key Numbers to Memorize</h3>
+      <ul>
+        <li>SNc neuron loss at motor onset: <strong>50–60%</strong></li>
+        <li>MDS PD criteria: sens <strong>94.5%</strong> / spec <strong>88.5%</strong></li>
+        <li>Motor fluctuations at 10yr: <strong>90%</strong></li>
+        <li>Dyskinesia at 10yr: <strong>60%</strong></li>
+        <li>Wernicke's complete triad: <strong>~20%</strong></li>
+        <li>KF rings in neurological WD: <strong>95%</strong></li>
+        <li>MSA-C among late-onset ataxia: <strong>~15%</strong></li>
+        <li>Riluzole for SCA: SARA ↓ <strong>~2.7 pts at 12 months</strong></li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--blue)">Key Pathology Associations</h3>
+      <ul>
+        <li>PD + DLB + MSA → <strong>α-synuclein</strong></li>
+        <li>PSP + CBD → <strong>4R-tau</strong></li>
+        <li>MSA GCIs → <strong>oligodendrocytes</strong> (unique)</li>
+        <li>DLB → <strong>avoid antipsychotics</strong> (neuroleptic sensitivity)</li>
+        <li>Anti-Yo → Breast/Ovary (poor immunotherapy response)</li>
+        <li>Anti-Tr → <strong>Hodgkin</strong> lymphoma</li>
+        <li>Huntington's → <strong>CAG in HTT (chr 4)</strong></li>
+        <li>Wilson's → <strong>ATP7B (chr 13q)</strong></li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--green)">High-Risk Drug Interactions</h3>
+      <ul>
+        <li>MAO-B inhibitors + SSRIs/tramadol/meperidine → <strong>Serotonin syndrome</strong></li>
+        <li>Selegiline high dose → MAO-A too → <strong>tyramine hypertension</strong></li>
+        <li>Ropinirole + ciprofloxacin → <strong>↑ ropinirole (CYP1A2)</strong></li>
+        <li>Trientine + iron → <strong>mutual chelation — don't combine</strong></li>
+        <li>Levodopa + high-protein meal → <strong>delayed absorption</strong></li>
+        <li>Antipsychotics in DLB → <strong>severe, potentially fatal reaction</strong></li>
+        <li>D-Penicillamine → watch for <strong>drug-induced lupus, MG, nephrotic</strong></li>
+        <li>Abrupt LD withdrawal → <strong>Parkinsonism Hyperpyrexia</strong> (treat like NMS)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ============ TAB SWITCHING ============
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ============ BASAL GANGLIA ANIMATION ============
+function setBGState(state) {
+  const label = document.getElementById('bg-state-label');
+  const desc = document.getElementById('bg-desc');
+  const dopa = document.getElementById('a-dopa');
+  const direct = document.getElementById('a-direct');
+  const strGpe = document.getElementById('a-str-gpe');
+  const ret = document.getElementById('a-return');
+  const stnGpi = document.getElementById('a-stn-gpi');
+  const snc = document.getElementById('n-snc');
+  const gpi = document.getElementById('n-gpi');
+  const stn = document.getElementById('n-stn');
+
+  // Reset all
+  [dopa, direct, strGpe, ret, stnGpi].forEach(el => { if(el){ el.style.opacity='1'; el.style.strokeWidth=''; }});
+
+  if (state === 'normal') {
+    label.textContent = 'NORMAL STATE';
+    label.style.fill = '#e3b341';
+    desc.textContent = 'D1 direct pathway promotes movement | D2 indirect pathway suppresses movement | Dopamine balances both';
+  } else if (state === 'pd') {
+    label.textContent = 'PARKINSON\'S DISEASE — DA ↓↓↓';
+    label.style.fill = '#f85149';
+    if(dopa){ dopa.style.opacity='0.08'; }
+    if(direct){ direct.style.opacity='0.12'; }
+    if(strGpe){ strGpe.style.strokeWidth='5'; strGpe.style.opacity='1'; }
+    if(stnGpi){ stnGpi.style.strokeWidth='5'; stnGpi.style.opacity='1'; }
+    if(ret){ ret.style.opacity='0.1'; }
+    desc.textContent = '⚠️ DA↓↓↓ → Direct pathway underactive + Indirect pathway overactive → GPi hyperactive → Thalamus suppressed → BRADYKINESIA, RIGIDITY';
+  } else if (state === 'dbs') {
+    label.textContent = 'DBS (STN) — High-Frequency Stimulation';
+    label.style.fill = '#3fb950';
+    if(stn){ stn.style.filter = 'drop-shadow(0 0 14px rgba(255,255,0,0.9))'; }
+    desc.textContent = '⚡ DBS silences STN → reduces GPi overactivity → restores thalamic drive → improved motor function. Works even without levodopa.';
+  }
+}
+
+// ============ CEREBELLAR ANIMATION ============
+function animCerebNormal() {
+  const overlay = document.getElementById('ataxia-overlay');
+  const txt = document.getElementById('ataxia-text');
+  if(overlay){ overlay.style.opacity='0'; overlay.setAttribute('rx','65'); }
+  if(txt){ txt.style.opacity='0'; }
+  document.getElementById('cereb-desc').textContent = 'Purkinje cells integrate parallel + climbing fiber input → rhythmically inhibit DCN → Thalamus pulsed → Smooth coordinated movement';
+}
+function animCerebAtaxia() {
+  const overlay = document.getElementById('ataxia-overlay');
+  const txt = document.getElementById('ataxia-text');
+  if(overlay){ overlay.style.opacity='1'; overlay.setAttribute('rx','65'); overlay.style.transition='all 0.5s'; }
+  if(txt){ txt.style.opacity='1'; }
+  document.getElementById('cereb-desc').textContent = '⚠️ Purkinje cell LOSS → DCN disinhibited → Uncontrolled oscillating output → Dysmetria, Tremor, Ataxic gait, Scanning speech';
+}
+
+// ============ LEVODOPA ANIMATION ============
+function showLdopaState(state) {
+  const gEarly = document.getElementById('g-early');
+  const gAdv = document.getElementById('g-adv');
+  const desc = document.getElementById('ldopa-desc');
+  if(state === 'early') {
+    if(gEarly) gEarly.style.opacity = '1';
+    if(gAdv) gAdv.style.opacity = '0';
+    desc.textContent = '🟢 Early PD: Wide therapeutic window — doses stay within therapeutic zone comfortably. Smooth ON state throughout the day.';
+  } else {
+    if(gEarly) gEarly.style.opacity = '0.15';
+    if(gAdv) gAdv.style.opacity = '1';
+    desc.textContent = '🔴 Advanced PD: Narrow therapeutic window — peaks cause peak-dose DYSKINESIA, troughs cause OFF state (wearing-off). Management: ↑ frequency, add COMT-i/DA, consider DBS/pump infusion.';
+  }
+}
+
+// ============ COPPER ANIMATION ============
+function animCopper(state) {
+  const bilePath = document.getElementById('bile-path');
+  const cuOverlay = document.getElementById('cu-overlay');
+  const warn = document.getElementById('wilson-warn');
+  const blocked = document.getElementById('blocked-text');
+  const liverStatus = document.getElementById('liver-status');
+
+  if(state === 'normal') {
+    if(bilePath){ bilePath.style.opacity='1'; }
+    if(cuOverlay){ cuOverlay.setAttribute('rx','0'); cuOverlay.style.opacity='0'; }
+    if(warn){ warn.style.opacity='0'; }
+    if(blocked){ blocked.style.opacity='0'; }
+    if(liverStatus){ liverStatus.textContent='→ bile (normal)'; liverStatus.style.fill='rgba(255,255,255,.65)'; }
+  } else {
+    if(bilePath){ bilePath.style.opacity='0.1'; }
+    if(cuOverlay){
+      cuOverlay.setAttribute('rx','58'); cuOverlay.setAttribute('ry','34');
+      cuOverlay.style.opacity='0.75'; cuOverlay.style.transition='all 0.8s';
+    }
+    if(warn){ warn.style.opacity='1'; }
+    if(blocked){ blocked.style.opacity='1'; }
+    if(liverStatus){ liverStatus.textContent='COPPER ACCUMULATES ⚠️'; liverStatus.style.fill='#f85149'; }
+  }
+}
+</script>
+</body>
+</html>
