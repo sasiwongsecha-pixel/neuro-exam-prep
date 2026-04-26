@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
 <title>Neurology Exam Prep — Siriraj IM Residency</title>
 <style>
 :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--surface3:#2d333b;
@@ -11,15 +15,21 @@
 --purple:#d2a8ff;--teal:#79c0ff;--pink:#f78166;
 --primary:#58a6ff;--accent:#f85149;--gold:#e3b341;
 --shadow:0 2px 12px rgba(0,0,0,0.45);}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(88,166,255,0.25);}
+html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior-y:none;}
+body{font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;}
+/* Make every interactive element fast & reliable on touch */
+button,.sidebar-item,.ptab,.anim-btn,.fc-btn,.fc-cat-btn,.qcat-btn,.quiz-option,.cn-card,.loc-card,.img-atlas-card,.flashcard,.annot-btn,.tab,.hamburger,[onclick]{
+  touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;
+}
 header{background:linear-gradient(135deg,#1f2937,#111827);color:white;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.5);border-bottom:1px solid var(--border);}
 .hamburger{display:none;background:none;border:none;color:white;font-size:24px;cursor:pointer;padding:8px;line-height:1;z-index:1001;}
 .hamburger:hover{color:#58a6ff;}
 .header-title{font-size:1.15rem;font-weight:700;}
 .header-sub{font-size:0.75rem;opacity:0.6;margin-top:2px;}
 .header-badge{background:var(--accent);color:white;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;}
-.layout{display:flex;min-height:calc(100vh - 60px);}
+.layout{display:flex;min-height:calc(100vh - 60px);min-height:calc(100dvh - 60px);}
 .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;flex-shrink:0;}
 .sidebar-section{margin-bottom:4px;}
 .sidebar-section-header{padding:10px 20px 6px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
@@ -182,9 +192,9 @@ strong{color:var(--teal);}
   .header-sub{font-size:0.65rem;}
   .header-badge{font-size:0.65rem;padding:3px 8px;}
   .hamburger{display:block;}
-  .sidebar{position:fixed;left:-260px;top:60px;width:260px;height:calc(100vh-60px);background:var(--surface);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;transition:left 0.3s ease;z-index:999;}
+  .sidebar{position:fixed;left:-280px;top:60px;width:260px;height:calc(100vh - 60px);height:calc(100dvh - 60px);background:var(--surface);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:left 0.3s ease;z-index:999;}
   .sidebar.open{left:0;box-shadow:-2px 0 16px rgba(0,0,0,0.5);}
-  .layout{min-height:calc(100vh-60px);}
+  .layout{min-height:calc(100vh - 60px);min-height:calc(100dvh - 60px);}
   .main{padding:16px;overflow-y:auto;}
   .section-title{font-size:1.25rem;}
   .section-sub{font-size:0.8rem;margin-bottom:16px;}
