@@ -1969,6 +1969,8 @@ document.addEventListener('DOMContentLoaded',function(){
       sidebar.classList.remove('open');
     }
   });
+  // Initialize default section
+  switchModule('exam');
 });
 
 // ============================================================
@@ -1976,10 +1978,15 @@ document.addEventListener('DOMContentLoaded',function(){
 // ============================================================
 function switchModule(mod){
   currentModule=mod;
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  const el=document.getElementById('section-'+mod);if(el)el.classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>{
+    s.style.display='none';
+    s.classList.remove('active');
+  });
+  const el=document.getElementById('section-'+mod);
+  if(el){el.style.display='block';el.classList.add('active');}
   document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
   const nav=document.getElementById('nav-'+mod);if(nav)nav.classList.add('active');
+  if(window.innerWidth<=768){document.getElementById('sidebar').classList.remove('open');}
 }
 
 function showPTab(id,btn){
