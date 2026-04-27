@@ -1780,3 +1780,232 @@
   </div>
 </div>
 
+
+<!-- ══ MASTER QUIZ ══ -->
+<div id="page-quiz-master" class="page">
+  <div class="topic-header" style="background: linear-gradient(135deg, #374151, #7e3af2);">
+    <h2>🎯 Master Quiz — Endocrinology</h2>
+    <div class="subtitle">20 High-Yield Questions for Long Case Exam</div>
+    <div class="topic-tags"><span class="tag">Clinical approach</span><span class="tag">Physical findings</span><span class="tag">Onset clues</span></div>
+  </div>
+
+  <div style="margin-bottom:16px; display:flex; align-items:center; gap:12px;">
+    <div class="score-badge">Score: <span id="quiz-score">0</span> / <span id="quiz-total">20</span></div>
+    <div style="flex:1"><div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div></div>
+    <button class="btn btn-outline" onclick="resetQuiz()">🔄 Reset</button>
+  </div>
+
+  <div id="quiz-container"></div>
+</div>
+
+</main>
+
+<!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
+<script>
+// Navigation
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+  });
+  document.getElementById('main').scrollTo(0, 0);
+}
+
+// Search filter
+function filterNav(val) {
+  val = val.toLowerCase();
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const search = (item.textContent + ' ' + (item.dataset.search || '')).toLowerCase();
+    item.style.display = (!val || search.includes(val)) ? '' : 'none';
+  });
+}
+
+// Accordion
+function toggleAcc(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  // close all in same parent
+  header.parentElement.parentElement.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+  header.parentElement.parentElement.querySelectorAll('.acc-header').forEach(h => h.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); header.classList.add('open'); }
+}
+
+// ── QUIZ DATA ──
+const quizData = [
+  {
+    q: "A 14-year-old girl presents with primary amenorrhea, short stature (height 148 cm), webbed neck, and widely spaced nipples. What is the most likely diagnosis?",
+    opts: ["Noonan syndrome", "Turner syndrome", "Prader-Willi syndrome", "Growth hormone deficiency"],
+    ans: 1,
+    exp: "Turner syndrome (45,X or mosaic): Primary amenorrhea + short stature + webbed neck (POSTERIOR) + shield chest/widely spaced nipples + cubitus valgus. Confirm with karyotype. Key distinction from Noonan: Turner = only females + chromosome X abnormality + LEFT-sided heart defects (CoA, bicuspid AoV)."
+  },
+  {
+    q: "A 45-year-old woman presents with 6 months of progressive proximal muscle weakness, easy bruising, and 5 cm wide purple striae. Which is the MOST discriminative sign for Cushing syndrome?",
+    opts: ["Central obesity and moon face", "Wide purple striae (>1cm)", "Hypertension and diabetes", "Buffalo hump"],
+    ans: 1,
+    exp: "Wide purple striae >1cm is the most discriminative sign (highly specific) for Cushing syndrome. Proximal muscle weakness and easy bruising are also highly discriminative. Central obesity, moon face, and buffalo hump are common but non-specific — they occur in simple obesity. The combination of rapid-onset + virilization should raise suspicion of ACC."
+  },
+  {
+    q: "A 35-year-old man presents with hypertension (160/100) + spontaneous hypokalemia (K+ 3.1). ARR is 45. Adrenal CT shows a 1.5cm left adenoma. What is the gold standard next step to guide treatment?",
+    opts: ["Repeat ARR after medication washout", "Adrenal venous sampling (AVS)", "Saline loading test", "Immediate left adrenalectomy based on CT"],
+    ans: 1,
+    exp: "AVS (Adrenal Venous Sampling) is the gold standard for subtyping primary aldosteronism. CT has significant limitations — it misses micro-APAs, and adrenal incidentalomas are common. AVS confirms unilateral disease with lateralization index >4:1 (after cosyntropin). Only then consider unilateral adrenalectomy."
+  },
+  {
+    q: "A child presents with bow legs, widened wrists, rachitic rosary on exam. Labs show low phosphate, normal calcium, normal PTH, elevated ALP (600 IU/L). What type of rickets is this?",
+    opts: ["Vitamin D deficiency rickets", "Calcipenic rickets from calcium deficiency", "X-linked hypophosphatemic rickets (XLH)", "Vitamin D-dependent rickets type 1"],
+    ans: 2,
+    exp: "Phosphopenic rickets: LOW phosphate, NORMAL calcium, NORMAL or mildly elevated PTH, ALWAYS elevated ALP. XLH (X-linked hypophosphatemic rickets) is caused by FGF23 excess → renal phosphate wasting. Treatment: phosphate replacement + calcitriol. DDx from calcipenic rickets: calcipenic has LOW calcium + elevated PTH (secondary hyperPTH)."
+  },
+  {
+    q: "A 58-year-old woman presents with sudden severe 'thunderclap' headache, left ptosis, and diplopia. MRI shows pituitary hemorrhage. What is the MOST urgent initial investigation?",
+    opts: ["MRI pituitary with gadolinium", "CT brain without contrast", "Lumbar puncture", "Check serum prolactin"],
+    ans: 1,
+    exp: "Pituitary apoplexy: EMERGENCY. CT brain without contrast is the FIRST-LINE investigation (faster, available in emergency). Then MRI pituitary for better characterization. Assess pituitary function (cortisol is most urgent — ACTH deficiency = life-threatening). Note: Isolated ophthalmoplegia is NOT a surgical indication. Start hydrocortisone if cortisol <19 mcg/dL."
+  },
+  {
+    q: "A 28-year-old woman presents with amenorrhea, galactorrhea, and headache. Prolactin = 1200 µg/L. MRI shows a 3.5cm pituitary macroadenoma. Prolactin is sent again and returns 80 µg/L on repeated measurement. Why?",
+    opts: ["Macroprolactinemia (IgG-bound PRL)", "True prolactin reduction during measurement", "Hook effect — extremely high PRL saturates assay", "Ectopic prolactin production"],
+    ans: 2,
+    exp: "Hook effect: With very high prolactin levels, the sandwich immunoassay is saturated, giving a falsely LOW result. Always dilute (1:100) prolactin when macroadenoma ≥3cm with PRL ≤250 ng/mL. Macroprolactinemia = IgG-bound PRL = asymptomatic hyperprolactinemia, detected by PEG precipitation (recovery <40%)."
+  },
+  {
+    q: "A 52-year-old man presents with enlarged hands and feet, prognathism, and headache. IGF-1 is elevated. Confirmation test uses:",
+    opts: ["Insulin tolerance test", "Overnight dexamethasone suppression test", "75g OGTT with GH measurement", "ACTH stimulation test"],
+    ans: 2,
+    exp: "Acromegaly confirmation: 75g OGTT with GH measurement. Nadir GH ≥1 ng/mL = acromegaly. (In normal subjects, GH suppresses to <1 ng/mL). IGF-1 is the SCREENING test. Insulin tolerance test is for GH deficiency and cortisol reserve. Treatment first-line: transsphenoidal surgery."
+  },
+  {
+    q: "A 25-year-old woman presents with 6 months of oligomenorrhea, acne, and hirsutism (mFG=7). Testosterone = 150 ng/dL. Ultrasound shows polycystic ovaries. What should you do BEFORE diagnosing PCOS?",
+    opts: ["Prescribe OCP immediately", "Exclude non-classic CAH (17-OHP), thyroid disease, and hyperprolactinemia", "Order laparoscopy to confirm", "Check AMH level"],
+    ans: 1,
+    exp: "PCOS is a diagnosis of exclusion. Before diagnosing PCOS, you MUST exclude: Non-classic CAH (17-OHP — especially if 17-OHP >2 ng/mL), Thyroid disease (TSH), Hyperprolactinemia, Cushing syndrome (if features present). Rotterdam 2018: 2/3 criteria: oligomenorrhea/anovulation + hyperandrogenism + PCOM."
+  },
+  {
+    q: "A 40-year-old woman has postural hypotension, hyperpigmentation of buccal mucosa and skin folds, hyponatremia, and hyperkalemia. Morning cortisol = 2.1 mcg/dL. ACTH is elevated. Diagnosis?",
+    opts: ["Secondary adrenal insufficiency (pituitary)", "Primary adrenal insufficiency (Addison's disease)", "Cushing syndrome", "Mineralocorticoid excess"],
+    ans: 1,
+    exp: "Primary AI (Addison's): ACTH elevated + low cortisol + hyperpigmentation (ACTH stimulates MSH) + hyperkalemia (mineralocorticoid deficiency). Secondary AI has LOW ACTH, NO hyperpigmentation, NO hyperkalemia (RAAS intact). KEY: Treat adrenal crisis IMMEDIATELY with hydrocortisone 100mg IV without waiting for results in severe cases."
+  },
+  {
+    q: "A 30-year-old woman with massive postpartum hemorrhage 2 years ago now presents with fatigue, no menses since delivery, and failure to lactate. What is the most likely diagnosis?",
+    opts: ["PCOS", "Hypothyroidism", "Sheehan syndrome", "Hyperprolactinemia"],
+    ans: 2,
+    exp: "Sheehan syndrome: Postpartum hypopituitarism after massive PPH → pituitary necrosis. Classic triad: massive PPH + failure to lactate (first symptom) + failure to resume menses. MRI shows empty sella. Progressive multi-hormone deficiency: GH > Gn > TSH > ACTH. Requires lifelong hormone replacement."
+  },
+  {
+    q: "Looser zones (pseudofractures) on X-ray are pathognomonic for which condition?",
+    opts: ["Osteoporosis", "Osteitis fibrosa cystica (PHPT)", "Osteomalacia", "Paget's disease of bone"],
+    ans: 2,
+    exp: "Looser zones (pseudofractures) are PATHOGNOMONIC for osteomalacia. They are bilateral, symmetrical radiolucent bands ⊥ to cortical margins. Sites: femoral neck, medial femoral shaft, pubic rami, scapula. On bone scan: super scan pattern (bilateral symmetric uptake). Remember: always elevated ALP in osteomalacia."
+  },
+  {
+    q: "A patient has hypertension episodes with headache, sweating, and palpitations. Labs show elevated plasma metanephrines. She is young (age 22). Genetics shows a VHL mutation. What is the expected tumor?",
+    opts: ["Adrenal cortical adenoma", "Pheochromocytoma", "Aldosterone-producing adenoma", "Cushing adenoma"],
+    ans: 1,
+    exp: "Pheochromocytoma/paraganglioma: Classic triad = headache + sweating + palpitations. VHL (von Hippel-Lindau) = pheochromocytoma + clear cell RCC + CNS hemangioblastoma. 20-30% of PPGLs are hereditary. Biochemical diagnosis: plasma metanephrines (highest sensitivity). NEVER beta-block before alpha-block — risk of hypertensive crisis!"
+  },
+  {
+    q: "A male child has short stature, hypertelorism, pectus excavatum, and undescended testes. Karyotype is 46,XY. The most likely diagnosis is:",
+    opts: ["Turner syndrome", "Klinefelter syndrome", "Noonan syndrome", "Prader-Willi syndrome"],
+    ans: 2,
+    exp: "Noonan syndrome: Normal karyotype (46,XY or 46,XX) + Turner-like features. PTPN11 mutation (50%). Key features: triangular facies, hypertelorism (100%), pectus excavatum/carinatum, cryptorchidism (75%), RIGHT-sided CHD (PS, HCM). Short neck. Learning disability (25%). Compared to Turner: webbed neck is ANTERIOR in Noonan, POSTERIOR in Turner."
+  },
+  {
+    q: "A patient with short stature has a doll-like face with frontal bossing and underdeveloped nasal bridge. He had neonatal hypoglycemia and prolonged jaundice. The most discriminating test for GH deficiency is:",
+    opts: ["IGF-1 level", "Random GH level", "Two failed GH stimulation tests (peak GH <7-10 µg/L)", "Insulin tolerance test alone"],
+    ans: 2,
+    exp: "GH deficiency diagnosis requires 2 failed stimulation tests with peak GH <7-10 µg/L. The insulin tolerance test (ITT) is the gold standard (single test). But in clinical practice, 2 tests are required for children. Random GH is useless (pulsatile). IGF-1 is a good screening test but not diagnostic alone. Neonatal clues: hypoglycemia + jaundice + micropenis (males)."
+  },
+  {
+    q: "A woman presents with primary amenorrhea, absent breasts, normal female external genitalia, no uterus on imaging. Groin exam reveals bilateral masses (gonads). Karyotype is 46,XY. What is the diagnosis and urgent management?",
+    opts: ["Müllerian agenesis (MRKH) — hormone replacement", "Complete Androgen Insensitivity Syndrome (CAIS) — gonadectomy due to cancer risk", "Turner syndrome — GH therapy", "Kallmann syndrome — GnRH therapy"],
+    ans: 1,
+    exp: "CAIS: 46,XY + female phenotype + absent uterus + palpable gonads in groin + no pubic/axillary hair (but breast development from aromatization). Cause: androgen receptor mutation → blind to testosterone. Y chromosome = GONADOBLASTOMA risk (4-60%) → gonadectomy after puberty (for feminization). Estrogen replacement after gonadectomy."
+  },
+  {
+    q: "A 58-year-old woman with well-controlled HTN develops progressive fatigue, diffuse bone pain, muscle weakness, and fragility fractures. Labs: Ca 9.1, PO4 1.8, ALP 680, PTH mildly elevated, normal 25(OH)D. Urine P wasting confirmed. What is the priority investigation?",
+    opts: ["Repeat DXA scan", "Genetic testing for XLH", "Functional imaging (octreotide scan, SPECT-CT, FDG-PET) to find occult tumor", "Start phosphate supplements immediately"],
+    ans: 2,
+    exp: "Tumor-induced osteomalacia (TIO): Middle-aged adult + bone pain + muscle weakness + chronic hypophosphatemia + renal P wasting + normal Ca + ↑ALP + elevated FGF23. Small mesenchymal tumor is hard to find. FUNCTIONAL IMAGING FIRST (octreotide scan, SPECT-CT, 18F-FDG PET) before venous sampling. Treatment: surgical resection = cure."
+  },
+  {
+    q: "A 52-year-old woman presents with rapid onset (4 months) of severe hirsutism, voice deepening, and clitoromegaly. Testosterone = 380 ng/dL. What is the next step?",
+    opts: ["Start OCP for PCOS", "Imaging of adrenal glands and ovaries (CT/MRI) to locate androgen-secreting tumor", "Check AMH and prolactin", "Prescribe spironolactone"],
+    ans: 1,
+    exp: "VIRILIZATION + RAPID ONSET + testosterone >200 ng/dL = ANDROGEN-SECRETING TUMOR until proven otherwise. Immediate imaging: CT abdomen/pelvis for adrenal tumor (ACC), transvaginal US for ovarian tumor (Sertoli-Leydig cell tumor). DHEAS >700 µg/dL → adrenal source. Never start anti-androgen treatment before ruling out tumor."
+  },
+  {
+    q: "A 50-year-old male has bilateral gynecomastia, small firm testes, tall stature, and learning difficulties. Labs: FSH and LH both elevated, testosterone low. What is the most likely karyotype?",
+    opts: ["46,XY", "47,XXY (Klinefelter syndrome)", "45,X (Turner)", "46,XX"],
+    ans: 1,
+    exp: "Klinefelter syndrome (47,XXY): Small firm testes + gynecomastia + tall stature + learning difficulties + infertility. Hypergonadotropic hypogonadism (↑FSH, ↑LH, ↓T). Treatment: testosterone replacement (note: will not restore fertility). Most common cause of male hypogonadism. Gynecomastia in Klinefelter = relative estrogen excess."
+  },
+  {
+    q: "In the approach to bone mineral density (DXA), which statement is CORRECT?",
+    opts: ["T-score is used for premenopausal women under 50", "Z-score ≤ -2.0 means 'below expected range for age'", "T-score -2.0 alone (with no fracture) indicates treatment with bisphosphonates", "Osteoporosis can only be diagnosed in postmenopausal women"],
+    ans: 1,
+    exp: "Z-score (age and sex-matched) is used for premenopausal women and men <50y. Z-score ≤ -2.0 = 'below expected range for age' (NOT osteoporosis diagnosis). T-score is for postmenopausal women and men ≥50y. Low BMD ≠ osteoporosis — ALWAYS exclude metabolic bone diseases first. Treatment depends on T-score + FRAX + fracture risk category."
+  },
+  {
+    q: "A pubertal boy (age 14) presents with bilateral gynecomastia that has been present for 8 months. He has Tanner stage 3 development. No medications. No liver disease. What is the most appropriate management?",
+    opts: ["Urgent testicular ultrasound for tumor", "Reassurance — physiologic pubertal gynecomastia resolves in 1–2 years", "Measure hCG and testosterone urgently", "Refer for bilateral mastectomy"],
+    ans: 1,
+    exp: "Physiologic pubertal gynecomastia: 50% of mid-pubertal boys, onset 13-14y, 90% resolve spontaneously within 1-2 years. Cause: estradiol rises before testosterone in early puberty. Management: reassurance. Only investigate further if: very large, >2 years, or other pathologic features (asymmetric, firm, tender, medications, family history of hereditary gynecomastia, signs of hypogonadism)."
+  }
+];
+
+let quizAnswered = new Array(quizData.length).fill(false);
+let quizScore = 0;
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-section';
+    div.id = 'quiz-' + i;
+    div.innerHTML = `
+      <div class="quiz-q"><span style="color:#6b7280;font-size:12px;font-weight:400">Q${i+1}/${quizData.length}</span><br>${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, j) => `<div class="quiz-option" onclick="answerQuiz(${i}, ${j})">${String.fromCharCode(65+j)}. ${opt}</div>`).join('')}
+      </div>
+      <div class="quiz-explanation" id="exp-${i}">💡 ${q.exp}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function answerQuiz(qi, selected) {
+  if (quizAnswered[qi]) return;
+  quizAnswered[qi] = true;
+  const q = quizData[qi];
+  const opts = document.querySelectorAll(`#quiz-${qi} .quiz-option`);
+  opts.forEach((opt, j) => {
+    if (j === q.ans) opt.classList.add('correct');
+    else if (j === selected) opt.classList.add('wrong');
+    opt.style.pointerEvents = 'none';
+  });
+  if (selected === q.ans) quizScore++;
+  document.getElementById('exp-' + qi).classList.add('show');
+  document.getElementById('quiz-score').textContent = quizScore;
+  const answered = quizAnswered.filter(Boolean).length;
+  document.getElementById('quiz-progress').style.width = (answered / quizData.length * 100) + '%';
+  document.getElementById('quiz-total').textContent = quizData.length;
+}
+
+function resetQuiz() {
+  quizAnswered = new Array(quizData.length).fill(false);
+  quizScore = 0;
+  document.getElementById('quiz-score').textContent = 0;
+  document.getElementById('quiz-progress').style.width = '0%';
+  renderQuiz();
+}
+
+// Initialize
+renderQuiz();
+</script>
+</body>
+</html>
