@@ -195,8 +195,10 @@ strong{color:var(--teal);}
   .header-sub{font-size:0.65rem;}
   .header-badge{font-size:0.65rem;padding:3px 8px;}
   .hamburger{display:block;}
-  .sidebar{position:fixed;left:-280px;top:60px;width:260px;height:calc(100vh - 60px);height:calc(100dvh - 60px);background:var(--surface);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:left 0.3s ease;z-index:999;}
-  .sidebar.open{left:0;box-shadow:-2px 0 16px rgba(0,0,0,0.5);}
+  .sidebar{position:fixed !important;top:60px;width:260px;height:calc(100vh - 60px);height:calc(100dvh - 60px);background:var(--surface);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;-webkit-overflow-scrolling:touch;left:-280px;z-index:999;display:block !important;visibility:hidden;}
+  .sidebar.open{left:0 !important;visibility:visible !important;box-shadow:-2px 0 16px rgba(0,0,0,0.5);}
+  .sidebar-backdrop{display:none;position:fixed;inset:60px 0 0 0;background:rgba(0,0,0,0.5);z-index:998;}
+  .sidebar-backdrop.show{display:block;}
   .layout{min-height:calc(100vh - 60px);min-height:calc(100dvh - 60px);}
   .main{padding:16px;overflow-y:auto;}
   .section-title{font-size:1.25rem;}
@@ -1974,12 +1976,27 @@ window.onload=function(){
 // ============================================================
 function toggleSidebar(){
   const sidebar=document.getElementById('sidebar');
-  sidebar.classList.toggle('open');
+  const open=sidebar.classList.toggle('open');
+  let backdrop=document.getElementById('sidebar-backdrop');
+  if(!backdrop){
+    backdrop=document.createElement('div');
+    backdrop.id='sidebar-backdrop';
+    backdrop.className='sidebar-backdrop';
+    backdrop.addEventListener('click',function(){
+      sidebar.classList.remove('open');
+      backdrop.classList.remove('show');
+    });
+    document.body.appendChild(backdrop);
+  }
+  backdrop.classList.toggle('show',open);
 }
 document.addEventListener('DOMContentLoaded',function(){
   document.querySelectorAll('.sidebar-item').forEach(item=>{
     item.addEventListener('click',function(){
-      if(window.innerWidth<=768){document.getElementById('sidebar').classList.remove('open');}
+      if(window.innerWidth<=768){
+        document.getElementById('sidebar').classList.remove('open');
+        const bd=document.getElementById('sidebar-backdrop');if(bd)bd.classList.remove('show');
+      }
     });
   });
   document.addEventListener('click',function(e){
