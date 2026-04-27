@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Endocrinology Long Case Exam Prep — Siriraj</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-dark: #1342b0;
+    --secondary: #0e9f6e;
+    --warning: #e3a008;
+    --danger: #f05252;
+    --purple: #7e3af2;
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --clue-bg: #fffbeb;
+    --clue-border: #f59e0b;
+    --finding-bg: #ecfdf5;
+    --finding-border: #10b981;
+    --onset-bg: #eff6ff;
+    --onset-border: #3b82f6;
+    --approach-bg: #faf5ff;
+    --approach-border: #8b5cf6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    width: 260px; min-width: 260px; background: #1e2a40; color: #e2e8f0;
+    display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; overflow-y: auto;
+    z-index: 100;
+  }
+  #sidebar-header { padding: 20px 16px 12px; border-bottom: 1px solid #2d3a50; }
+  #sidebar-header h1 { font-size: 14px; font-weight: 700; color: #93c5fd; letter-spacing: .5px; }
+  #sidebar-header p { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  #search-box { margin: 10px 12px; }
+  #search-box input { width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid #2d3a50; background: #0f172a; color: #e2e8f0; font-size: 12px; outline: none; }
+  #search-box input::placeholder { color: #64748b; }
+  .nav-group { padding: 8px 0; }
+  .nav-group-label { padding: 6px 16px; font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 1px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; cursor: pointer; font-size: 12.5px; color: #cbd5e1; border-left: 3px solid transparent; transition: all .15s; }
+  .nav-item:hover { background: #2d3a50; color: #e2e8f0; }
+  .nav-item.active { background: #1e3a5f; color: #93c5fd; border-left-color: #3b82f6; font-weight: 600; }
+  .nav-item .emoji { font-size: 14px; }
+  .nav-badge { margin-left: auto; background: #1e3a5f; color: #93c5fd; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
+
+  /* ── Main ── */
+  #main { flex: 1; overflow-y: auto; padding: 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Topic Header ── */
+  .topic-header { background: linear-gradient(135deg, #1a56db, #7e3af2); color: white; border-radius: 12px; padding: 24px 28px; margin-bottom: 20px; }
+  .topic-header h2 { font-size: 22px; font-weight: 700; }
+  .topic-header .subtitle { font-size: 13px; opacity: .8; margin-top: 4px; }
+  .topic-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .tag { background: rgba(255,255,255,.2); padding: 3px 10px; border-radius: 20px; font-size: 11px; }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 16px; }
+  @media(max-width:900px){ .grid-2,.grid-3{ grid-template-columns:1fr; } }
+
+  /* ── Cards ── */
+  .card { background: var(--card); border-radius: 10px; padding: 18px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.07); }
+  .card-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+
+  /* ── Special boxes ── */
+  .clue-box { background: var(--clue-bg); border: 1px solid var(--clue-border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .clue-box .box-title { font-size: 11px; font-weight: 700; color: #92400e; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .finding-box { background: var(--finding-bg); border: 1px solid var(--finding-border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .finding-box .box-title { font-size: 11px; font-weight: 700; color: #065f46; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .onset-box { background: var(--onset-bg); border: 1px solid var(--onset-border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .onset-box .box-title { font-size: 11px; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .approach-box { background: var(--approach-bg); border: 1px solid var(--approach-border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .approach-box .box-title { font-size: 11px; font-weight: 700; color: #4c1d95; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .danger-box { background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .danger-box .box-title { font-size: 11px; font-weight: 700; color: #c53030; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+
+  /* ── Lists ── */
+  ul.styled { list-style: none; padding: 0; }
+  ul.styled li { padding: 4px 0 4px 16px; position: relative; font-size: 13px; line-height: 1.5; }
+  ul.styled li::before { content: '▸'; position: absolute; left: 0; color: var(--primary); font-size: 10px; top: 6px; }
+  ul.styled.green li::before { color: var(--secondary); }
+  ul.styled.orange li::before { color: var(--warning); }
+  ul.styled.red li::before { color: var(--danger); }
+
+  /* ── Steps ── */
+  .steps { counter-reset: step; }
+  .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+  .step-num { counter-increment: step; content: counter(step); background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .step-content { flex: 1; }
+  .step-content strong { font-size: 13px; display: block; margin-bottom: 2px; }
+  .step-content p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { background: #1e2a40; color: #e2e8f0; padding: 9px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: #f8faff; }
+  td.highlight { color: var(--primary); font-weight: 600; }
+  td.green { color: var(--secondary); font-weight: 600; }
+  td.red { color: var(--danger); font-weight: 600; }
+
+  /* ── Flip Cards ── */
+  .flashcard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 14px; margin-bottom: 20px; }
+  .flashcard { height: 140px; perspective: 600px; cursor: pointer; }
+  .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; }
+  .flashcard-front { background: linear-gradient(135deg, #1a56db, #3b82f6); color: white; font-weight: 600; font-size: 13px; border: 1px solid #2563eb; }
+  .flashcard-back { background: white; border: 2px solid #3b82f6; color: var(--text); font-size: 12px; transform: rotateY(180deg); line-height: 1.5; }
+
+  /* ── Quiz ── */
+  .quiz-section { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
+  .quiz-q { font-size: 14px; font-weight: 600; margin-bottom: 14px; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option { padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 13px; transition: all .15s; }
+  .quiz-option:hover { border-color: var(--primary); background: #eff6ff; }
+  .quiz-option.correct { border-color: var(--secondary); background: #ecfdf5; color: #065f46; font-weight: 600; }
+  .quiz-option.wrong { border-color: var(--danger); background: #fff5f5; color: #c53030; }
+  .quiz-explanation { margin-top: 12px; padding: 12px 14px; background: #f8fafc; border-radius: 8px; font-size: 12.5px; color: #334155; display: none; line-height: 1.6; }
+  .quiz-explanation.show { display: block; }
+  .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+  .btn { padding: 8px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all .15s; }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-outline { background: white; border: 2px solid var(--primary); color: var(--primary); }
+  .btn-outline:hover { background: #eff6ff; }
+  .score-badge { font-size: 13px; color: var(--text-muted); }
+
+  /* ── Section heading ── */
+  .section-heading { font-size: 15px; font-weight: 700; color: #1e2a40; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .section-heading::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  /* ── Accordion ── */
+  .accordion { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+  .acc-header { padding: 13px 16px; background: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; user-select: none; }
+  .acc-header:hover { background: #f8faff; }
+  .acc-body { display: none; padding: 14px 16px; border-top: 1px solid var(--border); background: #fafbfc; font-size: 13px; line-height: 1.6; }
+  .acc-body.open { display: block; }
+  .acc-arrow { transition: transform .2s; font-size: 11px; }
+  .acc-header.open .acc-arrow { transform: rotate(90deg); }
+
+  /* ── Home dashboard ── */
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 14px; }
+  .topic-card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 16px; cursor: pointer; transition: all .15s; text-align: center; }
+  .topic-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(26,86,219,.12); transform: translateY(-2px); }
+  .topic-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .topic-card .name { font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .topic-card .cat { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  /* ── Progress bar ── */
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--purple)); border-radius: 3px; transition: width .3s; }
+
+  /* ── Comparison badge ── */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-green { background: #d1fae5; color: #065f46; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-yellow { background: #fef3c7; color: #92400e; }
+  .badge-purple { background: #ede9fe; color: #4c1d95; }
+
+  /* ── Highlight text ── */
+  .hl { background: #fef9c3; padding: 1px 4px; border-radius: 3px; font-weight: 600; }
+  .hl-red { background: #fee2e2; padding: 1px 4px; border-radius: 3px; font-weight: 600; color: #991b1b; }
+  .hl-green { background: #d1fae5; padding: 1px 4px; border-radius: 3px; font-weight: 600; color: #065f46; }
+  .hl-blue { background: #dbeafe; padding: 1px 4px; border-radius: 3px; font-weight: 600; color: #1e40af; }
+
+  /* scrollbar */
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: #2d3a50; border-radius: 2px; }
+  #main::-webkit-scrollbar { width: 6px; }
+  #main::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>🏥 ENDO EXAM PREP</h1>
+    <p>Siriraj Long Case · 3rd Year Resident</p>
+  </div>
+  <div id="search-box">
+    <input type="text" id="searchInput" placeholder="🔍 Search topics..." oninput="filterNav(this.value)">
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Start Here</div>
+    <div class="nav-item active" onclick="showPage('home')" data-search="home dashboard overview">
+      <span class="emoji">🏠</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('quiz-master')" data-search="quiz test questions">
+      <span class="emoji">🎯</span> Master Quiz <span class="nav-badge">20 Q</span>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Growth & Development</div>
+    <div class="nav-item" onclick="showPage('short-stature')" data-search="short stature height growth">
+      <span class="emoji">📏</span> Short Stature
+    </div>
+    <div class="nav-item" onclick="showPage('turner')" data-search="turner syndrome karyotype 45x">
+      <span class="emoji">🔬</span> Turner Syndrome
+    </div>
+    <div class="nav-item" onclick="showPage('noonan')" data-search="noonan syndrome ptpn11">
+      <span class="emoji">🧬</span> Noonan Syndrome
+    </div>
+    <div class="nav-item" onclick="showPage('gh-deficiency')" data-search="growth hormone deficiency gh">
+      <span class="emoji">💉</span> GH Deficiency
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Bone & Calcium</div>
+    <div class="nav-item" onclick="showPage('metabolic-bone')" data-search="metabolic bone disease osteoporosis rickets">
+      <span class="emoji">🦴</span> Metabolic Bone Overview
+    </div>
+    <div class="nav-item" onclick="showPage('rickets')" data-search="rickets osteomalacia vitamin d phosphate">
+      <span class="emoji">⚡</span> Rickets / Osteomalacia
+    </div>
+    <div class="nav-item" onclick="showPage('osteoporosis')" data-search="osteoporosis dxa fracture bisphosphonate">
+      <span class="emoji">💊</span> Osteoporosis
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Adrenal Disorders</div>
+    <div class="nav-item" onclick="showPage('primary-aldosteronism')" data-search="primary aldosteronism conn hypertension hypokalemia">
+      <span class="emoji">🩸</span> Primary Aldosteronism
+    </div>
+    <div class="nav-item" onclick="showPage('cushing')" data-search="cushing syndrome cortisol striae obesity">
+      <span class="emoji">🌙</span> Cushing Syndrome
+    </div>
+    <div class="nav-item" onclick="showPage('pheo')" data-search="pheochromocytoma paraganglioma catecholamine hypertension">
+      <span class="emoji">⚡</span> Pheo / Paraganglioma
+    </div>
+    <div class="nav-item" onclick="showPage('adrenal-insufficiency')" data-search="adrenal insufficiency addison cortisol">
+      <span class="emoji">🔻</span> Adrenal Insufficiency
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Pituitary Disorders</div>
+    <div class="nav-item" onclick="showPage('prolactinoma')" data-search="prolactinoma prolactin galactorrhea amenorrhea">
+      <span class="emoji">🧠</span> Prolactinoma
+    </div>
+    <div class="nav-item" onclick="showPage('acromegaly')" data-search="acromegaly gigantism growth hormone igf-1">
+      <span class="emoji">🦶</span> Acromegaly
+    </div>
+    <div class="nav-item" onclick="showPage('apoplexy')" data-search="pituitary apoplexy hemorrhage headache visual">
+      <span class="emoji">🚨</span> Pituitary Apoplexy
+    </div>
+    <div class="nav-item" onclick="showPage('sheehan')" data-search="sheehan syndrome postpartum hypopituitarism">
+      <span class="emoji">🤱</span> Sheehan Syndrome
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Reproductive</div>
+    <div class="nav-item" onclick="showPage('amenorrhea')" data-search="amenorrhea menstrual primary secondary fsh lh">
+      <span class="emoji">🌸</span> Amenorrhea
+    </div>
+    <div class="nav-item" onclick="showPage('pcos')" data-search="pcos polycystic ovary syndrome hyperandrogenism">
+      <span class="emoji">🔄</span> PCOS
+    </div>
+    <div class="nav-item" onclick="showPage('hyperandrogenism')" data-search="hyperandrogenism hirsutism virilization testosterone">
+      <span class="emoji">🔬</span> Hyperandrogenism
+    </div>
+    <div class="nav-item" onclick="showPage('gynecomastia')" data-search="gynecomastia male breast estrogen androgen">
+      <span class="emoji">👤</span> Gynecomastia
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════ MAIN CONTENT ══════════════════════ -->
+<main id="main">
+
+<!-- ══ HOME ══ -->
+<div id="page-home" class="page active">
+  <div class="topic-header" style="background: linear-gradient(135deg, #1e2a40, #1a56db);">
+    <h2>🏥 Endocrinology Exam Prep</h2>
+    <div class="subtitle">Siriraj Hospital · Long Case Exam · 3rd Year Resident</div>
+    <div class="topic-tags">
+      <span class="tag">📚 18 Topics</span>
+      <span class="tag">🎯 20 Quiz Questions</span>
+      <span class="tag">🃏 Flashcards</span>
+      <span class="tag">⚡ Clinical Clues</span>
+    </div>
+  </div>
+
+  <div class="section-heading">📋 Quick Reference — Key Clinical Clues</div>
+  <div class="grid-2">
+    <div class="clue-box">
+      <div class="box-title">⚠️ Red Flags / Don't Miss</div>
+      <ul class="styled orange">
+        <li><span class="hl">Rapid onset Cushing</span> → suspect ACC or ectopic ACTH</li>
+        <li><span class="hl">Cushing + virilization</span> → ACC until proven otherwise</li>
+        <li><span class="hl">T &gt;200 ng/dL</span> → androgen-secreting tumor</li>
+        <li><span class="hl">Pituitary apoplexy</span> → thunderclap headache + visual loss</li>
+        <li><span class="hl">Adrenal crisis</span> → treat BEFORE waiting for labs</li>
+        <li><span class="hl">Short stature + virilization</span> → CAH</li>
+      </ul>
+    </div>
+    <div class="finding-box">
+      <div class="box-title">🔬 Pathognomonic Signs</div>
+      <ul class="styled green">
+        <li><span class="hl-green">Looser zones</span> → Osteomalacia</li>
+        <li><span class="hl-green">Café-au-lait "Coast of Maine"</span> → McCune-Albright</li>
+        <li><span class="hl-green">Blue sclera</span> → Osteogenesis imperfecta</li>
+        <li><span class="hl-green">Bitemporal hemianopia</span> → Pituitary macroadenoma</li>
+        <li><span class="hl-green">Archibald sign</span> → AHO / Turner syndrome</li>
+        <li><span class="hl-green">Trident hand</span> → Achondroplasia</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-heading">🗂️ All Topics</div>
+  <div class="topic-grid">
+    <div class="topic-card" onclick="showPage('short-stature')"><div class="icon">📏</div><div class="name">Short Stature</div><div class="cat">Growth</div></div>
+    <div class="topic-card" onclick="showPage('turner')"><div class="icon">🔬</div><div class="name">Turner Syndrome</div><div class="cat">Genetics</div></div>
+    <div class="topic-card" onclick="showPage('noonan')"><div class="icon">🧬</div><div class="name">Noonan Syndrome</div><div class="cat">Genetics</div></div>
+    <div class="topic-card" onclick="showPage('gh-deficiency')"><div class="icon">💉</div><div class="name">GH Deficiency</div><div class="cat">Growth</div></div>
+    <div class="topic-card" onclick="showPage('metabolic-bone')"><div class="icon">🦴</div><div class="name">Metabolic Bone</div><div class="cat">Bone</div></div>
+    <div class="topic-card" onclick="showPage('rickets')"><div class="icon">⚡</div><div class="name">Rickets/Osteomalacia</div><div class="cat">Bone</div></div>
+    <div class="topic-card" onclick="showPage('osteoporosis')"><div class="icon">💊</div><div class="name">Osteoporosis</div><div class="cat">Bone</div></div>
+    <div class="topic-card" onclick="showPage('primary-aldosteronism')"><div class="icon">🩸</div><div class="name">Primary Aldosteronism</div><div class="cat">Adrenal</div></div>
+    <div class="topic-card" onclick="showPage('cushing')"><div class="icon">🌙</div><div class="name">Cushing Syndrome</div><div class="cat">Adrenal</div></div>
+    <div class="topic-card" onclick="showPage('pheo')"><div class="icon">⚡</div><div class="name">Pheo/Paraganglioma</div><div class="cat">Adrenal</div></div>
+    <div class="topic-card" onclick="showPage('adrenal-insufficiency')"><div class="icon">🔻</div><div class="name">Adrenal Insufficiency</div><div class="cat">Adrenal</div></div>
+    <div class="topic-card" onclick="showPage('prolactinoma')"><div class="icon">🧠</div><div class="name">Prolactinoma</div><div class="cat">Pituitary</div></div>
+    <div class="topic-card" onclick="showPage('acromegaly')"><div class="icon">🦶</div><div class="name">Acromegaly</div><div class="cat">Pituitary</div></div>
+    <div class="topic-card" onclick="showPage('apoplexy')"><div class="icon">🚨</div><div class="name">Pituitary Apoplexy</div><div class="cat">Pituitary</div></div>
+    <div class="topic-card" onclick="showPage('sheehan')"><div class="icon">🤱</div><div class="name">Sheehan Syndrome</div><div class="cat">Pituitary</div></div>
+    <div class="topic-card" onclick="showPage('amenorrhea')"><div class="icon">🌸</div><div class="name">Amenorrhea</div><div class="cat">Reproductive</div></div>
+    <div class="topic-card" onclick="showPage('pcos')"><div class="icon">🔄</div><div class="name">PCOS</div><div class="cat">Reproductive</div></div>
+    <div class="topic-card" onclick="showPage('hyperandrogenism')"><div class="icon">🔬</div><div class="name">Hyperandrogenism</div><div class="cat">Reproductive</div></div>
+    <div class="topic-card" onclick="showPage('gynecomastia')"><div class="icon">👤</div><div class="name">Gynecomastia</div><div class="cat">Reproductive</div></div>
+    <div class="topic-card" onclick="showPage('quiz-master')"><div class="icon">🎯</div><div class="name">Master Quiz</div><div class="cat">Test Yourself</div></div>
+  </div>
+</div>
+
