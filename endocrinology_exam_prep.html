@@ -124,7 +124,7 @@
   .quiz-option { padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 13px; transition: all .15s; }
   .quiz-option:hover { border-color: var(--primary); background: #eff6ff; }
   .quiz-option.correct { border-color: var(--secondary); background: #ecfdf5; color: #065f46; font-weight: 600; }
-  .quiz-option.wrong { border-color: var(--danger); background: #fff5f5; color: #c53030; }
+  .quiz-option.wrong { border-color: var(--danger); background: #2d0000; color: #fca5a5; }
   .quiz-explanation { margin-top: 12px; padding: 12px 14px; background: #f8fafc; border-radius: 8px; font-size: 12.5px; color: #334155; display: none; line-height: 1.6; }
   .quiz-explanation.show { display: block; }
   .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
@@ -514,6 +514,333 @@
       </div>
     </div>
   </div>
+
+  <!-- ══ INTERACTIVE FLOWCHART ══ -->
+  <div class="section-heading" style="margin-top:28px;">📊 Interactive Approach Diagram</div>
+  <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Click or hover any node to see disease details.</p>
+
+  <style>
+    .fc-wrap { position:relative; width:100%; overflow-x:auto; padding-bottom:16px; }
+    .fc-tree { display:flex; flex-direction:column; align-items:center; gap:0; min-width:900px; }
+    .fc-node { display:inline-flex; align-items:center; justify-content:center; padding:7px 14px;
+      border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:2px solid;
+      transition:all .2s; white-space:nowrap; position:relative; user-select:none; }
+    .fc-node:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,.4); }
+    .fc-node.root { background:#1a56db; border-color:#3b82f6; color:#fff; font-size:14px; padding:10px 24px; border-radius:12px; }
+    .fc-node.branch { background:#1e3a5f; border-color:#3b82f6; color:#93c5fd; }
+    .fc-node.sub-branch { background:#1a2840; border-color:#4b5563; color:#d1d5db; }
+    .fc-node.disease { background:#0f1927; border-color:#374151; color:#e2e8f0; font-size:11px; font-weight:500; }
+    .fc-node.disease:hover { border-color:var(--primary); color:#fff; background:#1a2840; }
+    .fc-node.disp { border-color:#f59e0b; color:#fcd34d; background:#1a1200; }
+    .fc-node.synd { border-color:#a855f7; color:#c084fc; background:#130d24; }
+    .fc-node.norm { border-color:#22c55e; color:#86efac; background:#0a1f10; }
+    .fc-node.path { border-color:#ef4444; color:#fca5a5; background:#1f0a0a; }
+    .fc-node.disp:hover,.fc-node.synd:hover,.fc-node.norm:hover,.fc-node.path:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,.4); }
+
+    /* connector lines */
+    .fc-row { display:flex; align-items:flex-start; justify-content:center; gap:20px; position:relative; }
+    .fc-col { display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .fc-vline { width:2px; min-height:18px; background:#2d3a50; }
+    .fc-hline { height:2px; background:#2d3a50; flex:1; min-width:16px; align-self:center; }
+    .fc-branch-row { display:flex; align-items:flex-start; justify-content:center; gap:0; }
+    .fc-branch-col { display:flex; flex-direction:column; align-items:center; }
+    .fc-top-bar { height:2px; background:#2d3a50; }
+    .fc-leaves { display:flex; flex-direction:column; gap:5px; align-items:center; }
+
+    /* Popup */
+    .fc-popup { display:none; position:fixed; z-index:9999; background:#141e30; border:1px solid var(--border);
+      border-radius:12px; padding:16px 18px; max-width:320px; min-width:240px; box-shadow:0 8px 32px rgba(0,0,0,.6); pointer-events:none; }
+    .fc-popup.visible { display:block; }
+    .fc-popup h4 { margin:0 0 8px; font-size:14px; color:#93c5fd; }
+    .fc-popup .pop-onset { font-size:11px; color:#fcd34d; margin-bottom:6px; }
+    .fc-popup .pop-body { font-size:12px; color:#d1d5db; line-height:1.6; }
+    .fc-popup .pop-clue { font-size:11px; color:#6ee7b7; margin-top:6px; border-top:1px solid #1e3050; padding-top:6px; }
+  </style>
+
+  <div class="fc-wrap">
+   <div class="fc-tree">
+
+    <!-- ROOT -->
+    <div class="fc-node root">📏 Short Stature</div>
+    <div class="fc-vline"></div>
+
+    <!-- Level 1: Disproportionate / Proportionate -->
+    <div style="display:flex;gap:0;align-items:flex-start;">
+
+      <!-- LEFT: Disproportionate -->
+      <div class="fc-branch-col" style="align-items:flex-end;min-width:200px;">
+        <div style="display:flex;align-items:center;">
+          <div class="fc-top-bar" style="width:100px;"></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="fc-vline"></div>
+            <div class="fc-node branch disp">Disproportionate</div>
+            <div class="fc-vline"></div>
+            <div class="fc-leaves">
+              <div class="fc-node disease disp" data-disease="achondroplasia">Achondroplasia / Hypochondroplasia</div>
+              <div class="fc-node disease disp" data-disease="mccune">McCune-Albright</div>
+              <div class="fc-node disease disp" data-disease="oi">Osteogenesis Imperfecta</div>
+              <div class="fc-node disease disp" data-disease="php">Pseudohypoparathyroidism (AHO)</div>
+              <div class="fc-node disease disp" data-disease="hypo-disp">Hypothyroidism</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER connector -->
+      <div class="fc-top-bar" style="width:60px;margin-top:0;align-self:flex-start;margin-top:1px;"></div>
+
+      <!-- RIGHT: Proportionate -->
+      <div class="fc-branch-col" style="align-items:flex-start;min-width:560px;">
+        <div style="display:flex;align-items:center;">
+          <div class="fc-top-bar" style="width:100px;"></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;">
+          <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="fc-vline"></div>
+            <div class="fc-node branch" style="border-color:#38bdf8;color:#7dd3fc;background:#0a1f2e;">Proportionate</div>
+            <div class="fc-vline"></div>
+
+            <!-- 3 sub-columns -->
+            <div style="display:flex;gap:0;align-items:flex-start;">
+
+              <!-- Syndromes -->
+              <div class="fc-branch-col">
+                <div class="fc-top-bar" style="width:100%;"></div>
+                <div class="fc-vline"></div>
+                <div class="fc-node sub-branch synd">Syndromes</div>
+                <div class="fc-vline"></div>
+                <div class="fc-leaves">
+                  <div class="fc-node disease synd" data-disease="turner">Turner Syndrome</div>
+                  <div class="fc-node disease synd" data-disease="noonan">Noonan Syndrome</div>
+                  <div class="fc-node disease synd" data-disease="trisomy">Trisomy 13/18/21</div>
+                  <div class="fc-node disease synd" data-disease="prader">Prader-Willi Syndrome</div>
+                  <div class="fc-node disease synd" data-disease="russell">Russell-Silver Syndrome</div>
+                </div>
+              </div>
+
+              <div class="fc-hline" style="min-width:24px;margin-top:1px;"></div>
+
+              <!-- Normal Variant -->
+              <div class="fc-branch-col">
+                <div class="fc-top-bar" style="width:100%;"></div>
+                <div class="fc-vline"></div>
+                <div class="fc-node sub-branch norm">Normal Variant</div>
+                <div class="fc-vline"></div>
+                <div class="fc-leaves">
+                  <div class="fc-node disease norm" data-disease="fss">Familial Short Stature</div>
+                  <div class="fc-node disease norm" data-disease="cdgp">CDGP</div>
+                  <div class="fc-node disease norm" data-disease="iugr">IUGR / SGA</div>
+                  <div class="fc-node disease norm" data-disease="chronic">Chronic Diseases</div>
+                  <div class="fc-node disease norm" data-disease="malnutrition">Malnutrition</div>
+                </div>
+              </div>
+
+              <div class="fc-hline" style="min-width:24px;margin-top:1px;"></div>
+
+              <!-- Pathological -->
+              <div class="fc-branch-col">
+                <div class="fc-top-bar" style="width:100%;"></div>
+                <div class="fc-vline"></div>
+                <div class="fc-node sub-branch path">Pathological</div>
+                <div class="fc-vline"></div>
+                <div class="fc-leaves">
+                  <div class="fc-node disease path" data-disease="ghd">GH Deficiency</div>
+                  <div class="fc-node disease path" data-disease="thal">Thalassemia</div>
+                  <div class="fc-node disease path" data-disease="cushings">Cushing's (Childhood)</div>
+                  <div class="fc-node disease path" data-disease="precocious">Precocious Puberty / CAH</div>
+                  <div class="fc-node disease path" data-disease="steroids">Exogenous Steroids</div>
+                </div>
+              </div>
+
+            </div><!-- end 3 sub-cols -->
+          </div>
+        </div>
+      </div><!-- end proportionate col -->
+
+    </div><!-- end level 1 row -->
+
+   </div><!-- end fc-tree -->
+  </div><!-- end fc-wrap -->
+
+  <!-- Popup element -->
+  <div class="fc-popup" id="fc-popup">
+    <h4 id="fc-pop-title"></h4>
+    <div class="pop-onset" id="fc-pop-onset"></div>
+    <div class="pop-body" id="fc-pop-body"></div>
+    <div class="pop-clue" id="fc-pop-clue"></div>
+  </div>
+
+  <script>
+  (function(){
+    var diseases = {
+      achondroplasia: {
+        title: "Achondroplasia / Hypochondroplasia",
+        onset: "⏱️ Onset: Prenatal / congenital",
+        body: "FGFR3 mutation. Autosomal dominant. Rhizomelic limb shortening (proximal > distal). Normal trunk length. Large head, frontal bossing, trident hands.",
+        clue: "🔑 Clue: U:L ratio very low; arm span < height; X-ray shows short tubular bones"
+      },
+      mccune: {
+        title: "McCune-Albright Syndrome",
+        onset: "⏱️ Onset: Childhood",
+        body: "GNAS mutation (somatic mosaic). Triad: polyostotic fibrous dysplasia + café-au-lait spots (coast of Maine) + precocious puberty. Short due to early epiphyseal fusion.",
+        clue: "🔑 Clue: Irregular café-au-lait + bone pain/fractures + precocious puberty"
+      },
+      oi: {
+        title: "Osteogenesis Imperfecta",
+        onset: "⏱️ Onset: Congenital / early childhood",
+        body: "COL1A1/COL1A2 mutation. Brittle bones, blue sclerae, dentinogenesis imperfecta, hearing loss, joint laxity. Multiple fractures from minor trauma.",
+        clue: "🔑 Clue: Blue sclerae + recurrent fractures + short stature"
+      },
+      php: {
+        title: "Pseudohypoparathyroidism (AHO)",
+        onset: "⏱️ Onset: Childhood",
+        body: "GNAS loss-of-function. PTH resistance → hypocalcemia, hyperphosphatemia. Albright Hereditary Osteodystrophy: round face, short 4th metacarpal, obesity, subcutaneous calcifications.",
+        clue: "🔑 Clue: Short 4th/5th metacarpal + hypocalcemia + normal/high PTH"
+      },
+      "hypo-disp": {
+        title: "Hypothyroidism (Disproportionate type)",
+        onset: "⏱️ Onset: Any age; congenital if untreated",
+        body: "TSH↑, FT4↓. Causes disproportionate short stature via delayed bone maturation. Features: myxedema, coarse facies, bradycardia, constipation, delayed dentition. Bone age delayed.",
+        clue: "🔑 Clue: Bone age markedly delayed; weight↑; sluggish; delayed puberty"
+      },
+      turner: {
+        title: "Turner Syndrome (45,X)",
+        onset: "⏱️ Onset: Congenital; usually detected at puberty",
+        body: "45,X (or mosaic). Short stature (avg 143 cm), webbed neck, low posterior hairline, cubitus valgus, shield chest, widely-spaced nipples. Primary ovarian failure → delayed puberty.",
+        clue: "🔑 Clue: Short girl + no puberty + webbed neck; get karyotype in all short girls"
+      },
+      noonan: {
+        title: "Noonan Syndrome",
+        onset: "⏱️ Onset: Congenital",
+        body: "PTPN11 mutation (most common). Phenotype similar to Turner but affects both sexes. Short stature, webbed neck, pectus excavatum, pulmonary stenosis, cryptorchidism. Normal karyotype.",
+        clue: "🔑 Clue: Turner phenotype in male OR normal karyotype female; check cardiac (PS)"
+      },
+      trisomy: {
+        title: "Trisomy 13 / 18 / 21",
+        onset: "⏱️ Onset: Congenital",
+        body: "Trisomy 21 (Down): hypotonia, flat face, epicanthal folds, single palmar crease, ASD/VSD, intellectual disability. Trisomy 18 (Edwards): overlapping fingers, rocker-bottom feet, severe. Trisomy 13 (Patau): cleft lip/palate, polydactyly.",
+        clue: "🔑 Clue: Dysmorphic features from birth; confirm with karyotype"
+      },
+      prader: {
+        title: "Prader-Willi Syndrome",
+        onset: "⏱️ Onset: Congenital; obesity appears in childhood",
+        body: "Loss of paternal 15q11-q13. Neonatal hypotonia → childhood hyperphagia → obesity. Short stature, hypogonadism, almond-shaped eyes, small hands/feet, intellectual disability.",
+        clue: "🔑 Clue: Hypotonia at birth + hyperphagia obesity + hypogonadism"
+      },
+      russell: {
+        title: "Russell-Silver Syndrome",
+        onset: "⏱️ Onset: Congenital (IUGR)",
+        body: "11p15 or UPD(7)mat. Severe IUGR, short stature, body asymmetry, triangular face, clinodactyly 5th finger, relative macrocephaly, feeding difficulties in infancy.",
+        clue: "🔑 Clue: IUGR + body asymmetry + triangular face; no catch-up growth"
+      },
+      fss: {
+        title: "Familial Short Stature",
+        onset: "⏱️ Onset: From birth; consistent short height",
+        body: "Both parents short. Height tracks below −2 SDS but parallel to normal curve. Normal bone age. Normal growth velocity. Normal puberty. Predicted adult height = mid-parental height.",
+        clue: "🔑 Clue: Short parents; normal growth velocity; bone age = chronological age"
+      },
+      cdgp: {
+        title: "CDGP (Constitutional Delay of Growth & Puberty)",
+        onset: "⏱️ Onset: Growth slows at 2–3 years; delayed puberty",
+        body: "Most common in boys. Delayed bone age. Delayed but eventual normal puberty. Family history often present. Normal final height. Growth velocity normal for bone age.",
+        clue: "🔑 Clue: Bone age < chronological age; delayed puberty; will catch up; often male"
+      },
+      iugr: {
+        title: "IUGR / SGA",
+        onset: "⏱️ Onset: Congenital; most catch up by age 2",
+        body: "Birth weight/length < −2 SDS. Most (90%) show catch-up growth by age 2. Those who don't may benefit from GH therapy. Consider Russell-Silver if severe with dysmorphic features.",
+        clue: "🔑 Clue: No catch-up by age 2 = indication for GH; check for Russell-Silver"
+      },
+      chronic: {
+        title: "Chronic Diseases",
+        onset: "⏱️ Onset: Any age; depends on disease onset",
+        body: "IBD, celiac disease, chronic kidney disease, congenital heart disease, juvenile arthritis. Growth failure from chronic inflammation, malabsorption, steroid use, or poor nutrition.",
+        clue: "🔑 Clue: Systemic symptoms + poor weight gain + delayed bone age"
+      },
+      malnutrition: {
+        title: "Malnutrition",
+        onset: "⏱️ Onset: Any age; most impactful in first 1000 days",
+        body: "Weight affected before height. Weight-for-height ratio low. Global developmental delay in severe cases. Look for socioeconomic context, micronutrient deficiency.",
+        clue: "🔑 Clue: Weight < height percentile; dietary history key"
+      },
+      ghd: {
+        title: "GH Deficiency",
+        onset: "⏱️ Onset: Congenital or acquired; growth slows after infancy",
+        body: "Low IGF-1, low IGFBP-3. Failed GH stimulation test (<10 ng/mL). May have micropenis, hypoglycemia in neonates. Truncal adiposity, immature face, high-pitched voice. MRI: small pituitary/absent stalk.",
+        clue: "🔑 Clue: Height velocity ↓↓ + delayed bone age + immature facies; check IGF-1"
+      },
+      thal: {
+        title: "Thalassemia",
+        onset: "⏱️ Onset: Childhood (transfusion-dependent)",
+        body: "Chronic anemia + iron overload → GH deficiency, hypogonadism, hypothyroidism. Bone marrow expansion: chipmunk facies, frontal bossing, hepatosplenomegaly. Chelation therapy effects.",
+        clue: "🔑 Clue: Anemia + thalassemic facies + multiple endocrinopathies from iron overload"
+      },
+      cushings: {
+        title: "Cushing's Syndrome (Childhood)",
+        onset: "⏱️ Onset: Childhood; often iatrogenic",
+        body: "Hypercortisolemia inhibits GH and directly impairs growth. Key: weight ↑ while height ↓ (crossing percentiles). Moon face, buffalo hump, striae, hypertension. Most common cause: exogenous steroids.",
+        clue: "🔑 Clue: Weight ↑ + height ↓ = Cushing's until proven otherwise; check 24h UFC"
+      },
+      precocious: {
+        title: "Precocious Puberty / CAH",
+        onset: "⏱️ Onset: Before age 8 (girls), 9 (boys)",
+        body: "Initially tall for age, but accelerated epiphyseal fusion → short final height. CAH (21-hydroxylase): virilization, elevated 17-OHP. Precocious puberty: rapid growth + pubic/axillary hair + breast/testicular development early.",
+        clue: "🔑 Clue: Tall child becoming short adult; advanced bone age; early pubic hair/development"
+      },
+      steroids: {
+        title: "Exogenous Steroids",
+        onset: "⏱️ Onset: Depends on duration/dose of exposure",
+        body: "Prolonged supraphysiologic corticosteroids (asthma, nephrotic syndrome, IBD) suppress GH axis and directly inhibit IGF-1. Cushingoid features. Dose- and duration-dependent growth suppression.",
+        clue: "🔑 Clue: Steroid history + cushingoid features + growth faltering"
+      }
+    };
+
+    var popup = document.getElementById('fc-popup');
+    var nodes = document.querySelectorAll('.fc-node[data-disease]');
+
+    function showPopup(e, key) {
+      var d = diseases[key];
+      if(!d) return;
+      document.getElementById('fc-pop-title').textContent = d.title;
+      document.getElementById('fc-pop-onset').textContent = d.onset;
+      document.getElementById('fc-pop-body').textContent = d.body;
+      document.getElementById('fc-pop-clue').textContent = d.clue;
+      popup.classList.add('visible');
+      movePopup(e);
+    }
+
+    function movePopup(e) {
+      var x = e.clientX + 16, y = e.clientY + 16;
+      if(x + 340 > window.innerWidth) x = e.clientX - 340;
+      if(y + 200 > window.innerHeight) y = e.clientY - 180;
+      popup.style.left = x + 'px';
+      popup.style.top = y + 'px';
+    }
+
+    nodes.forEach(function(node) {
+      var key = node.getAttribute('data-disease');
+      node.addEventListener('mouseenter', function(e){ showPopup(e, key); });
+      node.addEventListener('mousemove', function(e){ movePopup(e); });
+      node.addEventListener('mouseleave', function(){ popup.classList.remove('visible'); });
+      node.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(popup.classList.contains('visible') && popup.dataset.active === key) {
+          popup.classList.remove('visible'); popup.dataset.active='';
+        } else {
+          showPopup(e, key);
+          popup.style.pointerEvents = 'auto';
+          popup.dataset.active = key;
+        }
+      });
+    });
+
+    document.addEventListener('click', function(){ popup.classList.remove('visible'); popup.dataset.active=''; });
+  })();
+  </script>
+  <!-- ══ END FLOWCHART ══ -->
+
 </div>
 
 <!-- ══ TURNER SYNDROME ══ -->
