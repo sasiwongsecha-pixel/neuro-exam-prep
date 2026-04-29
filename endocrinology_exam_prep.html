@@ -2259,6 +2259,590 @@
 </div>
 
 
+<!-- ══ HYPOTHYROIDISM ══ -->
+<div id="page-hypothyroidism" class="page">
+  <div class="topic-header" style="background: linear-gradient(135deg, #1e3a5f, #374151);">
+    <h2>🌡️ Hypothyroidism</h2>
+    <div class="subtitle">TSH ↑ + FT4 ↓ — Underactive thyroid gland</div>
+    <div class="topic-tags"><span class="tag">Primary vs Central</span><span class="tag">Myxedema coma</span><span class="tag">Levothyroxine</span></div>
+  </div>
+
+  <div class="ptab-bar">
+    <div class="ptab active" onclick="switchTab(this,'hypo-overview')">📋 Overview</div>
+    <div class="ptab" onclick="switchTab(this,'hypo-approach')">🔎 Approach</div>
+    <div class="ptab" onclick="switchTab(this,'hypo-labs')">🧪 Labs</div>
+    <div class="ptab" onclick="switchTab(this,'hypo-treatment')">💊 Treatment</div>
+  </div>
+
+  <div id="hypo-overview" class="ptab-panel active">
+    <div class="onset-box">
+      <div class="box-title">⏱️ Onset & Common Causes</div>
+      <ul class="styled">
+        <li><strong>Primary (95%):</strong> Hashimoto thyroiditis (autoimmune, most common), post-radioiodine, post-thyroidectomy, iodine deficiency, drugs (amiodarone, lithium)</li>
+        <li><strong>Central (5%):</strong> Pituitary (secondary) — TSH ↓; Hypothalamic (tertiary) — TRH ↓. Both cause inappropriately low/normal TSH with low FT4</li>
+        <li><strong>Transient:</strong> Subacute thyroiditis (painful), postpartum thyroiditis (painless)</li>
+        <li><strong>Subclinical:</strong> TSH elevated, FT4 normal — treat if TSH &gt;10 or symptomatic</li>
+      </ul>
+    </div>
+    <div class="grid-2">
+      <div class="clue-box">
+        <div class="box-title">⚠️ Classic Clinical Features</div>
+        <ul class="styled orange">
+          <li><span class="hl">Fatigue, cold intolerance, weight gain</span></li>
+          <li><span class="hl">Constipation, dry skin, hair loss</span></li>
+          <li><span class="hl">Bradycardia, slow relaxation of DTRs</span> (hung-up reflex)</li>
+          <li><span class="hl">Puffy face, non-pitting edema</span> (myxedema)</li>
+          <li><span class="hl">Menorrhagia / anovulation</span></li>
+          <li><span class="hl">Hoarse voice, macroglossia</span></li>
+          <li>Raised cholesterol, mild hyponatremia, elevated CK</li>
+        </ul>
+      </div>
+      <div class="finding-box">
+        <div class="box-title">🔬 Hashimoto Thyroiditis</div>
+        <ul class="styled green">
+          <li><strong>Most common cause</strong> of primary hypothyroidism worldwide</li>
+          <li>Goitrous Hashimoto: rubbery firm goiter, lobulated surface</li>
+          <li>Atrophic Hashimoto: small thyroid (after fibrosis)</li>
+          <li><span class="hl-green">Anti-TPO antibodies</span> — highly positive (marker)</li>
+          <li>Anti-thyroglobulin antibodies also positive</li>
+          <li>Associated with other autoimmune: T1DM, Addison, vitiligo</li>
+          <li>10× more common in women; peak age 30–50y</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="hypo-approach" class="ptab-panel">
+    <div class="approach-box">
+      <div class="box-title">🔎 Approach to Hypothyroidism</div>
+      <div class="steps">
+        <div class="step"><div class="step-num" style="background:#374151">1</div>
+          <div class="step-content"><strong>Measure TSH first</strong><p>If TSH ↑ → confirm with FT4. If TSH ↓ or normal with low FT4 → central hypothyroidism (check pituitary)</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#374151">2</div>
+          <div class="step-content"><strong>Determine cause</strong><p>Anti-TPO antibodies (Hashimoto), thyroid ultrasound (goiter? nodules?), drug history (amiodarone, lithium)</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#374151">3</div>
+          <div class="step-content"><strong>Assess severity</strong><p>Subclinical (TSH↑, normal FT4) vs Overt (TSH↑↑, low FT4) vs Myxedema coma (emergency)</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#374151">4</div>
+          <div class="step-content"><strong>Screen for complications</strong><p>Cholesterol panel, CBC (normocytic anemia), CK (rhabdomyolysis risk), cortisol (autoimmune adrenal insufficiency co-exists)</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="danger-box">
+      <div class="box-title">🚨 Myxedema Coma — Emergency</div>
+      <ul class="styled red">
+        <li>Precipitants: cold exposure, infection, surgery, sedatives, trauma in undertreated/undiagnosed hypothyroidism</li>
+        <li>Features: altered consciousness, hypothermia (T &lt;35°C), bradycardia, hypotension, hypoventilation, hyponatremia</li>
+        <li><strong>Treatment:</strong> IV T4 300–500 µg loading + T3 5–20 µg q8h (or T4 alone). Hydrocortisone 100mg IV (cover for co-existing adrenal insufficiency). Warm patient, supportive care.</li>
+        <li>Mortality 20–40% even with treatment</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="hypo-labs" class="ptab-panel">
+    <div class="section-heading">🧪 Diagnostic Ladder</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Test</th><th>Primary Hypo</th><th>Central Hypo</th><th>Subclinical</th></tr>
+        <tr><td>TSH</td><td class="red">↑↑ (often &gt;10)</td><td class="highlight">↓ or normal</td><td class="red">↑ (4.5–10)</td></tr>
+        <tr><td>FT4</td><td class="red">↓</td><td class="red">↓</td><td class="green">Normal</td></tr>
+        <tr><td>FT3</td><td>↓ (late)</td><td>↓</td><td>Normal</td></tr>
+        <tr><td>Anti-TPO</td><td class="highlight">↑↑ (Hashimoto)</td><td>Negative</td><td>May be ↑</td></tr>
+        <tr><td>Cholesterol</td><td>↑ (dyslipidemia)</td><td>↑</td><td>May be ↑</td></tr>
+        <tr><td>Prolactin</td><td>May be mildly ↑ (TRH → lactotroph)</td><td>—</td><td>—</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 Special scenarios</div>
+      <ul class="styled">
+        <li><strong>TSH ↑ + normal FT4 in sick patient</strong> → recovery phase from non-thyroidal illness (do not treat)</li>
+        <li><strong>Low TSH + low FT4 in critically ill</strong> → sick euthyroid syndrome (central pattern), not true central hypo</li>
+        <li><strong>Amiodarone</strong> → can cause BOTH hypo and hyperthyroidism. TSH most reliable test on amiodarone</li>
+        <li><strong>Biotin interference</strong> → falsely low TSH, falsely high FT4 (biotin supplements affect immunoassay)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="hypo-treatment" class="ptab-panel">
+    <div class="approach-box">
+      <div class="box-title">💊 Levothyroxine Therapy</div>
+      <ul class="styled">
+        <li><strong>Starting dose:</strong> 1.6 µg/kg/day (full replacement for healthy adult). Start LOW (25–50 µg) in elderly or cardiac disease</li>
+        <li><strong>Target TSH:</strong> 0.5–2.5 mIU/L (pregnancy: 0.1–2.5 in T1; 0.2–3.0 in T2/T3)</li>
+        <li><strong>Recheck TSH:</strong> 4–6 weeks after dose change</li>
+        <li><strong>Take on empty stomach</strong>, 30–60 min before breakfast. Separate from calcium, iron, PPIs by 4h</li>
+        <li><strong>Subclinical hypothyroidism treatment</strong> if: TSH &gt;10, pregnancy (or planning), symptomatic, anti-TPO positive, dyslipidemia</li>
+      </ul>
+    </div>
+    <div class="grid-2">
+      <div class="clue-box">
+        <div class="box-title">⚠️ Drug Interactions (reduce T4 absorption)</div>
+        <ul class="styled orange">
+          <li>Calcium carbonate</li>
+          <li>Iron supplements</li>
+          <li>PPIs (omeprazole)</li>
+          <li>Cholestyramine</li>
+          <li>Sucralfate</li>
+        </ul>
+      </div>
+      <div class="finding-box">
+        <div class="box-title">🔬 Pregnancy & Hypothyroidism</div>
+        <ul class="styled green">
+          <li>Untreated = miscarriage, preeclampsia, fetal neurodevelopment ↓</li>
+          <li>Need 25–50% more T4 from 4–6 weeks gestation</li>
+          <li>Check TSH every trimester</li>
+          <li>Postpartum thyroiditis: silent thyroiditis → transient hyper → hypo → recovery (90%)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section-heading">🃏 Key Flashcards</div>
+    <div class="flashcard-grid">
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">Hung-up reflex sign?</div>
+          <div class="flashcard-back">Slow relaxation phase of deep tendon reflexes — classic sign of hypothyroidism. Due to slowed muscle metabolism</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">Central vs Primary hypothyroidism?</div>
+          <div class="flashcard-back">Primary: TSH↑↑, FT4↓. Central (pituitary/hypothalamic): TSH low or inappropriately normal, FT4↓. MRI pituitary for central</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">Myxedema coma triad?</div>
+          <div class="flashcard-back">Hypothermia + Altered consciousness + Precipitating event (cold/infection/drugs) in undertreated hypothyroid patient</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ HYPERTHYROIDISM ══ -->
+<div id="page-hyperthyroidism" class="page">
+  <div class="topic-header" style="background: linear-gradient(135deg, #7c2d12, #b45309);">
+    <h2>🔥 Hyperthyroidism</h2>
+    <div class="subtitle">TSH ↓ + FT4/FT3 ↑ — Overactive thyroid</div>
+    <div class="topic-tags"><span class="tag">Graves disease</span><span class="tag">Thyroid storm</span><span class="tag">Toxic nodule</span></div>
+  </div>
+
+  <div class="ptab-bar">
+    <div class="ptab active" onclick="switchTab(this,'hyper-overview')">📋 Overview</div>
+    <div class="ptab" onclick="switchTab(this,'hyper-compare')">⚖️ DDx</div>
+    <div class="ptab" onclick="switchTab(this,'hyper-treatment')">💊 Treatment</div>
+    <div class="ptab" onclick="switchTab(this,'hyper-crisis')">🚨 Thyroid Storm</div>
+  </div>
+
+  <div id="hyper-overview" class="ptab-panel active">
+    <div class="grid-2">
+      <div class="clue-box">
+        <div class="box-title">⚠️ Classic Symptoms</div>
+        <ul class="styled orange">
+          <li><span class="hl">Heat intolerance, sweating</span></li>
+          <li><span class="hl">Palpitations, tachycardia</span>, AF (especially elderly)</li>
+          <li><span class="hl">Weight loss despite increased appetite</span></li>
+          <li><span class="hl">Tremor, anxiety, insomnia</span></li>
+          <li><span class="hl">Proximal muscle weakness</span></li>
+          <li><span class="hl">Diarrhea, frequent stools</span></li>
+          <li>Oligomenorrhea, impaired fertility</li>
+          <li><span class="hl">Apathetic hyperthyroidism</span> — elderly: fatigue, AF, weight loss, NO classic symptoms</li>
+        </ul>
+      </div>
+      <div class="finding-box">
+        <div class="box-title">🔬 Graves Disease — Specific Signs</div>
+        <ul class="styled green">
+          <li><span class="hl-green">Diffuse goiter</span> — smooth, soft, bruit on auscultation</li>
+          <li><span class="hl-green">Exophthalmos (proptosis)</span> — autoimmune orbital involvement</li>
+          <li><span class="hl-green">Pretibial myxedema</span> — orange-peel skin over shins (specific!)</li>
+          <li><span class="hl-green">Thyroid acropachy</span> — clubbing + periosteal new bone (rare)</li>
+          <li><span class="hl-green">Lid lag / lid retraction</span> — sympathetic overactivity</li>
+          <li>TSH receptor antibodies (TRAb) — diagnostic</li>
+        </ul>
+      </div>
+    </div>
+    <div class="onset-box">
+      <div class="box-title">⏱️ Main Causes of Hyperthyroidism</div>
+      <ul class="styled">
+        <li><strong>Graves disease (80%):</strong> TRAb stimulates TSH-R → diffuse thyroid overactivity. Young women, autoimmune</li>
+        <li><strong>Toxic multinodular goiter (Plummer):</strong> Multiple autonomous nodules. Older patients. Triggered by iodine (Jod-Basedow)</li>
+        <li><strong>Toxic adenoma:</strong> Single hot nodule on scan. TSH suppressed, rest of gland suppressed</li>
+        <li><strong>Subacute thyroiditis (DeQuervain):</strong> Painful, post-viral, transient hyperthyroid → hypothyroid → recovery. Elevated ESR</li>
+        <li><strong>Exogenous thyroid hormone:</strong> Thyroglobulin ↓ (distinguishes from endogenous)</li>
+        <li><strong>Amiodarone-induced:</strong> Type 1 (excess iodine, goiter) vs Type 2 (destructive thyroiditis)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="hyper-compare" class="ptab-panel">
+    <div class="section-heading">⚖️ Differential Diagnosis Table</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Feature</th><th>Graves</th><th>Toxic MNG</th><th>Subacute Thyroiditis</th><th>Toxic Adenoma</th></tr>
+        <tr><td>Goiter</td><td class="highlight">Diffuse, soft, bruit</td><td class="green">Multi-nodular</td><td class="red">Tender</td><td>Single nodule</td></tr>
+        <tr><td>TRAb</td><td class="highlight">Positive</td><td>Negative</td><td>Negative</td><td>Negative</td></tr>
+        <tr><td>Anti-TPO</td><td>May be ↑</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>RAI scan</td><td class="highlight">Diffuse uptake ↑</td><td>Patchy ↑</td><td class="red">Uptake ↓</td><td>Hot nodule, rest suppressed</td></tr>
+        <tr><td>ESR</td><td>Normal</td><td>Normal</td><td class="red">↑↑</td><td>Normal</td></tr>
+        <tr><td>Course</td><td>Chronic, remissions</td><td>Persistent</td><td>Self-limiting 2–6 mo</td><td>Persistent</td></tr>
+        <tr><td>Pain</td><td>None</td><td>None</td><td class="red">Painful thyroid</td><td>None</td></tr>
+      </table>
+    </div>
+    <div class="clue-box">
+      <div class="box-title">⚠️ Key Clues in Exams</div>
+      <ul class="styled orange">
+        <li><span class="hl">Pretibial myxedema</span> = GRAVES only (never in other causes)</li>
+        <li><span class="hl">Low RAI uptake + neck pain + ↑ESR</span> = Subacute thyroiditis</li>
+        <li><span class="hl">Iodine contrast / amiodarone</span> → can trigger Jod-Basedow in pre-existing nodular goiter</li>
+        <li><span class="hl">Suppressed Tg + exogenous source</span> = Factitious thyrotoxicosis</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="hyper-treatment" class="ptab-panel">
+    <div class="approach-box">
+      <div class="box-title">💊 Treatment Overview</div>
+      <div class="steps">
+        <div class="step"><div class="step-num" style="background:#b45309">1</div>
+          <div class="step-content"><strong>Beta-blocker first</strong><p>Propranolol (or atenolol) for immediate symptom control: tachycardia, tremor, anxiety. ALL patients with hyperthyroidism</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#b45309">2</div>
+          <div class="step-content"><strong>Antithyroid drugs (ATD)</strong><p>Methimazole (MMI, preferred) or Propylthiouracil (PTU, preferred in 1st trimester pregnancy + thyroid storm). Block thyroid hormone synthesis. PTU also blocks T4→T3 conversion</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#b45309">3</div>
+          <div class="step-content"><strong>Definitive: RAI or Surgery</strong><p>RAI (I-131): Graves, toxic MNG, toxic adenoma. Surgery: large goiter with compressive symptoms, malignancy suspected, pregnant (2nd trimester), unable to tolerate ATD</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔬 ATD Side Effects</div>
+        <ul class="styled">
+          <li><strong>Agranulocytosis</strong> (0.3%): fever + sore throat → STOP drug, CBC urgent. Occurs in first 3 months</li>
+          <li>Liver toxicity (PTU &gt; MMI) → LFT monitoring</li>
+          <li>Vasculitis (PTU-induced ANCA)</li>
+          <li>Rash, arthralgia (cross-react between PTU/MMI)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🤰 Pregnancy & Hyperthyroidism</div>
+        <ul class="styled">
+          <li><strong>1st trimester:</strong> PTU preferred (MMI teratogenic — aplasia cutis, choanal atresia)</li>
+          <li><strong>2nd/3rd trimester:</strong> Switch to MMI (PTU hepatotoxicity risk)</li>
+          <li>TRAb crosses placenta → neonatal Graves</li>
+          <li>Uncontrolled hyperthyroidism: preterm, IUGR, fetal loss</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="hyper-crisis" class="ptab-panel">
+    <div class="danger-box">
+      <div class="box-title">🚨 Thyroid Storm (Thyrotoxic Crisis)</div>
+      <ul class="styled red">
+        <li><strong>Precipitants:</strong> Surgery, RAI, iodine load, infection, trauma in uncontrolled hyperthyroid patient</li>
+        <li><strong>Features (Burch-Wartofsky score):</strong> Fever &gt;38.5°C, tachycardia &gt;130, CNS dysfunction (agitation/psychosis/coma), GI symptoms (vomiting/diarrhea/jaundice), CHF</li>
+        <li><strong>Score ≥45 = thyroid storm; 25–44 = impending storm</strong></li>
+      </ul>
+    </div>
+    <div class="approach-box">
+      <div class="box-title">🔎 Treatment of Thyroid Storm — in ORDER</div>
+      <div class="steps">
+        <div class="step"><div class="step-num" style="background:#dc2626">1</div>
+          <div class="step-content"><strong>PTU 500–1000mg loading, then 250mg q4h</strong><p>Blocks synthesis AND T4→T3 conversion. FIRST antithyroid agent to give</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#dc2626">2</div>
+          <div class="step-content"><strong>Iodine (1h after PTU)</strong><p>Lugol's iodine or SSKI — blocks thyroid hormone release (Wolff-Chaikoff). MUST give PTU FIRST to prevent using iodine for new hormone synthesis</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#dc2626">3</div>
+          <div class="step-content"><strong>Beta-blocker IV (propranolol)</strong><p>Controls heart rate + blocks T4→T3 (at high doses)</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#dc2626">4</div>
+          <div class="step-content"><strong>Hydrocortisone 100mg IV q8h</strong><p>Blocks T4→T3, covers relative adrenal insufficiency. Also reduces mortality</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#dc2626">5</div>
+          <div class="step-content"><strong>Cooling, IV fluids, treat precipitant</strong><p>Cooling blanket (NOT aspirin — displaces T4 from TBG). Identify and treat infection</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="clue-box">
+      <div class="box-title">⚠️ Memory: Thyroid Storm Treatment Order</div>
+      <ul class="styled orange">
+        <li><strong>P</strong>TU → <strong>I</strong>odine (wait 1h) → <strong>B</strong>eta-blocker → <strong>H</strong>ydrocortisone</li>
+        <li><span class="hl">NEVER give iodine before PTU</span> — it provides substrate for more hormone synthesis</li>
+        <li>Use cooling blanket, NOT aspirin (aspirin displaces T4 from thyroid-binding globulin)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ DIABETES MELLITUS ══ -->
+<div id="page-diabetes" class="page">
+  <div class="topic-header" style="background: linear-gradient(135deg, #064e3b, #1e40af);">
+    <h2>🩺 Diabetes Mellitus</h2>
+    <div class="subtitle">Type 1 vs Type 2 — Diagnosis, Management &amp; Complications</div>
+    <div class="topic-tags"><span class="tag">Type 1 vs 2</span><span class="tag">ADA criteria</span><span class="tag">HbA1c targets</span><span class="tag">Complications</span></div>
+  </div>
+
+  <div class="ptab-bar">
+    <div class="ptab active" onclick="switchTab(this,'dm-compare')">⚖️ T1 vs T2</div>
+    <div class="ptab" onclick="switchTab(this,'dm-diagnosis')">🧪 Diagnosis</div>
+    <div class="ptab" onclick="switchTab(this,'dm-management')">💊 Management</div>
+    <div class="ptab" onclick="switchTab(this,'dm-complications')">⚠️ Complications</div>
+  </div>
+
+  <div id="dm-compare" class="ptab-panel active">
+    <div class="section-heading">⚖️ Type 1 vs Type 2 — Key Differences</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Feature</th><th>Type 1 DM</th><th>Type 2 DM</th></tr>
+        <tr><td>Pathogenesis</td><td>Autoimmune β-cell destruction → absolute insulin deficiency</td><td>Insulin resistance + progressive β-cell failure</td></tr>
+        <tr><td>Age at onset</td><td class="highlight">Usually &lt;30y (any age)</td><td class="green">Usually &gt;40y (but rising in youth)</td></tr>
+        <tr><td>Body habitus</td><td class="highlight">Normal/thin</td><td class="green">Obese (80%)</td></tr>
+        <tr><td>Onset</td><td class="red">Acute (days-weeks), DKA-prone</td><td>Insidious (years)</td></tr>
+        <tr><td>C-peptide</td><td class="red">Very low/undetectable</td><td class="green">Normal or elevated (early)</td></tr>
+        <tr><td>Autoantibodies</td><td class="highlight">Anti-GAD, IA-2, anti-insulin, ZnT8</td><td>Negative</td></tr>
+        <tr><td>Family history</td><td>HLA-DR3/DR4 risk</td><td class="green">Strong family history (polygenic)</td></tr>
+        <tr><td>Treatment</td><td class="red">Insulin ALWAYS required</td><td>Lifestyle → oral agents → GLP-1/insulin</td></tr>
+        <tr><td>DKA risk</td><td class="red">High (life-threatening)</td><td>Low (can occur in stress)</td></tr>
+        <tr><td>HHS risk</td><td>Very low</td><td class="red">High (especially elderly)</td></tr>
+      </table>
+    </div>
+    <div class="clue-box">
+      <div class="box-title">⚠️ LADA — Don't Miss</div>
+      <ul class="styled orange">
+        <li><span class="hl">Latent Autoimmune Diabetes in Adults (LADA):</span> Adult-onset (age &gt;30y), initially looks like T2DM but has autoantibodies (anti-GAD)</li>
+        <li>Progresses to insulin dependence faster than T2DM</li>
+        <li>Screen with anti-GAD in: lean adult "T2DM", rapid progression, poor response to oral agents</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="dm-diagnosis" class="ptab-panel">
+    <div class="section-heading">🧪 ADA Diagnostic Criteria (2024)</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Test</th><th>Normal</th><th>Prediabetes</th><th>Diabetes</th></tr>
+        <tr><td>Fasting plasma glucose</td><td>&lt;100 mg/dL</td><td class="highlight">100–125 mg/dL (IFG)</td><td class="red">≥126 mg/dL</td></tr>
+        <tr><td>2h OGTT (75g)</td><td>&lt;140 mg/dL</td><td class="highlight">140–199 mg/dL (IGT)</td><td class="red">≥200 mg/dL</td></tr>
+        <tr><td>HbA1c</td><td>&lt;5.7%</td><td class="highlight">5.7–6.4%</td><td class="red">≥6.5%</td></tr>
+        <tr><td>Random glucose + symptoms</td><td>—</td><td>—</td><td class="red">≥200 mg/dL + polyuria/polydipsia</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">📌 Key Rules</div>
+      <ul class="styled">
+        <li>In <strong>asymptomatic</strong> patients: 2 abnormal results needed for diagnosis (except random glucose ≥200 with symptoms = 1 test sufficient)</li>
+        <li>HbA1c <strong>unreliable</strong> in: hemolytic anemia, hemoglobinopathy (HbS/HbC), iron deficiency, G6PD deficiency, recent blood transfusion</li>
+        <li>Target HbA1c: <strong>&lt;7.0%</strong> for most adults; &lt;8.0% for elderly/high hypoglycemia risk; &lt;6.5% for selected young/new onset patients</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="dm-management" class="ptab-panel">
+    <div class="approach-box">
+      <div class="box-title">💊 T2DM Management Algorithm</div>
+      <div class="steps">
+        <div class="step"><div class="step-num" style="background:#065f46">1</div>
+          <div class="step-content"><strong>Lifestyle modification (always)</strong><p>Diet, weight loss 5–10% (most effective in T2DM), exercise 150 min/week moderate intensity</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#065f46">2</div>
+          <div class="step-content"><strong>Metformin (first-line)</strong><p>↓ hepatic glucose output. GI side effects. Contraindicated: eGFR &lt;30, contrast agent use, acute illness. Lactic acidosis risk (rare)</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#065f46">3</div>
+          <div class="step-content"><strong>Add second agent based on comorbidities</strong><p>CVD/high CV risk: GLP-1RA (liraglutide, semaglutide) or SGLT-2i (empagliflozin) — proven CV mortality benefit. HF or CKD: SGLT-2i preferred. Weight loss needed: GLP-1RA</p></div>
+        </div>
+        <div class="step"><div class="step-num" style="background:#065f46">4</div>
+          <div class="step-content"><strong>Escalate to insulin if targets not met</strong><p>Basal insulin first (glargine/detemir once daily at bedtime). Add prandial insulin (rapid-acting) if still not at target</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">💊 Drug Summary</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Drug Class</th><th>Benefit</th><th>Key Side Effect</th></tr>
+            <tr><td>Metformin</td><td>Weight neutral/↓</td><td>GI, lactic acidosis</td></tr>
+            <tr><td>SGLT-2i</td><td>CV/renal benefit</td><td>UTI, DKA (euglycemic)</td></tr>
+            <tr><td>GLP-1RA</td><td>CV benefit, weight ↓</td><td>GI, pancreatitis</td></tr>
+            <tr><td>SU (glipizide)</td><td>Cheap, effective</td><td>Hypoglycemia, weight ↑</td></tr>
+            <tr><td>DPP-4i</td><td>Weight neutral</td><td>Nasopharyngitis</td></tr>
+            <tr><td>TZD (pioglitazone)</td><td>Liver benefit (NASH)</td><td>Fluid retention, fracture</td></tr>
+            <tr><td>Insulin</td><td>Most potent</td><td>Hypoglycemia, weight ↑</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 Treatment Targets</div>
+        <ul class="styled">
+          <li><strong>HbA1c:</strong> &lt;7.0% (most), &lt;6.5% (young/newly diagnosed), &lt;8.0% (elderly/comorbid)</li>
+          <li><strong>BP:</strong> &lt;130/80 mmHg</li>
+          <li><strong>LDL:</strong> &lt;70 mg/dL (high CV risk), statin for all T2DM ≥40y</li>
+          <li><strong>Pre-prandial glucose:</strong> 80–130 mg/dL</li>
+          <li><strong>Post-prandial (2h):</strong> &lt;180 mg/dL</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="dm-complications" class="ptab-panel">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">⚠️ Microvascular Complications</div>
+        <ul class="styled">
+          <li><strong>Retinopathy:</strong> Leading cause of blindness in adults. NPDR → PDR (neovascularization). Screen: annual fundus from dx (T2DM) or after 5y (T1DM). Rx: tight glycemic control, anti-VEGF, laser</li>
+          <li><strong>Nephropathy:</strong> Microalbuminuria → macroalbuminuria → ESRD. BP control + RAAS blockade (ACEi/ARB) + SGLT-2i slow progression</li>
+          <li><strong>Neuropathy:</strong> Distal symmetric polyneuropathy (glove-stocking). Rx: pregabalin, duloxetine, amitriptyline for pain</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🫀 Macrovascular Complications</div>
+        <ul class="styled">
+          <li><strong>CVD:</strong> 2–4× increased risk of MI, stroke. Screen with ECG, lipids, BP</li>
+          <li><strong>Peripheral arterial disease:</strong> Claudication, absent pulses, ABI &lt;0.9</li>
+          <li><strong>Diabetic foot:</strong> Neuropathy + PAD + infection. Risk of amputation. Annual foot exam essential</li>
+          <li><strong>Prevention:</strong> Statin + ACEi/ARB + aspirin (in CVD) + GLP-1RA/SGLT-2i for CV benefit</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section-heading">🃏 Key Flashcards</div>
+    <div class="flashcard-grid">
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">First drug for T2DM?</div>
+          <div class="flashcard-back">Metformin (+ lifestyle). Unless eGFR &lt;30, contrast, or acute illness. Add SGLT-2i if CVD or HF</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">C-peptide in T1DM?</div>
+          <div class="flashcard-back">Very low/undetectable — reflects absent endogenous insulin secretion. Useful to distinguish T1DM from T2DM</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">SGLT-2i extra benefits?</div>
+          <div class="flashcard-back">CV mortality ↓ (empagliflozin EMPA-REG). Renal protection (reduces proteinuria). Heart failure hospitalization ↓. Weight ↓</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">HbA1c unreliable when?</div>
+          <div class="flashcard-back">Hemolytic anemia, hemoglobinopathy (HbS/C), iron deficiency, G6PD, recent transfusion → use fructosamine or continuous glucose monitoring instead</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ DKA / HHS ══ -->
+<div id="page-dka-hhs" class="page">
+  <div class="topic-header" style="background: linear-gradient(135deg, #7f1d1d, #1e3a5f);">
+    <h2>🚨 DKA / HHS</h2>
+    <div class="subtitle">Hyperglycemic Emergencies — Diagnose &amp; Treat Fast</div>
+    <div class="topic-tags"><span class="tag">DKA</span><span class="tag">HHS</span><span class="tag">Fluid first</span><span class="tag">K+ monitoring</span></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="clue-box">
+      <div class="box-title">⚠️ DKA vs HHS Comparison</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Feature</th><th>DKA</th><th>HHS</th></tr>
+          <tr><td>Glucose</td><td>&gt;250 mg/dL (often 300–600)</td><td class="red">&gt;600 mg/dL</td></tr>
+          <tr><td>pH</td><td class="red">&lt;7.3</td><td>Normal (&gt;7.3)</td></tr>
+          <tr><td>Bicarbonate</td><td class="red">&lt;18 mEq/L</td><td>Normal (&gt;15)</td></tr>
+          <tr><td>Anion gap</td><td class="red">↑ (&gt;12)</td><td>Normal or mild ↑</td></tr>
+          <tr><td>Ketones</td><td class="red">Positive (serum + urine)</td><td>Absent/trace</td></tr>
+          <tr><td>Osmolality</td><td>Variable</td><td class="red">&gt;320 mOsm/kg</td></tr>
+          <tr><td>Onset</td><td class="red">Hours (24h)</td><td>Days to weeks</td></tr>
+          <tr><td>Patient</td><td class="highlight">T1DM (any age)</td><td class="highlight">Elderly T2DM</td></tr>
+          <tr><td>Consciousness</td><td>Usually alert (unless severe)</td><td class="red">Obtunded (osmolality ↑)</td></tr>
+          <tr><td>Mortality</td><td>&lt;1%</td><td class="red">5–20%</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="finding-box">
+      <div class="box-title">🔬 DKA Precipitants (The 5 I's)</div>
+      <ul class="styled green">
+        <li><strong>Insulin omission</strong> (most common, non-compliance)</li>
+        <li><strong>Infection</strong> (UTI, pneumonia — increases counter-regulatory hormones)</li>
+        <li><strong>Infarction</strong> (MI, stroke)</li>
+        <li><strong>Ischemia/surgery</strong></li>
+        <li><strong>Intoxication/drugs</strong> (SGLT-2i euglycemic DKA, corticosteroids)</li>
+        <li>New-onset T1DM (first presentation)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="approach-box">
+    <div class="box-title">🔎 DKA Management — "FLUID-K-INSULIN"</div>
+    <div class="steps">
+      <div class="step"><div class="step-num" style="background:#dc2626">1</div>
+        <div class="step-content"><strong>IV Fluid resuscitation FIRST</strong><p>0.9% NaCl 1L in first hour, then 500mL/h. Switch to 0.45% NaCl if corrected Na+ normal/high. Add dextrose when glucose &lt;250 mg/dL</p></div>
+      </div>
+      <div class="step"><div class="step-num" style="background:#dc2626">2</div>
+        <div class="step-content"><strong>Potassium replacement BEFORE insulin if K+ &lt;3.5</strong><p>Insulin drives K+ INTO cells → can cause fatal hypokalemia. HOLD insulin if K+ &lt;3.5. Add KCl to fluids to keep K+ 4.0–5.0 mEq/L</p></div>
+      </div>
+      <div class="step"><div class="step-num" style="background:#dc2626">3</div>
+        <div class="step-content"><strong>Insulin infusion</strong><p>Regular insulin 0.1 unit/kg/h IV. Do NOT give bolus (worsens hypokalemia, cerebral edema risk). Reduce to 0.05 u/kg/h when glucose &lt;250. Continue until AG normalized</p></div>
+      </div>
+      <div class="step"><div class="step-num" style="background:#dc2626">4</div>
+        <div class="step-content"><strong>Monitor hourly: glucose, K+, AG</strong><p>Resolution criteria: glucose &lt;200 + AG &lt;12 + bicarb &gt;15 + pH &gt;7.3. Transition to SC insulin 1–2h overlap before stopping IV</p></div>
+      </div>
+      <div class="step"><div class="step-num" style="background:#dc2626">5</div>
+        <div class="step-content"><strong>Identify and treat precipitant</strong><p>Blood cultures, CXR, ECG, UA. Broad-spectrum antibiotics if infection suspected</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="danger-box">
+    <div class="box-title">🚨 Pitfalls That Kill — Do NOT</div>
+    <ul class="styled red">
+      <li><span class="hl-red">Give insulin when K+ &lt;3.5</span> → fatal hypokalemia. Replete K+ first!</li>
+      <li><span class="hl-red">Give bicarbonate routinely</span> → paradoxical CSF acidosis, cerebral edema, worsens hypokalemia. Only if pH &lt;6.9</li>
+      <li><span class="hl-red">Stop insulin too soon</span> → base gap must fully close, not just glucose normalization</li>
+      <li><span class="hl-red">Rapid correction of hypernatremia in HHS</span> → cerebral edema. Lower Na+ ≤10 mEq/L per 24h</li>
+      <li><span class="hl-red">Miss euglycemic DKA</span> (SGLT-2i) → glucose can be &lt;200 but ketones and AG still elevated</li>
+    </ul>
+  </div>
+
+  <div class="section-heading">🃏 Key Flashcards</div>
+  <div class="flashcard-grid">
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">Why give K+ before insulin in DKA?</div>
+        <div class="flashcard-back">Insulin drives K+ intracellularly. If K+ &lt;3.5 already, insulin will cause life-threatening hypokalemia (arrhythmia). ALWAYS check K+ first</div>
+      </div>
+    </div>
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">DKA resolution criteria?</div>
+        <div class="flashcard-back">Glucose &lt;200 mg/dL AND anion gap &lt;12 AND bicarb &gt;15 mEq/L AND pH &gt;7.3. NOT just glucose normalization!</div>
+      </div>
+    </div>
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">Euglycemic DKA — when to suspect?</div>
+        <div class="flashcard-back">Patient on SGLT-2 inhibitor with nausea/vomiting, glucose may be normal (&lt;200) but check ketones and anion gap — both elevated</div>
+      </div>
+    </div>
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">HHS vs DKA: consciousness?</div>
+        <div class="flashcard-back">HHS: profound obtundation due to extreme hyperosmolality (&gt;320). DKA: usually alert unless extreme acidosis/electrolyte disturbance</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- ══ MASTER QUIZ ══ -->
 <div id="page-quiz-master" class="page">
   <div class="topic-header" style="background: linear-gradient(135deg, #374151, #7e3af2);">
