@@ -301,6 +301,13 @@
 </head>
 <body>
 
+<!-- ══ Mobile Header ══ -->
+<div id="mobile-header">
+  <button id="hamburger" onclick="toggleSidebar()">☰</button>
+  <span id="mobile-title">🏥 ENDO EXAM PREP</span>
+</div>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
 <!-- ══════════════════════ SIDEBAR ══════════════════════ -->
 <nav id="sidebar">
   <div id="sidebar-header">
@@ -383,6 +390,26 @@
   </div>
 
   <div class="nav-group">
+    <div class="nav-group-label">Thyroid</div>
+    <div class="nav-item" onclick="showPage('hypothyroidism')" data-search="hypothyroidism thyroid tsh thyroxine myxedema">
+      <span class="emoji">🌡️</span> Hypothyroidism
+    </div>
+    <div class="nav-item" onclick="showPage('hyperthyroidism')" data-search="hyperthyroidism graves thyrotoxicosis tsh">
+      <span class="emoji">🔥</span> Hyperthyroidism
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Diabetes</div>
+    <div class="nav-item" onclick="showPage('diabetes')" data-search="diabetes mellitus dm type 1 type 2 insulin glucose">
+      <span class="emoji">🩺</span> Diabetes Mellitus
+    </div>
+    <div class="nav-item" onclick="showPage('dka-hhs')" data-search="dka diabetic ketoacidosis hhs hyperglycemic crisis">
+      <span class="emoji">🚨</span> DKA / HHS
+    </div>
+  </div>
+
+  <div class="nav-group">
     <div class="nav-group-label">Reproductive</div>
     <div class="nav-item" onclick="showPage('amenorrhea')" data-search="amenorrhea menstrual primary secondary fsh lh">
       <span class="emoji">🌸</span> Amenorrhea
@@ -408,10 +435,12 @@
     <h2>🏥 Endocrinology Exam Prep</h2>
     <div class="subtitle">Siriraj Hospital · Long Case Exam · 3rd Year Resident</div>
     <div class="topic-tags">
-      <span class="tag">📚 18 Topics</span>
-      <span class="tag">🎯 20 Quiz Questions</span>
+      <span class="tag">📚 22 Topics</span>
+      <span class="tag">🎯 30 Quiz Questions</span>
       <span class="tag">🃏 Flashcards</span>
       <span class="tag">⚡ Clinical Clues</span>
+      <span class="tag">🌡️ Thyroid NEW</span>
+      <span class="tag">🩺 Diabetes NEW</span>
     </div>
   </div>
 
@@ -462,6 +491,10 @@
     <div class="topic-card" onclick="showPage('pcos')"><div class="icon">🔄</div><div class="name">PCOS</div><div class="cat">Reproductive</div></div>
     <div class="topic-card" onclick="showPage('hyperandrogenism')"><div class="icon">🔬</div><div class="name">Hyperandrogenism</div><div class="cat">Reproductive</div></div>
     <div class="topic-card" onclick="showPage('gynecomastia')"><div class="icon">👤</div><div class="name">Gynecomastia</div><div class="cat">Reproductive</div></div>
+    <div class="topic-card" onclick="showPage('hypothyroidism')"><div class="icon">🌡️</div><div class="name">Hypothyroidism</div><div class="cat">Thyroid ✨</div></div>
+    <div class="topic-card" onclick="showPage('hyperthyroidism')"><div class="icon">🔥</div><div class="name">Hyperthyroidism</div><div class="cat">Thyroid ✨</div></div>
+    <div class="topic-card" onclick="showPage('diabetes')"><div class="icon">🩺</div><div class="name">Diabetes Mellitus</div><div class="cat">Diabetes ✨</div></div>
+    <div class="topic-card" onclick="showPage('dka-hhs')"><div class="icon">🚨</div><div class="name">DKA / HHS</div><div class="cat">Diabetes ✨</div></div>
     <div class="topic-card" onclick="showPage('quiz-master')"><div class="icon">🎯</div><div class="name">Master Quiz</div><div class="cat">Test Yourself</div></div>
   </div>
 </div>
