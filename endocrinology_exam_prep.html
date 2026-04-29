@@ -2852,7 +2852,7 @@
   </div>
 
   <div style="margin-bottom:16px; display:flex; align-items:center; gap:12px;">
-    <div class="score-badge">Score: <span id="quiz-score">0</span> / <span id="quiz-total">20</span></div>
+    <div class="score-badge">Score: <span id="quiz-score">0</span> / <span id="quiz-total">30</span></div>
     <div style="flex:1"><div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div></div>
     <button class="btn btn-outline" onclick="resetQuiz()">🔄 Reset</button>
   </div>
@@ -2864,7 +2864,26 @@
 
 <!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
 <script>
-// Navigation
+// ── Mobile sidebar ──
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const open = sidebar.classList.toggle('open');
+  backdrop.classList.toggle('show', open);
+}
+
+// ── Sub-tab switching ──
+function switchTab(tabEl, panelId) {
+  const bar = tabEl.closest('.ptab-bar');
+  const page = bar.closest('.page');
+  bar.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  page.querySelectorAll('.ptab-panel').forEach(p => p.classList.remove('active'));
+  tabEl.classList.add('active');
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+// ── Navigation ──
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -2874,6 +2893,13 @@ function showPage(id) {
     if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
   });
   document.getElementById('main').scrollTo(0, 0);
+  // Close sidebar on mobile after navigation
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('show');
+  }
 }
 
 // Search filter
@@ -3016,6 +3042,60 @@ const quizData = [
     opts: ["Urgent testicular ultrasound for tumor", "Reassurance — physiologic pubertal gynecomastia resolves in 1–2 years", "Measure hCG and testosterone urgently", "Refer for bilateral mastectomy"],
     ans: 1,
     exp: "Physiologic pubertal gynecomastia: 50% of mid-pubertal boys, onset 13-14y, 90% resolve spontaneously within 1-2 years. Cause: estradiol rises before testosterone in early puberty. Management: reassurance. Only investigate further if: very large, >2 years, or other pathologic features (asymmetric, firm, tender, medications, family history of hereditary gynecomastia, signs of hypogonadism)."
+  },
+  {
+    q: "A 45-year-old woman presents with fatigue, constipation, weight gain, dry skin, and bradycardia. TSH = 18 mIU/L, FT4 = 0.4 ng/dL (low). Anti-TPO antibodies are markedly elevated. What is the diagnosis and most likely etiology?",
+    opts: ["Central hypothyroidism due to pituitary tumor", "Primary hypothyroidism due to Hashimoto thyroiditis", "Subacute thyroiditis in hypothyroid phase", "Sick euthyroid syndrome"],
+    ans: 1,
+    exp: "Primary hypothyroidism: TSH↑↑ + FT4↓. Elevated anti-TPO confirms autoimmune cause = Hashimoto thyroiditis (most common cause of primary hypothyroidism worldwide). Central hypothyroidism has inappropriately low/normal TSH. Subacute thyroiditis has painful thyroid + elevated ESR. Sick euthyroid = low TSH + low FT4 in acute illness. Treatment: levothyroxine 1.6 µg/kg/day, target TSH 0.5-2.5."
+  },
+  {
+    q: "A patient with untreated hypothyroidism is found unconscious after cold exposure. Temperature 33°C, BP 80/50, HR 42. What is the MOST urgent treatment?",
+    opts: ["IV 0.9% saline + warming only", "IV T4 300-500 µg loading + hydrocortisone 100mg IV + warming", "Oral levothyroxine and discharge", "IV thyroid-stimulating hormone injection"],
+    ans: 1,
+    exp: "Myxedema coma: Emergency with 20-40% mortality. Triad: hypothermia + reduced consciousness + precipitant in undertreated hypothyroid patient. Treatment: IV T4 (300-500 µg loading) ± T3 (5-20 µg q8h), hydrocortisone 100mg IV q8h (ALWAYS give steroids to cover potential co-existing adrenal insufficiency before/with thyroid hormones), active warming, supportive care. Do NOT give oral therapy — absorption unreliable."
+  },
+  {
+    q: "A 35-year-old woman presents with heat intolerance, weight loss, palpitations, and a smooth diffuse goiter. TSH is suppressed, FT4 is elevated. TRAb (TSH receptor antibodies) are positive. She also has bilateral proptosis. What specific eye sign is PATHOGNOMONIC for her condition?",
+    opts: ["Lid retraction (Dalrymple sign)", "Pretibial myxedema over shins", "Exophthalmos with periorbital edema", "Visual field defect from orbital compression"],
+    ans: 1,
+    exp: "Pretibial myxedema (now called thyroid dermopathy) is SPECIFIC to Graves disease — it is the only cause of hyperthyroidism associated with this finding. It presents as non-pitting, orange-peel texture skin over the anterior shins. It is caused by TSH receptor antibody stimulation of dermal fibroblasts. Exophthalmos occurs in Graves but can theoretically occur with any TSH receptor antibody state. Lid retraction is due to sympathetic excess (present in any hyperthyroidism)."
+  },
+  {
+    q: "In treating thyroid storm, you give PTU first, then plan to add iodine. Why must you wait 1 hour after PTU before giving iodine?",
+    opts: ["Iodine increases T4→T3 conversion and must be blocked first", "PTU must first block new hormone synthesis so iodine cannot be used as substrate to make more thyroid hormone (Jod-Basedow effect)", "Iodine causes tachycardia that needs PTU pretreatment", "PTU must achieve therapeutic blood levels before iodine can have effect"],
+    ans: 1,
+    exp: "Critical sequence: PTU first (blocks synthesis + T4→T3 conversion) → THEN iodine after 1 hour. If iodine is given FIRST, it provides substrate for massive new thyroid hormone synthesis (Wolff-Chaikoff escape = Jod-Basedow). Once PTU has blocked the synthesis enzyme (thyroid peroxidase), iodine can safely block hormone RELEASE without danger of fueling new synthesis. Memory: 'Plug the factory first, THEN lock the door.'"
+  },
+  {
+    q: "A 22-year-old thin male is admitted in DKA (glucose 480 mg/dL, pH 7.1, AG 24). K+ on admission is 3.2 mEq/L. What is the CORRECT next step?",
+    opts: ["Start insulin infusion 0.1 unit/kg/h immediately", "Give IV potassium to raise K+ to ≥3.5, then start insulin", "Give IV sodium bicarbonate for pH < 7.2", "Give rapid acting insulin bolus 0.3 unit/kg subcutaneously"],
+    ans: 1,
+    exp: "CRITICAL: Never start insulin when K+ < 3.5 mEq/L in DKA. Insulin drives K+ intracellularly, worsening hypokalemia → life-threatening arrhythmia. Correct K+ first with IV KCl to ≥3.5, THEN start insulin infusion. Bicarbonate is only indicated if pH < 6.9 (not 7.1) — routine use worsens hypokalemia and risks paradoxical CSF acidosis. Bolus insulin is also avoided (increases hypokalemia risk)."
+  },
+  {
+    q: "A 75-year-old man with known T2DM is brought in confused, glucose 780 mg/dL, pH 7.38, bicarb 22, no ketones. Serum osmolality 345 mOsm/kg. What is the diagnosis and the PRIMARY treatment priority?",
+    opts: ["DKA — start insulin immediately", "HHS — IV 0.9% NaCl fluid resuscitation as top priority (insulin secondary)", "Lactic acidosis — IV bicarbonate", "Hyperosmolar hyperglycemic state requiring rapid glucose correction"],
+    ans: 1,
+    exp: "HHS (Hyperosmolar Hyperglycemic State): glucose >600, pH normal (>7.3), no significant ketones, osmolality >320. FLUIDS ARE FIRST — massive fluid deficit (8-10L) is the key problem. Start with 0.9% NaCl, then 0.45% NaCl. Insulin is secondary (start only after fluid resuscitation has begun). Avoid rapid correction — lower osmolality ≤3-4 mOsm/kg/h to prevent cerebral edema. Mortality 5-20% (much higher than DKA)."
+  },
+  {
+    q: "A newly diagnosed T2DM patient (HbA1c 8.2%) also has established cardiovascular disease (recent MI 6 months ago). Which second-line agent (after metformin) has the BEST evidence for reducing cardiovascular mortality in this patient?",
+    opts: ["Sulfonylurea (glipizide)", "DPP-4 inhibitor (sitagliptin)", "GLP-1 receptor agonist (liraglutide) or SGLT-2 inhibitor (empagliflozin)", "TZD (pioglitazone)"],
+    ans: 2,
+    exp: "GLP-1RA (LEADER trial: liraglutide) and SGLT-2i (EMPA-REG: empagliflozin) both demonstrated significant CV mortality reduction in patients with established CVD. SGLT-2i also reduces heart failure hospitalization and renal progression. Sulfonylureas cause hypoglycemia with no CV benefit. DPP-4i are CV neutral (safe but no benefit). TZDs cause fluid retention (avoid in HF). For T2DM with established CVD: GLP-1RA or SGLT-2i are preferred second agents per ADA 2024."
+  },
+  {
+    q: "A patient's HbA1c comes back as 5.3% but you strongly suspect diabetes based on symptoms and random glucose of 240 mg/dL. Which condition makes HbA1c unreliable and explains the discrepancy?",
+    opts: ["Patient is taking metformin", "Sickle cell trait (HbS) or hemolytic anemia — red cell turnover is rapid, so HbA1c is falsely low", "Patient has obesity", "Patient has chronic kidney disease"],
+    ans: 1,
+    exp: "HbA1c reflects average glucose over 2-3 months, relying on normal RBC lifespan (~120 days). In hemolytic anemia, sickle cell disease/trait, HbC disease, G6PD deficiency, iron deficiency, or recent transfusion — RBC lifespan is shortened, giving falsely LOW HbA1c. In these conditions use fasting plasma glucose, OGTT, or fructosamine instead. CKD causes falsely HIGH HbA1c (carbamylation of Hb). Metformin and obesity do not significantly affect HbA1c measurement."
+  },
+  {
+    q: "A 50-year-old woman presents with 3 months of polyuria, polydipsia, blurred vision, and fatigue. Fasting glucose 7.8 mmol/L (140 mg/dL) on two occasions. HbA1c 7.8%. Anti-GAD antibodies are positive. What is the MOST important implication of the positive anti-GAD?",
+    opts: ["She has PCOS which caused insulin resistance", "She has LADA — will progress to insulin dependence faster than typical T2DM; metformin alone is insufficient long-term", "Anti-GAD confirms pancreatogenic diabetes from chronic pancreatitis", "She requires immediate insulin and cannot use oral agents at all"],
+    ans: 1,
+    exp: "LADA (Latent Autoimmune Diabetes in Adults): Adult-onset (>30y), initially resembles T2DM but positive autoantibodies (anti-GAD is most sensitive). Progresses to insulin dependence in months-years (faster than T2DM). Key: do not dismiss as T2DM just because adult age. LADA patients often fail oral agents rapidly. Sulfonylureas may accelerate beta-cell loss in LADA. Anti-GAD positive in ~10% of apparent T2DM. Management: early basal insulin consideration; avoid SU. Screen with anti-GAD in: lean adult T2DM, rapid deterioration, family autoimmune history."
   }
 ];
 
@@ -3065,6 +3145,26 @@ function resetQuiz() {
   document.getElementById('quiz-progress').style.width = '0%';
   renderQuiz();
 }
+
+// ── iOS touch fallback for onclick elements ──
+(function(){
+  let lastTouchTarget = null, lastTouchTime = 0;
+  document.addEventListener('touchend', function(e){
+    const el = e.target.closest('[onclick]');
+    if (!el) return;
+    lastTouchTarget = el; lastTouchTime = Date.now();
+    setTimeout(function(){
+      if (lastTouchTarget === el && Date.now() - lastTouchTime >= 300) {
+        const fn = el.getAttribute('onclick');
+        if (fn) { try { (new Function(fn)).call(el); } catch(ex){} }
+      }
+    }, 350);
+  }, { passive: true });
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('[onclick]');
+    if (el && el === lastTouchTarget) { lastTouchTarget = null; }
+  }, true);
+})();
 
 // Initialize
 renderQuiz();
