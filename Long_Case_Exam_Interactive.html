@@ -430,10 +430,566 @@ function collapseAll() {
   document.querySelectorAll('.tree-children').forEach(t => t.classList.remove('open'));
 }
 
-// Scroll to top
+// ── Scroll to top ──
 document.querySelector('.main').addEventListener('scroll', function() {
   document.getElementById('scrollTop').classList.toggle('show', this.scrollTop > 300);
 });
+
+// ── Progress tracking (localStorage) ──
+const PROGRESS_KEY = 'lce_progress_v1';
+const RECENT_KEY   = 'lce_recent_v1';
+
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch(e) { return {}; }
+}
+function setProgress(obj) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(obj)); } catch(e) {}
+}
+function getRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch(e) { return []; }
+}
+function addRecent(sys, idx) {
+  let r = getRecent().filter(x => !(x.sys===sys && x.idx===idx));
+  r.unshift({sys, idx});
+  r = r.slice(0, 6);
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(r)); } catch(e) {}
+}
+function countDone() {
+  const p = getProgress(); return Object.keys(p).filter(k=>p[k]).length;
+}
+function topicKey(sys, idx) { return sys + '::' + idx; }
+
+function markDone(sys, idx) {
+  const p = getProgress();
+  const k = topicKey(sys, idx);
+  p[k] = !p[k];
+  setProgress(p);
+  // update dot in nav
+  const dots = document.querySelectorAll('.done-dot[data-key="'+k+'"]');
+  dots.forEach(d => d.style.display = p[k] ? 'block' : 'none');
+  // update banner
+  const banner = document.getElementById('reviewedBanner');
+  const btn = document.getElementById('markBtn');
+  if (banner && btn) {
+    banner.classList.toggle('show', !!p[k]);
+    btn.textContent = p[k] ? '✓ Reviewed' : 'Mark as Reviewed';
+    btn.classList.toggle('done', !!p[k]);
+  }
+  // update welcome count
+  const dc = document.getElementById('doneCount');
+  if (dc) dc.textContent = countDone();
+  // refresh sys cards progress
+  refreshSysCards();
+}
+
+// ── Init ──
+function initApp() {
+  const nav = document.getElementById('navContainer');
+  const systems = Object.keys(DATA);
+  document.getElementById('systemCount').textContent = systems.length;
+  let totalTopics = 0;
+  systems.forEach(sys => { totalTopics += DATA[sys].length; });
+  document.getElementById('topicCount').textContent = totalTopics;
+  document.getElementById('doneCount').textContent = countDone();
+
+  const sysIcons = {
+    Cardiovascular:'❤️', Respiratory:'🫁', Gastroenterology:'🫃', Nephrology:'🫘',
+    Rheumatology:'🦴', Hematology:'🩸', Neurology:'🧠', Endocrinology:'⚗️',
+    'Infectious Disease':'🦠', 'General Approach':'📋'
+  };
+
+  systems.forEach(sys => {
+    // Nav group
+    const group = document.createElement('div');
+    group.className = 'nav-group';
+    group.innerHTML = `<div class="nav-group-title" onclick="toggleGroup(this)"><span>${sysIcons[sys]||'📌'} ${sys}</span><span class="arrow">▶</span></div><div class="nav-items"></div>`;
+    const items = group.querySelector('.nav-items');
+    const prog = getProgress();
+    DATA[sys].forEach((topic, idx) => {
+      const item = document.createElement('div');
+      item.className = 'nav-item';
+      item.innerHTML = topic.title;
+      const k = topicKey(sys, idx);
+      const dot = document.createElement('span');
+      dot.className = 'done-dot';
+      dot.dataset.key = k;
+      dot.style.display = prog[k] ? 'block' : 'none';
+      item.appendChild(dot);
+      item.onclick = () => showTopic(sys, idx, item);
+      items.appendChild(item);
+    });
+    nav.appendChild(group);
+  });
+
+  buildSysGrid();
+  buildRecentChips();
+}
+
+function buildSysGrid() {
+  const grid = document.getElementById('sysGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const prog = getProgress();
+  const sysIcons = {
+    Cardiovascular:'❤️', Respiratory:'🫁', Gastroenterology:'🫃', Nephrology:'🫘',
+    Rheumatology:'🦴', Hematology:'🩸', Neurology:'🧠', Endocrinology:'⚗️',
+    'Infectious Disease':'🦠', 'General Approach':'📋'
+  };
+  Object.keys(DATA).forEach(sys => {
+    const topics = DATA[sys];
+    const done = topics.filter((_,i) => prog[topicKey(sys,i)]).length;
+    const pct = topics.length ? Math.round(done/topics.length*100) : 0;
+    const card = document.createElement('div');
+    card.className = 'sys-card';
+    card.innerHTML = `
+      <div style="font-size:22px;">${sysIcons[sys]||'📌'}</div>
+      <div class="sys-name">${sys}</div>
+      <div class="sys-count">${done}/${topics.length} reviewed</div>
+      <div class="sys-prog"><div class="sys-prog-fill" style="width:${pct}%"></div></div>`;
+    card.onclick = () => {
+      // Open first topic in system
+      const navGroups = document.querySelectorAll('.nav-group');
+      navGroups.forEach(g => {
+        if (g.querySelector('.nav-group-title span') && g.querySelector('.nav-group-title span').textContent.includes(sys)) {
+          const arrow = g.querySelector('.arrow');
+          const items = g.querySelector('.nav-items');
+          arrow.classList.add('open');
+          items.classList.add('open');
+          const firstItem = items.querySelector('.nav-item');
+          if (firstItem) firstItem.click();
+        }
+      });
+    };
+    grid.appendChild(card);
+  });
+}
+
+function refreshSysCards() {
+  buildSysGrid();
+}
+
+function buildRecentChips() {
+  const recent = getRecent();
+  const section = document.getElementById('recentSection');
+  const chips = document.getElementById('recentChips');
+  if (!section || !chips || !recent.length) return;
+  section.style.display = 'block';
+  chips.innerHTML = '';
+  recent.forEach(r => {
+    if (!DATA[r.sys] || !DATA[r.sys][r.idx]) return;
+    const chip = document.createElement('span');
+    chip.className = 'recent-chip';
+    chip.textContent = DATA[r.sys][r.idx].title;
+    chip.onclick = () => {
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(n => {
+        if (n.textContent.trim().startsWith(DATA[r.sys][r.idx].title)) n.click();
+      });
+    };
+    chips.appendChild(chip);
+  });
+}
+
+function showRandomTopic() {
+  const systems = Object.keys(DATA);
+  const sys = systems[Math.floor(Math.random() * systems.length)];
+  const idx = Math.floor(Math.random() * DATA[sys].length);
+  const navItems = document.querySelectorAll('.nav-item');
+  let found = false;
+  navItems.forEach(n => {
+    if (!found && n.textContent.trim().startsWith(DATA[sys][idx].title)) {
+      n.click(); found = true;
+    }
+  });
+  if (!found) showTopic(sys, idx, null);
+}
+
+function toggleGroup(el) {
+  const arrow = el.querySelector('.arrow');
+  const items = el.nextElementSibling;
+  arrow.classList.toggle('open');
+  items.classList.toggle('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function filterTopics(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.nav-group').forEach(g => {
+    let hasMatch = false;
+    g.querySelectorAll('.nav-item').forEach(item => {
+      const txt = item.textContent.toLowerCase();
+      const match = !q || txt.includes(q);
+      item.style.display = match ? '' : 'none';
+      if (match) hasMatch = true;
+    });
+    g.style.display = hasMatch ? '' : 'none';
+    if (hasMatch && q) {
+      g.querySelector('.nav-items').classList.add('open');
+      g.querySelector('.arrow').classList.add('open');
+    }
+  });
+}
+
+let _currentSys = null, _currentIdx = null;
+
+function showTopic(sys, idx, navItem) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (navItem) navItem.classList.add('active');
+  _currentSys = sys; _currentIdx = idx;
+
+  const topic = DATA[sys][idx];
+  addRecent(sys, idx);
+
+  // Update topbar title
+  const tb = document.getElementById('topbarTitle');
+  if (tb) tb.textContent = topic.title;
+
+  document.getElementById('welcome').style.display = 'none';
+  const container = document.getElementById('topicContent');
+  container.style.display = 'block';
+
+  const prog = getProgress();
+  const isDone = !!prog[topicKey(sys, idx)];
+
+  const sysColors = {
+    Cardiovascular:'#f472b6', Respiratory:'#34d399', Gastroenterology:'#fb923c',
+    Nephrology:'#60a5fa', Rheumatology:'#a78bfa', Hematology:'#fbbf24',
+    Neurology:'#f87171', Endocrinology:'#67e8f9', 'Infectious Disease':'#4ade80',
+    'General Approach':'#e2e8f0'
+  };
+  const col = sysColors[sys] || '#60a5fa';
+
+  let html = `
+    <div id="reviewedBanner" class="reviewed-banner ${isDone?'show':''}">✓ You have reviewed this topic</div>
+    <div class="topic-header">
+      <h2>${topic.title}</h2>
+      <span class="system-tag" style="color:${col};">${sys}</span>
+      <button id="markBtn" class="mark-btn ${isDone?'done':''}" onclick="markDone('${sys}',${idx})" style="margin-left:8px;">${isDone?'✓ Reviewed':'Mark as Reviewed'}</button>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="expandAll()">⊞ Expand All</button>
+      <button class="ctrl-btn" onclick="collapseAll()">⊟ Collapse All</button>
+      <button class="ctrl-btn" onclick="window.print()">🖨️ Print</button>
+    </div>`;
+
+  if (topic.approach)    html += buildCard('🎯 Approach & Priority', 'approach', topic.approach, true);
+  if (topic.ddx)         html += buildDdxCard(topic.ddx);
+  if (topic.additionalHx) html += buildCard('📝 Additional History', 'hx', topic.additionalHx);
+  if (topic.additionalPE) html += buildCard('🩺 Physical Examination', 'pe', topic.additionalPE);
+  if (topic.investigation) html += buildCard('🔬 Investigation', 'ix', topic.investigation);
+  if (topic.diagnosis)   html += buildCard('✅ Diagnosis', 'dx', topic.diagnosis);
+  if (topic.treatment)   html += buildCard('💊 Treatment & Management', 'tx', topic.treatment);
+  if (topic.keyPoints)   html += `<div class="key-point"><strong>⭐ Key Points:</strong> ${topic.keyPoints}</div>`;
+
+  container.innerHTML = html;
+  document.querySelector('.main').scrollTo({top:0});
+  if (window.innerWidth < 769) toggleSidebar();
+}
+
+function buildCard(title, type, content, openByDefault) {
+  const badgeClass = type==='approach'?'badge-approach':type==='ddx'?'badge-ddx':type==='ix'?'badge-ix':type==='tx'?'badge-tx':'badge-pe';
+  const items = Array.isArray(content) ? content : [content];
+  let body = '';
+  items.forEach(item => {
+    if (typeof item === 'string') {
+      body += `<div style="font-size:13px;line-height:1.6;margin:4px 0;">${item}</div>`;
+    } else if (item.heading) {
+      body += `<div class="section-title">${item.heading}</div>`;
+      if (item.points) {
+        body += '<ul class="content-list">';
+        item.points.forEach(p => { body += `<li>${p}</li>`; });
+        body += '</ul>';
+      }
+    }
+  });
+  return `<div class="topic-card"><div class="card-header" onclick="toggleCard(this)"><h3><span class="badge ${badgeClass}">${type.toUpperCase()}</span> ${title}</h3><span class="arrow">${openByDefault?'▼':'▶'}</span></div><div class="card-body ${openByDefault?'open':''}">${body}</div></div>`;
+}
+
+function buildDdxCard(ddx) {
+  let tree = '<div class="tree">';
+  const cats = ['cat1','cat2','cat3','cat4','cat5'];
+  ddx.forEach((branch, i) => { tree += buildTreeNode(branch, cats[i%5]); });
+  tree += '</div>';
+  return `<div class="topic-card"><div class="card-header" onclick="toggleCard(this)"><h3><span class="badge badge-ddx">DDX</span> 🌳 Differential Diagnosis Tree</h3><span class="arrow">▶</span></div><div class="card-body">${tree}</div></div>`;
+}
+
+function buildTreeNode(node, cat) {
+  let html = '<div class="tree-node">';
+  if (node.children && node.children.length) {
+    html += `<span class="tree-label ${cat}" onclick="this.parentElement.querySelector('.tree-children').classList.toggle('open')">${node.label} ▸</span>`;
+    html += '<div class="tree-children">';
+    node.children.forEach(c => { html += buildTreeNode(c, cat); });
+    html += '</div>';
+  } else {
+    html += `<span class="tree-label ${cat}">${node.label}</span>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function toggleCard(el) {
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.arrow');
+  body.classList.toggle('open');
+  arrow.textContent = body.classList.contains('open') ? '▼' : '▶';
+}
+
+function expandAll() {
+  document.querySelectorAll('.card-body').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.card-header .arrow').forEach(a => a.textContent='▼');
+  document.querySelectorAll('.tree-children').forEach(t => t.classList.add('open'));
+}
+function collapseAll() {
+  document.querySelectorAll('.card-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.card-header .arrow').forEach(a => a.textContent='▶');
+  document.querySelectorAll('.tree-children').forEach(t => t.classList.remove('open'));
+}
+
+// ══════════════════ QUIZ ENGINE ══════════════════
+const QUIZ_DATA = [
+  {
+    q:"In HCM, which maneuver INCREASES the systolic ejection murmur?",
+    sys:"Cardiovascular",
+    opts:["Squatting","Passive leg raise","Standing up / Valsalva","Handgrip exercise"],
+    ans:2,
+    exp:"HCM murmur is dynamic. Standing and Valsalva decrease preload → smaller LV → worse LVOT obstruction → louder murmur. Squatting and handgrip increase preload/afterload → less obstruction → softer murmur. Memory: 'Stand & Strain = louder; Squat & Grip = softer.'"
+  },
+  {
+    q:"Which 4-drug combination is the evidence-based 'quadruple therapy' for HFrEF (EF ≤40%)?",
+    sys:"Cardiovascular",
+    opts:["ACEI + BB + Diuretic + Digoxin","ACEI/ARB/ARNI + BB + MRA + SGLT2i","BB + MRA + Nitrate + Hydralazine","ACEI + BB + Statin + Aspirin"],
+    ans:1,
+    exp:"HFrEF quadruple therapy (all reduce mortality): ACEI/ARB/ARNI + Beta-blocker (bisoprolol, carvedilol, or metoprolol succinate) + MRA (spironolactone/eplerenone) + SGLT2i (dapagliflozin/empagliflozin). Diuretics are added for congestion symptoms but do not reduce mortality."
+  },
+  {
+    q:"Severe aortic stenosis on echocardiography is defined by which criteria?",
+    sys:"Cardiovascular",
+    opts:["AVA <2.0 cm², mean gradient >20 mmHg","AVA <1.5 cm², mean gradient >30 mmHg","AVA <1.0 cm², mean gradient >40 mmHg, Vmax >4 m/s","AVA <0.8 cm², gradient not required"],
+    ans:2,
+    exp:"Severe AS: AVA <1.0 cm² AND mean gradient >40 mmHg AND Vmax >4 m/s. LOW-FLOW LOW-GRADIENT severe AS (paradoxical): Low EF or low stroke volume with AVA <1.0 but gradient <40 — use dobutamine stress echo or CT calcium scoring to distinguish true severe from pseudo-severe. Survival without intervention: Angina 5yr, Syncope 3yr, Dyspnea 2yr."
+  },
+  {
+    q:"Light's criteria classify a pleural effusion as an EXUDATE if which condition is met?",
+    sys:"Respiratory",
+    opts:["Pleural protein/serum protein > 0.5","Pleural LDH/serum LDH > 0.6","Pleural LDH > 2/3 upper limit of normal serum LDH","Any ONE of the above three criteria"],
+    ans:3,
+    exp:"Light's criteria (any 1 of 3 = exudate): (1) Pleural protein/serum protein >0.5, (2) Pleural LDH/serum LDH >0.6, (3) Pleural LDH > 2/3 upper limit of normal. Very sensitive (98%) but less specific — misclassifies 25% of transudates (e.g., over-diuresed HF) as exudates. If doubt: SPAG (serum-pleural albumin gradient) <1.2 g/dL = exudate."
+  },
+  {
+    q:"A 65-year-old male with progressive exertional dyspnoea has HRCT showing bilateral subpleural basal honeycombing with reticulation. No connective tissue disease. What is the FIRST-LINE treatment?",
+    sys:"Respiratory",
+    opts:["Prednisolone 1 mg/kg/day","Azathioprine + MMF","Nintedanib (antifibrotic) if FVC ≥50%","N-acetylcysteine triple therapy"],
+    ans:2,
+    exp:"IPF (UIP pattern on HRCT: subpleural/basal honeycombing + reticulation ± traction bronchiectasis). Treatment: Antifibrotic therapy — Nintedanib OR Pirfenidone — slows FVC decline. Indicated when FVC ≥50% predicted. Steroids worsen outcomes in IPF. N-acetylcysteine alone showed no benefit (PANTHER trial). Lung transplant referral for eligible patients."
+  },
+  {
+    q:"Ascitic fluid with SAAG ≥1.1 g/dL indicates which pathophysiology?",
+    sys:"Gastroenterology",
+    opts:["Peritoneal carcinomatosis","Portal hypertension as the underlying cause","Exudative process (infection or malignancy)","Chylous ascites (lymphatic obstruction)"],
+    ans:1,
+    exp:"SAAG (Serum–Ascites Albumin Gradient) ≥1.1 g/dL = Portal hypertension. Causes: Cirrhosis (most common), heart failure, Budd-Chiari, portal vein thrombosis. SAAG <1.1 = Non-portal hypertension: peritoneal carcinomatosis, TB peritonitis, nephrotic syndrome, pancreatitis. SAAG is more accurate than Light's criteria for ascites."
+  },
+  {
+    q:"A 40-year-old woman has solid-only dysphagia that is INTERMITTENT and progressive over 6 months. Upper endoscopy shows rings and furrows; biopsy shows >15 eosinophils/HPF. Diagnosis?",
+    sys:"Gastroenterology",
+    opts:["Achalasia","Eosinophilic esophagitis (EoE)","Peptic stricture from GERD","Diffuse esophageal spasm"],
+    ans:1,
+    exp:"Eosinophilic esophagitis (EoE): Solid food dysphagia + food impaction + rings/furrows/plaques on EGD + ≥15 eosinophils/HPF (at least 6 biopsy samples). Cause: immune/allergic. Treatment: PPI trial first (may be PPI-responsive EoE), dietary elimination, topical steroids (swallowed fluticasone/budesonide). Achalasia causes both solid AND liquid dysphagia and shows aperistalsis on manometry."
+  },
+  {
+    q:"In RPGN (crescentic GN), which type shows a PAUCI-IMMUNE pattern (no immune deposits on IF/EM) and is associated with ANCA?",
+    sys:"Nephrology",
+    opts:["Type 1 (Anti-GBM disease)","Type 2 (Immune complex — SLE, IgA, PIGN)","Type 3 (ANCA-associated — GPA, MPA, EGPA)","Type 4 (Double positive — ANCA + Anti-GBM)"],
+    ans:2,
+    exp:"RPGN classification by immunofluorescence: Type 1 = Linear IgG deposits (Anti-GBM), Type 2 = Granular deposits (immune complex — SLE ISN/RPS III/IV, IgA nephropathy, post-infectious), Type 3 = Pauci-immune (no/minimal deposits) = ANCA-associated vasculitis (GPA: PR3/c-ANCA; MPA: MPO/p-ANCA; EGPA). Type 4 = Both ANCA + GBM antibodies. Treatment for Type 3: IVMP + CYC or Rituximab ± plasmapheresis if Cr >3.4."
+  },
+  {
+    q:"A patient from Northeast Thailand presents with recurrent hypokalemic paralysis and metabolic acidosis. Urine pH is 6.5. Urine anion gap is positive. X-ray shows nephrocalcinosis. What is the diagnosis?",
+    sys:"Nephrology",
+    opts:["Type 2 (Proximal) RTA — Fanconi syndrome","Type 4 RTA — Hyperkalemic hypoaldosteronism","Type 1 (Distal) RTA — dRTA","Lactic acidosis from metformin"],
+    ans:2,
+    exp:"Distal RTA (Type 1): Cannot acidify urine → Urine pH >5.5 despite systemic acidosis. Features: Hypokalemia (K⁺ wasting), nephrocalcinosis/nephrolithiasis, positive urine anion gap. Causes in NE Thailand: Vanadium toxicity, Sjogren's syndrome, SLE, Amphotericin B. Treatment: Bicarbonate + potassium supplementation (K-citrate preferred). Type 2 (Proximal RTA): Fanconi syndrome features, high FE-HCO₃ >15%."
+  },
+  {
+    q:"A woman with diffuse skin thickening proximal to the elbows and knees has Anti-Scl70 (anti-topoisomerase I) antibodies. She is at highest risk for which complication?",
+    sys:"Rheumatology",
+    opts:["Pulmonary arterial hypertension (PAH) as isolated complication","Primary biliary cholangitis","Diffuse cutaneous SSc with ILD and scleroderma renal crisis risk","CREST syndrome complications"],
+    ans:2,
+    exp:"Anti-Scl70 (topoisomerase I) = dcSSc (diffuse cutaneous systemic sclerosis). Highest risks: ILD (most common cause of death in dcSSc), scleroderma renal crisis (SRC — malignant HTN, microangiopathic hemolytic anemia). Anti-centromere = lcSSc (CREST) → PAH (late complication) + PBC. Anti-RNA polymerase III = dcSSc + SRC risk + risk of concurrent malignancy. SRC treatment: ACEi (NOT ARB), avoid steroids >15mg/d."
+  },
+  {
+    q:"In GCA (Giant Cell Arteritis), which is the MOST vision-threatening complication and requires immediate high-dose steroid?",
+    sys:"Rheumatology",
+    opts:["Jaw claudication due to facial artery involvement","Anterior ischemic optic neuropathy (AION) causing sudden visual loss","Scalp tenderness and nodular temporal artery","Aortitis causing aneurysm"],
+    ans:1,
+    exp:"GCA: Age >50, temporal headache, jaw claudication, tender/nodular temporal artery. MOST URGENT: Anterior ischemic optic neuropathy (AION) → sudden painless visual loss (often irreversible). Start prednisolone 1 mg/kg/day (or 500 mg–1g IV methylprednisolone if visual involvement) IMMEDIATELY — do NOT wait for biopsy. Temporal artery biopsy within 2 weeks (steroids don't alter biopsy result in first 2 weeks)."
+  },
+  {
+    q:"A 25-year-old woman with MG (anti-AChR positive) presents with progressive dysphagia, dysphonia, and worsening ptosis. SpO₂ is normal. FVC is 1.4 L (predicted 3.0 L). What is the NEXT step?",
+    sys:"Neurology",
+    opts:["Increase pyridostigmine dose immediately","Urgent intubation criteria: FVC <15–20 mL/kg or FVC ≤1.0 L is met; begin IVIg/plasmapheresis and prepare for intubation","Start oral prednisolone 1 mg/kg","Edrophonium (Tensilon) test to confirm"],
+    ans:1,
+    exp:"MG crisis: Respiratory failure is the key risk. FVC 1.4 L in a predicted 3.0 L patient = 47% predicted — approaching the danger threshold (intubate when FVC <15–20 mL/kg or FVC <1.0 L or decreasing rapidly). FVC <1.0 L = intubate. Treatment of MG crisis: IVIg (0.4g/kg/day ×5 days) OR Plasmapheresis — both equally effective. Avoid increasing pyridostigmine (worsens secretions in crisis). Avoid atropine antagonism if cholinergic crisis suspected."
+  },
+  {
+    q:"A 30-year-old presents with ascending flaccid paralysis 2 weeks after a diarrheal illness. CSF shows protein 220 mg/dL, cells 2/µL. Nerve conduction shows absent F-waves. Diagnosis?",
+    sys:"Neurology",
+    opts:["Transverse myelitis — urgent MRI spine","Myasthenia gravis — anti-AChR antibody test","Guillain-Barré syndrome (GBS) — albumino-cytologic dissociation on CSF","AIDP — only demyelinating types respond to treatment"],
+    ans:2,
+    exp:"GBS: Post-infectious ascending weakness + areflexia + CSF albumino-cytologic dissociation (high protein, normal cells <10) starting week 2. NCS: Absent F-waves (early), prolonged DML, slow NCV (demyelinating AIDP most common). Treatment: IVIg 0.4g/kg ×5 days OR Plasmapheresis (NOT both). Monitor FVC — intubate if FVC <15–20 mL/kg. NO steroids. 85% recover fully by 1 year."
+  },
+  {
+    q:"A 45-year-old male ex-smoker presents with symmetric proximal muscle weakness, heliotrope rash, and Gottron's papules. Anti-TIF1γ antibodies are positive. What is the MOST important next step?",
+    sys:"Rheumatology",
+    opts:["Start prednisolone 1 mg/kg immediately without further workup","Screen for malignancy — CT neck/chest/abdomen/pelvis + ENT consult for NPC","Check anti-Jo-1 antibodies for anti-synthetase syndrome","MRI muscle for inflammatory pattern confirmation"],
+    ans:1,
+    exp:"Anti-TIF1γ (transcription intermediary factor 1γ) antibody in dermatomyositis has the STRONGEST malignancy association (cancer in 40–75%). Also Anti-NXP2 in males. Malignancy screening is mandatory for ALL IIM patients — at minimum age-appropriate screening + CT neck/chest/abdomen/pelvis. In Southeast Asia: always ENT consult for nasopharyngeal carcinoma (EBV-associated). Malignancy can precede, coincide with, or follow IIM onset."
+  },
+  {
+    q:"Which JAK2V617F-positive myeloproliferative neoplasm presents with elevated haemoglobin, splenomegaly, and aquagenic pruritus (itching after hot shower)?",
+    sys:"Hematology",
+    opts:["Essential thrombocythemia (ET)","Primary myelofibrosis (PMF) with teardrop cells","Polycythemia vera (PV)","Chronic myeloid leukemia (CML)"],
+    ans:2,
+    exp:"Polycythemia vera (PV): JAK2V617F (95%), elevated Hb/Hct, splenomegaly, aquagenic pruritus (histamine from basophils). Management: Phlebotomy (target Hct <45% in males, <42% females) + low-dose aspirin. High-risk (age >60 or prior thrombosis): add hydroxyurea. Aquagenic pruritus — treat with aspirin or antihistamines. PV has risk of transformation to MF or AML (~10–20% over 10–20 years)."
+  },
+  {
+    q:"A patient has recurrent DVT despite therapeutic anticoagulation. Lab shows prolonged dRVVT, positive lupus anticoagulant, and anti-cardiolipin IgG (>40 GPL) on two occasions 12 weeks apart. What is the diagnosis and treatment?",
+    sys:"Hematology",
+    opts:["Inherited thrombophilia — Factor V Leiden; treat with LMWH","Antiphospholipid syndrome (APS) — warfarin with INR 2–3 (NOACs are INFERIOR for triple-positive APS)","HIT — stop all heparin, use fondaparinux","PNH — eculizumab therapy"],
+    ans:1,
+    exp:"APS (Antiphospholipid Syndrome): Thrombosis/obstetric morbidity + persistent aPL (lupus anticoagulant, anti-cardiolipin, anti-β2GP1) on 2 occasions ≥12 weeks apart. Treatment: Warfarin (INR 2–3) for arterial/venous thrombosis. IMPORTANT: NOACs (rivaroxaban, apixaban) are INFERIOR to warfarin in APS, especially triple-positive APS (all 3 antibodies positive) — higher thrombosis recurrence. Lupus anticoagulant causes artificially prolonged aPTT but is actually PRO-thrombotic."
+  },
+  {
+    q:"CT brain in a patient with acute ischemic stroke shows loss of insular ribbon and obscuration of the lentiform nucleus. ASPECT score is 7. Time from onset is 3.5 hours. What is the CORRECT next step?",
+    sys:"Neurology",
+    opts:["Observe only — early ischemic signs on CT are a contraindication to thrombolysis","IV Alteplase within 4.5 hours; ASPECT ≥6 is NOT a contraindication","Immediate mechanical thrombectomy only — no thrombolysis in proximal vessel occlusion","Give aspirin 300 mg and admit for monitoring"],
+    ans:1,
+    exp:"CT early ischemic signs do NOT contraindicate thrombolysis unless >1/3 of MCA territory is affected (ASPECT <6 is a relative contraindication for MT). ASPECT ≥6 = eligible for MT if large vessel occlusion. IV Alteplase is indicated within 4.5 hours if no contraindications (normal CT or ASPECT ≥6, no hemorrhage, BP <185/110, etc.). The presence of early ischemic changes is EXPECTED in an ischemic stroke and does not preclude treatment."
+  },
+  {
+    q:"A 55-year-old woman with HIV (CD4 = 80) presents with 2-week history of headache and low-grade fever. CSF: opening pressure 32 cm H₂O, protein 60 mg/dL, glucose 40 mg/dL, India ink positive. What is the treatment?",
+    sys:"Infectious Disease",
+    opts:["Fluconazole 400 mg/day oral for 8 weeks then maintenance","Amphotericin B deoxycholate + Flucytosine for 2 weeks (induction), then fluconazole consolidation","Voriconazole + micafungin combination","IV aciclovir for HSV meningitis"],
+    ans:1,
+    exp:"Cryptococcal meningitis (CM) in HIV: India ink/CrAg positive, elevated ICP (>20 cm H₂O). Treatment: Induction (2 weeks) → Amphotericin B (0.7–1 mg/kg/day) + Flucytosine (100 mg/kg/day in 4 divided doses). Consolidation → Fluconazole 400 mg/day ×8 weeks. Maintenance → Fluconazole 200 mg/day (until CD4 >100 on ART ×3 months). CRITICAL: Repeated LP/lumbar drain for ICP management (target <20 cm H₂O) reduces mortality. ART: delay 4–6 weeks after CM treatment to avoid IRIS."
+  },
+  {
+    q:"Cushing syndrome is confirmed. Plasma ACTH is HIGH (90 pg/mL). High-dose dexamethasone suppression test (8 mg) suppresses cortisol by >50%. MRI pituitary shows a 6 mm microadenoma. What is the diagnosis and treatment?",
+    sys:"Endocrinology",
+    opts:["Ectopic ACTH syndrome — search for occult tumor","Cushing disease (pituitary ACTH-secreting adenoma) — transsphenoidal surgery","ACTH-independent adrenal adenoma — unilateral adrenalectomy","Pseudo-Cushing — no treatment needed"],
+    ans:1,
+    exp:"Cushing disease: ACTH-DEPENDENT (high ACTH) + MRI showing pituitary adenoma + high-dose DST suppression >50%. First-line: Transsphenoidal surgery (TSS) — remission rate 70–90% for microadenoma. Medical therapy if surgery fails: Ketoconazole, Metyrapone, Osilodrostat. Ectopic ACTH: High ACTH + NO suppression on HDDS + negative pituitary MRI → search for ectopic source (SCLC, carcinoid, MTC). IPSS (inferior petrosal sinus sampling) if uncertainty between pituitary vs ectopic."
+  },
+  {
+    q:"A 22-year-old male presents with fever, night sweats, pruritus, and bilateral cervical lymphadenopathy for 2 months. CT shows a 7 cm anterior mediastinal mass with contiguous supraclavicular and mediastinal nodal involvement. Biopsy shows Reed-Sternberg cells. What is the treatment?",
+    sys:"Hematology",
+    opts:["R-CHOP (Rituximab + CHOP chemotherapy)","ABVD (Adriamycin, Bleomycin, Vinblastine, Dacarbazine) chemotherapy","Brentuximab vedotin monotherapy","Watchful waiting for nodular lymphocyte-predominant HL"],
+    ans:1,
+    exp:"Classical Hodgkin Lymphoma (cHL): Reed-Sternberg cells (CD15+, CD30+, CD20-), contiguous nodal spread, mediastinal mass (common in young adults). B symptoms: fever, night sweats, weight loss >10%. Treatment: ABVD ×2-6 cycles (early vs advanced stage) ± radiation. PET-adapted therapy: interim PET guides escalation/de-escalation. R-CHOP is for B-cell NHL (CD20+). Advanced HL with high risk: escalated BEACOPP. Relapsed/refractory: BV-based ± autologous SCT."
+  }
+];
+
+let quizQueue = [], quizIdx = 0, quizScore = 0, quizAnswered = false;
+
+function openQuiz() {
+  quizQueue = [...QUIZ_DATA].sort(() => Math.random() - 0.5);
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quizOverlay').classList.add('show');
+  renderQuizQ();
+}
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('show');
+}
+
+function renderQuizQ() {
+  const total = quizQueue.length;
+  const q = quizQueue[quizIdx];
+  quizAnswered = false;
+  document.getElementById('quizTitle').textContent = '🎯 Question ' + (quizIdx+1) + ' / ' + total;
+  document.getElementById('quizFill').style.width = Math.round(quizIdx/total*100) + '%';
+  document.getElementById('quizMeta').innerHTML = `Score: <strong>${quizScore}</strong> / ${quizIdx} &nbsp;|&nbsp; <span class="quiz-sys-tag">${q.sys}</span>`;
+
+  let opts = q.opts.map((o,i) => `<div class="quiz-option" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${o}</div>`).join('');
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-card" style="padding:0;background:transparent;border:none;max-height:none;overflow:visible;">
+      <p style="font-size:14px;font-weight:600;line-height:1.6;margin-bottom:16px;">${q.q}</p>
+      <div id="quizOpts">${opts}</div>
+      <div class="quiz-result" id="quizResult"></div>
+      <div class="quiz-nav-btns" id="quizNavBtns" style="display:none;">
+        <button class="q-next" onclick="nextQuizQ()">${quizIdx+1<total ? 'Next →' : 'See Results'}</button>
+        <button class="q-close" onclick="closeQuiz()">Exit</button>
+      </div>
+    </div>`;
+}
+
+function answerQuiz(selected) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQueue[quizIdx];
+  const opts = document.querySelectorAll('#quizOpts .quiz-option');
+  opts.forEach((o,i) => {
+    o.style.pointerEvents = 'none';
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === selected) o.classList.add('wrong');
+  });
+  const correct = selected === q.ans;
+  if (correct) quizScore++;
+  const res = document.getElementById('quizResult');
+  res.className = 'quiz-result show ' + (correct ? 'correct-res' : 'wrong-res');
+  res.innerHTML = `<strong>${correct ? '✅ Correct!' : '❌ Incorrect'}</strong><br><span style="font-size:13px;line-height:1.6;color:var(--text2);">${q.exp}</span>`;
+  document.getElementById('quizNavBtns').style.display = 'flex';
+}
+
+function nextQuizQ() {
+  quizIdx++;
+  if (quizIdx >= quizQueue.length) {
+    showQuizResults();
+  } else {
+    renderQuizQ();
+  }
+}
+
+function showQuizResults() {
+  const total = quizQueue.length;
+  const pct = Math.round(quizScore/total*100);
+  const grade = pct>=80?'🏆 Excellent!':pct>=60?'👍 Good':pct>=40?'📚 Keep studying':'💪 More review needed';
+  document.getElementById('quizFill').style.width = '100%';
+  document.getElementById('quizTitle').textContent = '🎯 Quiz Complete!';
+  document.getElementById('quizMeta').textContent = '';
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-score-banner">
+      <div class="big-score">${quizScore}/${total}</div>
+      <p>${grade} — ${pct}% correct</p>
+      <div class="quiz-nav-btns" style="justify-content:center;margin-top:20px;">
+        <button class="q-next" onclick="openQuiz()">🔄 Retry</button>
+        <button class="q-close" onclick="closeQuiz()">Close</button>
+      </div>
+    </div>`;
+}
+
+// ── iOS touch fallback ──
+(function(){
+  let lastEl = null, lastTime = 0;
+  document.addEventListener('touchend', function(e){
+    const el = e.target.closest('[onclick]');
+    if (!el) return;
+    lastEl = el; lastTime = Date.now();
+    setTimeout(function(){
+      if (lastEl === el && Date.now() - lastTime >= 300) {
+        const fn = el.getAttribute('onclick');
+        if (fn) { try{ (new Function(fn)).call(el); }catch(ex){} }
+      }
+    }, 350);
+  }, { passive:true });
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('[onclick]');
+    if (el && el === lastEl) lastEl = null;
+  }, true);
+})();
 
 initApp();
 </script>
