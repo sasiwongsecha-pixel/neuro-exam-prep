@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Long Case Exam - Internal Medicine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f172a">
+<title>Long Case Exam — Internal Medicine · Siriraj</title>
 <style>
 :root {
   --bg: #0f172a; --surface: #1e293b; --surface2: #334155;
@@ -112,6 +114,89 @@ body { font-family: 'Segoe UI',system-ui,-apple-system,sans-serif; background:va
 .quiz-option.correct { background:rgba(34,197,94,.2); border-color:var(--green); }
 .quiz-option.wrong { background:rgba(239,68,68,.2); border-color:var(--red); }
 .quiz-result { margin-top:12px; padding:12px; border-radius:8px; font-size:14px; display:none; }
+
+/* ── Touch reliability ── */
+* { -webkit-tap-highlight-color: rgba(59,130,246,0.2); }
+button, .nav-item, .nav-group-title, .quiz-option, .tree-label,
+.card-header, .ctrl-btn, .scroll-top, [onclick] {
+  touch-action: manipulation;
+  -webkit-user-select: none; user-select: none;
+}
+
+/* ── System colour badges ── */
+.sys-cv   { color:#f472b6; } .sys-rs { color:#34d399; } .sys-gi { color:#fb923c; }
+.sys-neph { color:#60a5fa; } .sys-rh { color:#a78bfa; } .sys-hm { color:#fbbf24; }
+.sys-neu  { color:#f87171; } .sys-en { color:#67e8f9; } .sys-id { color:#4ade80; }
+.sys-ga   { color:#e2e8f0; }
+
+/* ── Progress dot in nav ── */
+.nav-item { position:relative; }
+.done-dot { position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  width:7px; height:7px; border-radius:50%; background:var(--green); opacity:.8; }
+
+/* ── Reviewed banner ── */
+.reviewed-banner { display:none; background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.25);
+  border-radius:8px; padding:6px 14px; font-size:12px; color:var(--green);
+  margin-bottom:12px; align-items:center; gap:8px; }
+.reviewed-banner.show { display:flex; }
+
+/* ── Mark-reviewed button ── */
+.mark-btn { padding:5px 12px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface); color:var(--text2); font-size:12px; cursor:pointer;
+  transition:all .15s; touch-action:manipulation; }
+.mark-btn.done { background:rgba(34,197,94,.2); border-color:var(--green); color:var(--green); }
+
+/* ── Quiz upgrades ── */
+.quiz-meta { font-size:12px; color:var(--text2); margin-bottom:16px; }
+.quiz-progress-bar { height:4px; background:var(--surface2); border-radius:2px; margin-bottom:20px; }
+.quiz-progress-fill { height:100%; background:var(--accent); border-radius:2px; transition:width .3s; }
+.quiz-sys-tag { font-size:11px; padding:2px 8px; background:var(--surface2); border-radius:10px;
+  color:var(--text2); margin-bottom:12px; display:inline-block; }
+.quiz-result.show { display:block; }
+.quiz-result.correct-res { background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.3); border-radius:8px; padding:12px; }
+.quiz-result.wrong-res { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); border-radius:8px; padding:12px; }
+.quiz-nav-btns { display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+.quiz-nav-btns button { padding:8px 18px; border-radius:8px; border:none; cursor:pointer;
+  font-size:13px; font-weight:600; transition:all .15s; touch-action:manipulation; }
+.q-next { background:var(--accent); color:#fff; }
+.q-next:hover { background:#2563eb; }
+.q-close { background:var(--surface2); color:var(--text2); }
+.quiz-score-banner { text-align:center; padding:24px; }
+.quiz-score-banner .big-score { font-size:52px; font-weight:700; color:var(--accent2); }
+.quiz-score-banner p { color:var(--text2); margin-top:8px; }
+
+/* ── Welcome page system cards ── */
+.sys-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin:24px 0; }
+.sys-card { background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:14px 12px; cursor:pointer; transition:all .15s; text-align:left; }
+.sys-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+.sys-card .sys-name { font-size:13px; font-weight:600; color:var(--text); margin:6px 0 2px; }
+.sys-card .sys-count { font-size:11px; color:var(--text2); }
+.sys-card .sys-prog { height:3px; background:var(--surface2); border-radius:2px; margin-top:8px; }
+.sys-card .sys-prog-fill { height:100%; background:var(--accent); border-radius:2px; transition:width .4s; }
+.welcome-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0; }
+.welcome-actions button { padding:10px 22px; border-radius:10px; border:none; cursor:pointer;
+  font-size:14px; font-weight:600; transition:all .15s; touch-action:manipulation; }
+.btn-quiz-start { background:linear-gradient(135deg,#3b82f6,#7c3aed); color:#fff; }
+.btn-quiz-start:hover { opacity:.9; }
+.btn-expand-all { background:var(--surface); color:var(--text2); border:1px solid var(--border); }
+
+/* ── Recently viewed ── */
+.recent-section { margin:8px 0 20px; }
+.recent-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.recent-chip { padding:4px 12px; border-radius:16px; font-size:12px; background:var(--surface);
+  border:1px solid var(--border); color:var(--text2); cursor:pointer; transition:all .15s;
+  touch-action:manipulation; white-space:nowrap; }
+.recent-chip:hover { border-color:var(--accent); color:var(--accent2); }
+
+/* ── Print ── */
+@media print {
+  .sidebar, .topbar, .controls, .scroll-top, .mark-btn, .quiz-overlay { display:none !important; }
+  body { background:#fff; color:#000; }
+  .main { padding:0; }
+  .card-body { display:block !important; }
+  .topic-card { border:1px solid #ddd; margin-bottom:12px; break-inside:avoid; }
+}
 </style>
 </head>
 <body>
@@ -131,17 +216,29 @@ body { font-family: 'Segoe UI',system-ui,-apple-system,sans-serif; background:va
 <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
 <div class="topbar">
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-  <span style="font-size:14px;color:var(--text2);">Long Case Exam</span>
+  <span id="topbarTitle" style="font-size:13px;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Long Case Exam</span>
+  <button onclick="openQuiz()" style="background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;touch-action:manipulation;white-space:nowrap;">🎯 Quiz</button>
 </div>
 <main class="main" id="mainContent">
 <div class="welcome" id="welcome">
-  <h2>Long Case Exam Prep</h2>
-  <p>Interactive study tool for Internal Medicine residency long case examination. Select a topic from the sidebar to begin.</p>
-  <div class="stat-grid">
-    <div class="stat-card"><div class="num" id="topicCount">0</div><div class="lbl">Clinical Topics</div></div>
-    <div class="stat-card"><div class="num" id="systemCount">0</div><div class="lbl">Body Systems</div></div>
-    <div class="stat-card"><div class="num">141</div><div class="lbl">Source Pages</div></div>
+  <h2>📋 Long Case Exam Prep</h2>
+  <p>Internal Medicine Residency · Siriraj Hospital · Complete study tool</p>
+  <div class="stat-grid" style="max-width:420px;margin:16px auto;">
+    <div class="stat-card"><div class="num" id="topicCount">0</div><div class="lbl">Topics</div></div>
+    <div class="stat-card"><div class="num" id="systemCount">0</div><div class="lbl">Systems</div></div>
+    <div class="stat-card"><div class="num" id="doneCount">0</div><div class="lbl">Reviewed ✓</div></div>
+    <div class="stat-card"><div class="num">20</div><div class="lbl">Quiz Q</div></div>
   </div>
+  <div class="welcome-actions">
+    <button class="btn-quiz-start" onclick="openQuiz()">🎯 Start Quiz</button>
+    <button class="btn-expand-all" onclick="showRandomTopic()">🎲 Random Topic</button>
+  </div>
+  <div id="recentSection" class="recent-section" style="display:none;">
+    <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Recently Viewed</div>
+    <div class="recent-chips" id="recentChips"></div>
+  </div>
+  <div style="font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-top:20px;margin-bottom:8px;text-align:left;">All Systems</div>
+  <div class="sys-grid" id="sysGrid"></div>
 </div>
 <div id="topicContent" style="display:none;"></div>
 </main>
